@@ -24,7 +24,7 @@ Run using yarn run `<script>` command.
     build       - Compile source files.
     build:watch - Interactive watch mode, compile sources on change.
     lint        - Lint source files.
-    lint        - Fix lint source files.
+    lint:fix    - Fix lint source files.
     test        - Runs all tests with coverage.
     test:watch  - Interactive watch mode, runs tests on change.
 
