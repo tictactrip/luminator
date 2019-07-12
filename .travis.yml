@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+  - node
+  - lts/*
+before_install:
+  - yarn add codecov -g
+after_success: codecov
