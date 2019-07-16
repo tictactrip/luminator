@@ -3,7 +3,7 @@
 [![Dependencies][prod-dependencies-badge]][prod-dependencies]
 [![Coverage][coverage-badge]][coverage]
 [![Build Status][travis-badge]][travis-ci]
-[![MIT License][license-badge]][LICENSE]
+[![License][license-badge]][LICENSE]
 [![PRs Welcome][prs-badge]][prs]
 
 ## Description
