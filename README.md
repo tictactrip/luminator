@@ -1,4 +1,4 @@
-# @tictactrip/luminator
+# luminator
 
 [![Dependencies][prod-dependencies-badge]][prod-dependencies]
 [![Coverage][coverage-badge]][coverage]
