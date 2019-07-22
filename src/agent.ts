@@ -1,15 +1,12 @@
-import bluebird from 'bluebird'; // promises lib used by request-promise
-import { lookup as lookup0 } from 'dns';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import httpsProxyAgent from 'https-proxy-agent';
+import bluebird from 'bluebird'; // promises lib used by request-promise
+import crypto from 'crypto';
+import { lookup, lookup as lookup0 } from 'dns';
+import * as HttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgentOptions } from 'https-proxy-agent';
+import Bluebird = require('bluebird');
 
-const lookup = bluebird.promisify(lookup0.lookup);
-
-type ThttpsProxyAgent = {
-  hostname: string,
-  port: number,
-  auth: string
-}
+const lookup:() => Bluebird<lookup> = bluebird.promisify(lookup0.lookup);
 
 type Proxy = {
   host: string,
@@ -24,13 +21,17 @@ interface ILogger {
   error(...supportedData: any[]): void
 }
 
-class LuminatiSessionManager {
-  private readonly USER_AGENT: string =
+/**
+ * luminator doc
+ */
+class Luminator {
+  private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
-  private readonly SWITCH_IP_EVERY_N_REQ: number = 30;
-  private readonly MAX_FAILURES: number = 3;
-  private readonly REQ_TIMEOUT: number = 60 * 1000;
-  private readonly MAX_FAILURES_REQ: number = 40;
+  private static readonly SWITCH_IP_EVERY_N_REQ: number = 30;
+  private static readonly MAX_FAILURES: number = 3;
+  private static readonly REQ_TIMEOUT: number = 60 * 1000;
+  private static readonly MAX_FAILURES_REQ: number = 40;
+
   private failuresCountReq: number = 0;
   private nReqForExitNode: number = 0;
   private failCount: number = 0;
@@ -56,40 +57,44 @@ class LuminatiSessionManager {
   }
 
   public static LOGIN(username: string, password: string): (params: AxiosRequestConfig) => Promise<AxiosResponse> {
-
-    return new LuminatiSessionManager(username, password).start;
+    return new Luminator(username, password).start;
   }
 
   private static statusCodeRequiresExitNodeSwitch(statusCode: number): boolean {
     return [403, 429, 502, 503].includes(statusCode);
   }
 
+  private static getRandomNumber(): number {
+    return crypto.randomBytes(8).readUInt32LE(1) / 0xffffffff * 1000000
+  }
+
   private static getSessionId(): number {
-    return (Math.random() * 1000000) | 0;
+    return (Luminator.getRandomNumber() * 1000000);
   }
 
   public async start(params: AxiosRequestConfig): Promise<AxiosResponse> {
-    if (this.failuresCountReq >= this.MAX_FAILURES_REQ) { // todo : throw axios response object
+    if (this.failuresCountReq >= Luminator.MAX_FAILURES_REQ) { // todo : throw axios response object
       throw new Error('MAX_FAILURES_REQ threshold reached');
     } // break with too much failure
     if (!this.haveGoodSuperProxy()) {
       await this.switchSuperProxy();
     }
-    if (this.nReqForExitNode === this.SWITCH_IP_EVERY_N_REQ) {
+    if (this.nReqForExitNode === Luminator.SWITCH_IP_EVERY_N_REQ) {
       this.switchSessionId();
     }
 
-    const httpsAgentConfig: ThttpsProxyAgent = {
+    const httpsAgentConfig: HttpsProxyAgentOptions = {
       hostname: this.superProxyUrl.host,
+      host: this.superProxyUrl.host,
       port: this.superProxyUrl.port,
       auth: `${this.superProxyUrl.auth.username}:${this.superProxyUrl.auth.password}`,
     };
 
     const options: AxiosRequestConfig = {
-      timeout: this.REQ_TIMEOUT,
-      headers: { 'User-Agent': this.USER_AGENT },
+      timeout: Luminator.REQ_TIMEOUT,
+      headers: { 'User-Agent': Luminator.USER_AGENT },
       proxy: false,
-      httpsAgent: new httpsProxyAgent(httpsAgentConfig),
+      httpsAgent: new HttpsProxyAgent(httpsAgentConfig),
       ...params,
     };
 
@@ -104,7 +109,7 @@ class LuminatiSessionManager {
       this.failuresCountReq += 1;
       if (
         err.response &&
-        !LuminatiSessionManager.statusCodeRequiresExitNodeSwitch(err.response.status)
+        !Luminator.statusCodeRequiresExitNodeSwitch(err.response.status)
       ) {
         // this could be 404 or other website error
         this.nReqForExitNode += 1;
@@ -118,7 +123,7 @@ class LuminatiSessionManager {
   }
 
   private haveGoodSuperProxy(): boolean {
-    return this.superProxyHost && this.failCount < this.MAX_FAILURES;
+    return this.superProxyHost && this.failCount < Luminator.MAX_FAILURES;
   }
 
   private getUsername(): string {
@@ -137,7 +142,7 @@ class LuminatiSessionManager {
   }
 
   private switchSessionId(): void {
-    this.sessionId = LuminatiSessionManager.getSessionId();
+    this.sessionId = Luminator.getSessionId();
     this.nReqForExitNode = 0;
     this.updateSuperProxyUrl();
   }
@@ -162,3 +167,5 @@ class LuminatiSessionManager {
     }
   }
 }
+
+export Luminator;
