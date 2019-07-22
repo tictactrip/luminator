@@ -1,5 +1,5 @@
 import {
-  // TODO: import your class and types there
+  // TODO: import your class and types there to test them
 } from "../../src";
 
 describe("Your context", () => {
