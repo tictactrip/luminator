@@ -1,12 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import bluebird from 'bluebird'; // promises lib used by request-promise
-import crypto from 'crypto';
-import { lookup, lookup as lookup0 } from 'dns';
+import * as crypto from 'crypto';
+import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
-import { HttpsProxyAgentOptions } from 'https-proxy-agent';
-import Bluebird = require('bluebird');
-
-const lookup:() => Bluebird<lookup> = bluebird.promisify(lookup0.lookup);
 
 type Proxy = {
   host: string,
@@ -18,13 +13,15 @@ type Proxy = {
 }
 
 interface ILogger {
+  // tslint:disable-next-line:no-any
   error(...supportedData: any[]): void
 }
+
 
 /**
  * luminator doc
  */
-class Luminator {
+export class Luminator {
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
   private static readonly SWITCH_IP_EVERY_N_REQ: number = 30;
@@ -54,6 +51,7 @@ class Luminator {
     this.port = port;
     this.logger = logger;
     this.switchSessionId();
+    this.start = this.start.bind(this);
   }
 
   public static LOGIN(username: string, password: string): (params: AxiosRequestConfig) => Promise<AxiosResponse> {
@@ -65,11 +63,11 @@ class Luminator {
   }
 
   private static getRandomNumber(): number {
-    return crypto.randomBytes(8).readUInt32LE(1) / 0xffffffff * 1000000
+    return crypto.randomBytes(8).readUInt32LE(1) / 0xffffffff;
   }
 
   private static getSessionId(): number {
-    return (Luminator.getRandomNumber() * 1000000);
+    return (Luminator.getRandomNumber() * 1000000) | 0;
   }
 
   public async start(params: AxiosRequestConfig): Promise<AxiosResponse> {
@@ -82,22 +80,17 @@ class Luminator {
     if (this.nReqForExitNode === Luminator.SWITCH_IP_EVERY_N_REQ) {
       this.switchSessionId();
     }
-
-    const httpsAgentConfig: HttpsProxyAgentOptions = {
-      hostname: this.superProxyUrl.host,
+    const proxyOptions = {
       host: this.superProxyUrl.host,
       port: this.superProxyUrl.port,
       auth: `${this.superProxyUrl.auth.username}:${this.superProxyUrl.auth.password}`,
     };
-
     const options: AxiosRequestConfig = {
       timeout: Luminator.REQ_TIMEOUT,
       headers: { 'User-Agent': Luminator.USER_AGENT },
-      proxy: false,
-      httpsAgent: new HttpsProxyAgent(httpsAgentConfig),
+      httpsAgent: new HttpsProxyAgent(proxyOptions),
       ...params,
     };
-
     try {
       const response = await axios(options);
       this.failCount = 0;
@@ -110,9 +103,9 @@ class Luminator {
       if (
         err.response &&
         !Luminator.statusCodeRequiresExitNodeSwitch(err.response.status)
-      ) {
-        // this could be 404 or other website error
+      ) { // this could be 404 or other website error
         this.nReqForExitNode += 1;
+
         throw err;
       }
       this.switchSessionId();
@@ -147,16 +140,17 @@ class Luminator {
     this.updateSuperProxyUrl();
   }
 
-  private getSuperProxyHost(): Promise<string> {
-    return lookup(
-      `session-${this.sessionId}'-servercountry-${this.superProxy}.zproxy.lum-superproxy.io`,
+  private getSuperProxyHost(): Promise<dns.LookupAddress> {
+    return dns.promises.lookup(
+      `session-${this.sessionId}-servercountry-${this.superProxy}.zproxy.lum-superproxy.io`,
     );
   }
 
   private async switchSuperProxy(): Promise<boolean> {
     this.switchSessionId();
     try {
-      this.superProxyHost = await this.getSuperProxyHost();
+      const address: dns.LookupAddress = await this.getSuperProxyHost();
+      this.superProxyHost = address.address;
       this.updateSuperProxyUrl();
 
       return true;
@@ -167,5 +161,3 @@ class Luminator {
     }
   }
 }
-
-export Luminator;
