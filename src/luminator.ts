@@ -1,5 +1,4 @@
-import * as axios from 'axios';
-import * as crypto from 'crypto';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 
@@ -63,7 +62,7 @@ export class Luminator {
     return Math.trunc(Luminator.getRandomNumber() * 1000000);
   }
 
-  public async fetch(params: axios.AxiosRequestConfig): Promise<axios.AxiosResponse> {
+  public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
     if (this.failuresCountReq >= Luminator.MAX_FAILURES_REQ) {
       throw new Error('MAX_FAILURES_REQ threshold reached');
     } // break with too much failure
@@ -75,7 +74,7 @@ export class Luminator {
     }
 
     try {
-      const response = await axios.default(this.getAxiosRequestConfig(params));
+      const response = await axios(this.getAxiosRequestConfig(params));
       this.failCount = 0;
       this.nReqForExitNode += 1;
       this.failuresCountReq = 0;
@@ -105,7 +104,7 @@ export class Luminator {
     }
   }
 
-  private getAxiosRequestConfig(params: axios.AxiosRequestConfig): axios.AxiosRequestConfig {
+  private getAxiosRequestConfig(params: AxiosRequestConfig): AxiosRequestConfig {
     return {
       timeout: Luminator.REQ_TIMEOUT,
       headers: { 'User-Agent': Luminator.USER_AGENT },
@@ -145,17 +144,10 @@ export class Luminator {
     );
   }
 
-  private async switchSuperProxy(): Promise<boolean> {
+  private async switchSuperProxy(): Promise<void> {
     this.switchSessionId();
-    try {
-      const address: dns.LookupAddress = await this.getSuperProxyHost();
-      this.superProxyHost = address.address;
-      this.updateSuperProxyUrl();
-
-      return true;
-    } catch (e) {
-
-      return false;
-    }
+    const address: dns.LookupAddress = await this.getSuperProxyHost();
+    this.superProxyHost = address.address;
+    this.updateSuperProxyUrl();
   }
 }
