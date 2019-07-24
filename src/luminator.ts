@@ -66,12 +66,15 @@ export class Luminator {
     if (this.failuresCountReq >= Luminator.MAX_FAILURES_REQ) {
       throw new Error('MAX_FAILURES_REQ threshold reached');
     } // break with too much failure
+    if (this.nReqForExitNode >= Luminator.SWITCH_IP_EVERY_N_REQ) {
+      await this.switchSessionId();
+    }
+
     if (!this.haveGoodSuperProxy()) {
       await this.switchSuperProxy();
     }
-    if (this.nReqForExitNode === Luminator.SWITCH_IP_EVERY_N_REQ) {
-      this.switchSessionId();
-    }
+
+
 
     try {
       const response = await axios(this.getAxiosRequestConfig(params));
@@ -82,10 +85,7 @@ export class Luminator {
       return response;
     } catch (err) {
       this.failuresCountReq += 1;
-      if (
-        err.response &&
-        !Luminator.statusCodeRequiresExitNodeSwitch(err.response.status)
-      ) { // this could be 404 or other website error
+      if (err.response && !Luminator.statusCodeRequiresExitNodeSwitch(err.response.status)) { // this could be 404 or other website error
         this.nReqForExitNode += 1;
 
         throw err;
