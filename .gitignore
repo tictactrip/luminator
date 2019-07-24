@@ -9,4 +9,4 @@ coverage
 .npm
 .eslintcache
 .DS_Store
-dist/
+dist
