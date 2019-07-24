@@ -6,12 +6,12 @@
   "main": "dist/index.js",
   "dependencies": {
     "axios": "0.19.0",
-    "https-proxy-agent": "^2.2.2"
+    "https-proxy-agent": "2.2.2"
   },
   "devDependencies": {
     "@types/axios": "0.14.0",
     "@types/jest": "24.0.15",
-    "@types/node": "^10.14.12",
+    "@types/node": "10.14.12",
     "jest": "24.8.0",
     "prettier": "1.18.2",
     "ts-jest": "24.0.2",
@@ -26,8 +26,7 @@
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project 'tsconfig.json'",
     "lint:fix": "tslint --fix -t stylish --project 'tsconfig.json'",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test": "jest --coverage",
     "test:watch": "jest --watch"
   }
 }
