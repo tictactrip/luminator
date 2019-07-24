@@ -22,8 +22,7 @@ function failWith(status: number): AxiosResponse {
   });
 }
 
-
-describe('Test luminator', () => {
+describe('Luminator', () => {
   describe('Test the Happy case, and the 404 error', () => {
     const agent = new Luminator('USERNAME', 'password');
 
@@ -64,7 +63,6 @@ describe('Test luminator', () => {
       }
     });
   });
-
 
   describe('Should call switchSessionId with [403, 429, 502, 503] status, and to be called 20 times', () => {
     const agent = new Luminator('USERNAME', 'password');
