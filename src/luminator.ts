@@ -21,13 +21,13 @@ interface IProxyManagerOption {
  * luminator doc
  */
 export class Luminator {
+  public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
   private static readonly SWITCH_IP_EVERY_N_REQ: number = 30;
   private static readonly MAX_FAILURES: number = 3;
   private static readonly REQ_TIMEOUT: number = 60 * 1000;
-  private static readonly MAX_FAILURES_REQ: number = 40;
-
+  private static readonly MAX_FAILURES_REQ: number = 11;
   private failuresCountReq: number = 0;
   private nReqForExitNode: number = 0;
   private failCount: number = 0;
@@ -96,6 +96,13 @@ export class Luminator {
       return this.fetch(params);
     }
   }
+
+  public switchSessionId(): void {
+    this.sessionId = Luminator.getSessionId();
+    this.nReqForExitNode = 0;
+    this.updateSuperProxyUrl();
+  }
+
   private getProxyOptions(): IProxyManagerOption {
     return {
       host: this.superProxyUrl.host,
@@ -130,12 +137,6 @@ export class Luminator {
         password: this.password,
       },
     };
-  }
-
-  private switchSessionId(): void {
-    this.sessionId = Luminator.getSessionId();
-    this.nReqForExitNode = 0;
-    this.updateSuperProxyUrl();
   }
 
   private getSuperProxyHost(): Promise<dns.LookupAddress> {

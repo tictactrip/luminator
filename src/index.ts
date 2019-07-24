@@ -1,5 +1,5 @@
-// TODO: import everything there
+import { Luminator } from './luminator';
 
 export {
-  // TODO: export everything there
+  Luminator,
 };

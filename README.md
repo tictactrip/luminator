@@ -26,7 +26,7 @@ Run using yarn run `<script>` command.
     lint        - Lint source files.
     lint:fix    - Fix lint source files.
     test        - Runs all tests with coverage.
-    test:watch  - Interactive watch mode, runs tests on change.
+    test:watch  - Interactive watch molinde, runs tests on change.
 
 ## License
 
