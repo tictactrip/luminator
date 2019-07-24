@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
+import axios, { AxiosResponse, AxiosStatic } from 'axios';
 import { Luminator } from '../../src';
 
 interface IAxiosMock extends AxiosStatic {
