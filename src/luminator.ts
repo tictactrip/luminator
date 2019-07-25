@@ -62,6 +62,12 @@ class Luminator {
     return Math.trunc(Luminator.getRandomNumber() * 1000000);
   }
 
+  private onSuccess():void {
+    this.failCount = 0;
+    this.nReqForExitNode += 1;
+    this.failuresCountReq = 0;
+  }
+
   public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
     if (this.failuresCountReq >= Luminator.MAX_FAILURES_REQ) {
       throw new Error('MAX_FAILURES_REQ threshold reached');
@@ -76,15 +82,12 @@ class Luminator {
 
     try {
       const response = await axios(this.getAxiosRequestConfig(params));
-      this.failCount = 0;
-      this.nReqForExitNode += 1;
-      this.failuresCountReq = 0;
+      this.onSuccess();
 
       return response;
     } catch (err) {
       this.failuresCountReq += 1;
-      if (err.response && !Luminator.statusCodeRequiresExitNodeSwitch(err.response.status)) { // this could be 404 or other website error
-        console.log('===========================');
+      if (! Luminator.statusCodeRequiresExitNodeSwitch(err.status)) { // this could be 404 or other website error
         this.nReqForExitNode += 1;
         throw err;
       }
