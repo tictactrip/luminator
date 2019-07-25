@@ -94,7 +94,7 @@ describe('Luminator', () => {
       mockAxios.mockResolvedValue(successWith(200));
 
       const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
-      for (let i = 0; i <= 35; i += 1) {
+      for (let i = 0; i <= 30; i += 1) {
         await agent.fetch({
           method: 'GET',
           url: 'https://lumtest.com/myip.json',

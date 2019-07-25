@@ -62,12 +62,6 @@ class Luminator {
     return Math.trunc(Luminator.getRandomNumber() * 1000000);
   }
 
-  private onSuccess():void {
-    this.failCount = 0;
-    this.nReqForExitNode += 1;
-    this.failuresCountReq = 0;
-  }
-
   public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
     if (this.failuresCountReq >= Luminator.MAX_FAILURES_REQ) {
       throw new Error('MAX_FAILURES_REQ threshold reached');
@@ -80,11 +74,10 @@ class Luminator {
       await this.switchSuperProxy();
     }
 
+    let response: AxiosResponse;
     try {
-      const response = await axios(this.getAxiosRequestConfig(params));
+      response = await axios(this.getAxiosRequestConfig(params));
       this.onSuccess();
-
-      return response;
     } catch (err) {
       this.failuresCountReq += 1;
       if (! Luminator.statusCodeRequiresExitNodeSwitch(err.status)) { // this could be 404 or other website error
@@ -93,15 +86,21 @@ class Luminator {
       }
       this.switchSessionId();
       this.failCount += 1;
-
-      return this.fetch(params);
     }
+
+    return response ? response : this.fetch(params);
   }
 
   public switchSessionId(): void {
     this.sessionId = Luminator.getSessionId();
     this.nReqForExitNode = 0;
     this.updateSuperProxyUrl();
+  }
+
+  private onSuccess():void {
+    this.failCount = 0;
+    this.nReqForExitNode += 1;
+    this.failuresCountReq = 0;
   }
 
   private getProxyOptions(): IProxyManagerOption {
