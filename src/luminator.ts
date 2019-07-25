@@ -3,24 +3,24 @@ import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 
 type Proxy = {
-  host: string,
-  port: number,
+  host: string;
+  port: number;
   auth: {
-    username: string,
-    password: string
+    username: string;
+    password: string;
   },
 }
 
 interface IProxyManagerOption {
-  host: string,
-  port: number,
-  auth: string
+  host: string;
+  port: number;
+  auth: string;
 }
 
 /**
  * luminator doc
  */
-export class Luminator {
+class Luminator {
   public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
@@ -74,8 +74,6 @@ export class Luminator {
       await this.switchSuperProxy();
     }
 
-
-
     try {
       const response = await axios(this.getAxiosRequestConfig(params));
       this.failCount = 0;
@@ -86,8 +84,8 @@ export class Luminator {
     } catch (err) {
       this.failuresCountReq += 1;
       if (err.response && !Luminator.statusCodeRequiresExitNodeSwitch(err.response.status)) { // this could be 404 or other website error
+        console.log('===========================');
         this.nReqForExitNode += 1;
-
         throw err;
       }
       this.switchSessionId();
@@ -151,4 +149,10 @@ export class Luminator {
     this.superProxyHost = address.address;
     this.updateSuperProxyUrl();
   }
+}
+
+export {
+  Luminator,
+  IProxyManagerOption,
+  Proxy
 }
