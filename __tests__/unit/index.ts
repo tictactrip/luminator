@@ -85,6 +85,7 @@ describe('Luminator', () => {
             url: 'https://lumtest.com/myip.json',
           });
         } catch (e) {
+          console.log(e);
           expect(agent['failuresCountReq']).toBe(11);
           expect(spy).toHaveBeenCalledTimes(20);
         }
