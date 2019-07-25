@@ -1,4 +1,6 @@
 import axios, { AxiosResponse, AxiosStatic } from 'axios';
+jest.mock('axios');
+
 import { Luminator } from '../../src';
 
 interface IAxiosMock extends AxiosStatic {
@@ -6,7 +8,7 @@ interface IAxiosMock extends AxiosStatic {
   mockRejectedValue: Function
 }
 
-jest.mock('axios');
+
 const mockAxios = axios as IAxiosMock;
 
 function failWith(status: number): AxiosResponse {
