@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import * as crypto from 'crypto';
 import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 
@@ -53,7 +54,7 @@ class Luminator {
    * @return {number}
    */
   private static getSessionId(): number {
-    return Math.trunc(Math.random() * 1000000);
+    return Math.trunc(crypto.randomBytes(8).readUInt32LE(1) / 0xffffffff * 1000000);
   }
 
   /**
@@ -85,7 +86,7 @@ class Luminator {
       this.onFailedQuery(err);
     }
 
-    return response || this.fetch(params);
+    return response !== undefined ? response : this.fetch(params);
   }
 
   /**
