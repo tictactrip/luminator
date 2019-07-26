@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, AxiosStatic } from 'axios';
+import axios, { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
 
 jest.mock('axios');
 
@@ -15,30 +15,30 @@ const mockAxios = axios as IAxiosMock;
 /**
  * build an AxiosResponse with given status and failMessage
  * @param status
+ * @param message
  */
-function failWith(status: number): AxiosResponse {
-  return ({
-    config: undefined,
-    request: undefined,
-    data: {
-      message: `FAILED ${status}`,
-    },
-    status: status,
-    statusText: status.toString(),
-    headers: undefined,
-  });
+function failWith(status: number, message: string): AxiosError {
+  return {
+    name: '',
+    message,
+    config: {},
+    code: '',
+    request: {},
+    response: respondWith(status, message),
+    isAxiosError: true,
+  };
 }
 
 /**
  * build an AxiosResponse with given status and success message
  * @param status
  */
-function successWith(status: number): AxiosResponse {
+function respondWith(status: number, message: string): AxiosResponse {
   return ({
     config: undefined,
     request: undefined,
     data: {
-      message: `SUCCESS with ${status}`,
+      message,
     },
     status: status,
     statusText: status.toString(),
@@ -51,28 +51,28 @@ describe('Luminator', () => {
 
   describe('Should return response with status 200, and fail with the 404 error', () => {
     it('Should return response', async () => {
-      mockAxios.mockResolvedValue(successWith(200));
+      const mockedResponse = respondWith(200, `SUCCESS with 200`);
+      mockAxios.mockResolvedValue(mockedResponse);
       const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
       const response = await agent.fetch({
         method: 'GET',
         url: 'https://lumtest.com/myip.json',
       });
-      expect(response).toStrictEqual(successWith(200));
+      expect(response).toStrictEqual(mockedResponse);
       expect(spy).toHaveBeenCalled();
     });
 
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
-      mockAxios.mockRejectedValue(failWith(404));
+      const errMsg = `failed status 404`;
+      mockAxios.mockRejectedValue(failWith(404, errMsg));
       try {
-        const response = await agent.fetch({
+        await agent.fetch({
           method: 'GET',
           url: 'https://lumtest.com/myip.json',
         });
-        expect(response.data).toStrictEqual({
-          message: 'FAILED 404',
-        });
       } catch (e) {
-        expect(e.status).toBe(404);
+        expect(e.response.status).toBe(404);
+        expect(e.message).toBe(errMsg);
       }
     });
   });
@@ -84,7 +84,7 @@ describe('Luminator', () => {
 
     Luminator.STATUS_CODE_FOR_RETRY.forEach((status: number) => {
       it(`Should call switchSessionId with ${status} status, and to be called 20 times`, async () => {
-        mockAxios.mockRejectedValue(failWith(status));
+        mockAxios.mockRejectedValue(failWith(status, `failed with ${status}`));
         const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
         try {
           await agent.fetch({
@@ -99,7 +99,7 @@ describe('Luminator', () => {
     });
 
     it(`Should switch session id when the query threshold is reached`, async () => {
-      mockAxios.mockResolvedValue(successWith(200));
+      mockAxios.mockResolvedValue(respondWith(200, `SUCCESS with 200`));
       const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
       for (let i = 0; i <= 30; i += 1) {
         await agent.fetch({

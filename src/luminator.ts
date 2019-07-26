@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 
@@ -16,6 +16,7 @@ interface IProxyManagerOption {
   port: number;
   auth: string;
 }
+
 // 'NL' 'fr' 22225
 interface ILuminatorConfig {
   superProxy: string;
@@ -28,7 +29,7 @@ interface ILuminatorConfig {
  * Luminator doc
  */
 class Luminator {
-  public static DEFAULT_CONFIG: ILuminatorConfig = {superProxy: 'NL', country: 'fr', port:22225 };
+  public static DEFAULT_CONFIG: ILuminatorConfig = { superProxy: 'NL', country: 'fr', port: 22225 };
   public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
@@ -79,24 +80,17 @@ class Luminator {
       throw new Error('MAX_FAILURES_REQ threshold reached');
     }
     if (this.totalRequestsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
-      await this.switchSessionId();
+      this.switchSessionId();
     }
     if (!this.haveGoodSuperProxy()) {
       await this.switchSuperProxy();
     }
-
     let response: AxiosResponse;
     try {
       response = await axios(this.getAxiosRequestConfig(params));
       this.onSuccessfulQuery();
     } catch (err) {
-      this.failuresCountRequests += 1;
-      if (!Luminator.STATUS_CODE_FOR_RETRY.includes(err.status)) {
-        this.totalRequestsCounter += 1;
-        throw err;
-      }
-      this.switchSessionId();
-      this.failCount += 1;
+      this.onFailedQuery(err);
     }
 
     return response || this.fetch(params);
@@ -121,6 +115,21 @@ class Luminator {
     this.failCount = 0;
     this.totalRequestsCounter += 1;
     this.failuresCountRequests = 0;
+  }
+
+  /**
+   * if it is not a handled status code throw err
+   * else switch ID and increment fail count
+   * and increment the counter of total requests
+   */
+  private onFailedQuery(error: AxiosError) {
+    this.failuresCountRequests += 1;
+    if (Luminator.STATUS_CODE_FOR_RETRY.includes(error.response.status) === false) {
+      this.totalRequestsCounter += 1;
+      throw error;
+    }
+    this.switchSessionId();
+    this.failCount += 1;
   }
 
   /**
@@ -150,7 +159,7 @@ class Luminator {
    * check if it has a proxy host and max failure threshold not reached
    */
   private haveGoodSuperProxy(): boolean {
-    return this.superProxyHost && this.failCount < Luminator.MAX_FAILURES;
+    return this.superProxyHost !== undefined && this.failCount < Luminator.MAX_FAILURES;
   }
 
   /**

@@ -26,7 +26,7 @@
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project 'tsconfig.json'",
     "lint:fix": "tslint --fix -t stylish --project 'tsconfig.json'",
-    "pretest": "yarn lint",
+    "pretest": "tslint -t stylish --project 'tsconfig.json'",
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   }
