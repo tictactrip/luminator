@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import * as axios from 'axios';
 import * as crypto from 'crypto';
 import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
@@ -17,7 +17,7 @@ interface ILuminatorConfig {
 
 /**
  * {@inheritDoc}
- * @description Luminator class
+ * @description Luminator class.
  */
 class Luminator {
   public static DEFAULT_CONFIG: ILuminatorConfig = { superProxy: 'NL', country: 'fr', port: 22225 };
@@ -68,22 +68,26 @@ class Luminator {
    * @throws {Error}
    * @return {Promise<AxiosResponse>}
    */
-  public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
+  public async fetch(params: axios.AxiosRequestConfig): Promise<axios.AxiosResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       throw new Error('MAX_FAILURES_REQ threshold reached');
     }
+
     if (this.totalRequestsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
       this.switchSessionId();
     }
+
     if (!this.haveGoodSuperProxy()) {
       await this.switchSuperProxy();
     }
-    let response: AxiosResponse;
+
+    let response: axios.AxiosResponse;
+
     try {
-      response = await axios(this.getAxiosRequestConfig(params));
+      response = await axios.default(this.getAxiosRequestConfig(params));
       this.onSuccessfulQuery();
     } catch (err) {
-      this.onFailedQuery(err);
+      this.onFailedQuery(err as axios.AxiosError);
     }
 
     return response !== undefined ? response : this.fetch(params);
@@ -118,12 +122,14 @@ class Luminator {
    * @throws {Error}
    * @return void
    */
-  private onFailedQuery(error: AxiosError) {
+  private onFailedQuery(error: axios.AxiosError): void {
     this.failuresCountRequests += 1;
+
     if (Luminator.STATUS_CODE_FOR_RETRY.includes(error.response.status) === false) {
       this.totalRequestsCounter += 1;
       throw error;
     }
+
     this.switchSessionId();
     this.failCount += 1;
   }
@@ -133,7 +139,7 @@ class Luminator {
    * @param params {AxiosRequestConfig}
    * @return {AxiosRequestConfig}
    */
-  private getAxiosRequestConfig(params: AxiosRequestConfig): AxiosRequestConfig {
+  private getAxiosRequestConfig(params: axios.AxiosRequestConfig): axios.AxiosRequestConfig {
     return {
       timeout: Luminator.REQ_TIMEOUT,
       headers: { 'User-Agent': Luminator.USER_AGENT },
