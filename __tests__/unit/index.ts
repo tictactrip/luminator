@@ -1,22 +1,23 @@
-import axios, { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
-
-jest.mock('axios');
+import * as axios from 'axios';
 
 import { Luminator } from '../../src';
 
-interface IAxiosMock extends AxiosStatic {
+jest.mock('axios');
+
+interface IAxiosMock extends axios.AxiosStatic {
   mockResolvedValue: Function
   mockRejectedValue: Function
 }
 
-const mockAxios = axios as IAxiosMock;
+const mockAxios = axios.default as IAxiosMock;
 
 /**
  * @description Builds an AxiosResponse with given status and failMessage.
  * @param status {number}
  * @param message {string}
+ * @return {AxiosError}
  */
-function failWith(status: number, message: string): AxiosError {
+function failWith(status: number, message: string): axios.AxiosError {
   return {
     name: '',
     message,
@@ -34,7 +35,7 @@ function failWith(status: number, message: string): AxiosError {
  * @param message {string}
  * @return {AxiosResponse}
  */
-function respondWith(status: number, message: string): AxiosResponse {
+function respondWith(status: number, message: string): axios.AxiosResponse {
   return ({
     config: undefined,
     request: undefined,
@@ -66,6 +67,7 @@ describe('Luminator', () => {
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
       const err = failWith(404, `failed status 404`);
       mockAxios.mockRejectedValue(err);
+
       try {
         await agent.fetch({
           method: 'GET',
@@ -86,6 +88,7 @@ describe('Luminator', () => {
       it(`Should call switchSessionId with ${status} status, and to be called 20 times`, async () => {
         mockAxios.mockRejectedValue(failWith(status, `failed with ${status}`));
         const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
+
         try {
           await agent.fetch({
             method: 'GET',
@@ -101,12 +104,14 @@ describe('Luminator', () => {
     it(`Should switch session id when the query threshold is reached`, async () => {
       mockAxios.mockResolvedValue(respondWith(200, `SUCCESS with 200`));
       const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
+
       for (let i = 0; i <= 30; i += 1) {
         await agent.fetch({
           method: 'GET',
           url: 'https://lumtest.com/myip.json',
         });
       }
+
       expect(spy).toHaveBeenCalledTimes(2);
     });
   });
