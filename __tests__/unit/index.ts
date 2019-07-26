@@ -1,20 +1,19 @@
 import axios, { AxiosResponse, AxiosStatic } from 'axios';
+import { Luminator } from '../../src';
 
 jest.mock('axios');
-
-import { Luminator } from '../../src';
 
 interface IAxiosMock extends AxiosStatic {
   mockResolvedValue: Function
   mockRejectedValue: Function
 }
 
-
 const mockAxios = axios as IAxiosMock;
 
 /**
- * build an AxiosResponse with given status and failMessage
- * @param status
+ * @description Builds an AxiosResponse with given status and failMessage.
+ * @param status {number}
+ * @return {AxiosResponse}
  */
 function failWith(status: number): AxiosResponse {
   return ({
@@ -30,8 +29,9 @@ function failWith(status: number): AxiosResponse {
 }
 
 /**
- * build an AxiosResponse with given status and success message
- * @param status
+ * @description Builds an AxiosResponse with given status and success message.
+ * @param status {number}
+ * @return {AxiosResponse}
  */
 function successWith(status: number): AxiosResponse {
   return ({
@@ -53,26 +53,33 @@ describe('Luminator', () => {
     it('Should return response', async () => {
       mockAxios.mockResolvedValue(successWith(200));
       const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
+
       const response = await agent.fetch({
         method: 'GET',
         url: 'https://lumtest.com/myip.json',
       });
+
       expect(response).toStrictEqual(successWith(200));
       expect(spy).toHaveBeenCalled();
     });
 
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
       mockAxios.mockRejectedValue(failWith(404));
+
       try {
-        const response = await agent.fetch({
+        await agent.fetch({
           method: 'GET',
           url: 'https://lumtest.com/myip.json',
         });
-        expect(response.data).toStrictEqual({
-          message: 'FAILED 404',
-        });
       } catch (e) {
-        expect(e.status).toBe(404);
+        expect(e).toEqual({
+          config: undefined,
+          request: undefined,
+          data: { message: 'FAILED 404' },
+          status: 404,
+          statusText: '404',
+          headers: undefined,
+        });
       }
     });
   });
@@ -86,6 +93,7 @@ describe('Luminator', () => {
       it(`Should call switchSessionId with ${status} status, and to be called 20 times`, async () => {
         mockAxios.mockRejectedValue(failWith(status));
         const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
+
         try {
           await agent.fetch({
             method: 'GET',
@@ -93,7 +101,7 @@ describe('Luminator', () => {
           });
         } catch (e) {
           expect(spy).toHaveBeenCalledTimes(6);
-          expect(e.message).toBe('MAX_FAILURES_REQ threshold reached');
+          expect(e).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
         }
       });
     });
@@ -101,12 +109,14 @@ describe('Luminator', () => {
     it(`Should switch session id when the query threshold is reached`, async () => {
       mockAxios.mockResolvedValue(successWith(200));
       const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
+
       for (let i = 0; i <= 30; i += 1) {
         await agent.fetch({
           method: 'GET',
           url: 'https://lumtest.com/myip.json',
         });
       }
+
       expect(spy).toHaveBeenCalledTimes(2);
     });
   });
