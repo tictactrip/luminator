@@ -17,16 +17,15 @@ interface IProxyManagerOption {
   auth: string;
 }
 
-// 'NL' 'fr' 22225
 interface ILuminatorConfig {
   superProxy: string;
   country: string;
   port: number;
 }
 
-
 /**
- * Luminator doc
+ * {@inheritDoc}
+ * @description Luminator class
  */
 class Luminator {
   public static DEFAULT_CONFIG: ILuminatorConfig = { superProxy: 'NL', country: 'fr', port: 22225 };
@@ -59,21 +58,23 @@ class Luminator {
   }
 
   /**
-   *  generate a random int ID
+   * @description Generate a random id.
+   * @return {number}
    */
   private static getSessionId(): number {
     return Math.trunc(Math.random() * 1000000);
   }
 
   /**
-   * method that take an AxiosRequestConfig and:
+   * @description Method that take an AxiosRequestConfig and:
    * - return AxiosResponse when the server respond with a 200 status,
    * - throw an error if a status is not in the STATUS_CODE_FOR_RETRY
    * - retry if the status is in STATUS_CODE_FOR_RETRY and refresh sessionId:
    *    - if the server respond with a 200 status it returns AxiosResponse
    *    - if it reach the setted threshold it throw an error
-   * return Promise<AxiosResponse>
-   * @param params: AxiosRequestConfig
+   * @param params {AxiosRequestConfig}
+   * @throws {Error}
+   * @return {Promise<AxiosResponse>}
    */
   public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
@@ -97,9 +98,10 @@ class Luminator {
   }
 
   /**
-   * set a sessionId: int
+   * @description set a sessionId: int
    * reset totalRequestsCounter
    * update super proxyu url with the new session
+   * @return {void}
    */
   public switchSessionId(): void {
     this.sessionId = Luminator.getSessionId();
@@ -108,8 +110,8 @@ class Luminator {
   }
 
   /**
-   * reset the counter of fail count
-   * and increment the counter of total requests
+   * @description Reset the counter of fail count and increment the counter of total requests.
+   * @return {void}
    */
   private onSuccessfulQuery(): void {
     this.failCount = 0;
@@ -118,9 +120,11 @@ class Luminator {
   }
 
   /**
-   * if it is not a handled status code throw err
+   * @description it is not a handled status code throw err
    * else switch ID and increment fail count
    * and increment the counter of total requests
+   * @throws {Error}
+   * @return void
    */
   private onFailedQuery(error: AxiosError) {
     this.failuresCountRequests += 1;
@@ -133,7 +137,8 @@ class Luminator {
   }
 
   /**
-   * build ProxyManagerOption for the httpsProxyAgent
+   * @description Build ProxyManagerOption for the httpsProxyAgent.
+   * @return {IProxyManagerOption}
    */
   private getProxyOptions(): IProxyManagerOption {
     return {
@@ -144,7 +149,9 @@ class Luminator {
   }
 
   /**
-   * build AxiosRequestConfig for the query
+   * @description Builds AxiosRequestConfig for the query.
+   * @param params {AxiosRequestConfig}
+   * @return {AxiosRequestConfig}
    */
   private getAxiosRequestConfig(params: AxiosRequestConfig): AxiosRequestConfig {
     return {
@@ -156,21 +163,24 @@ class Luminator {
   }
 
   /**
-   * check if it has a proxy host and max failure threshold not reached
+   * @description Checks if it has a proxy host and max failure threshold not reached.
+   * @return {boolean}
    */
   private haveGoodSuperProxy(): boolean {
     return this.superProxyHost !== undefined && this.failCount < Luminator.MAX_FAILURES;
   }
 
   /**
-   * return username Luminati format
+   * @description Returns username Luminati format.
+   * @return {string}
    */
   private getUsername(): string {
     return `${this.username}-country-${this.country}-session-${this.sessionId}`;
   }
 
   /**
-   *  set superProxyUrl
+   * @description Set superProxyUrl.
+   * @return {void}
    */
   private updateSuperProxyUrl(): void {
     this.superProxyUrl = {
@@ -184,7 +194,8 @@ class Luminator {
   }
 
   /**
-   * get the dns address from the luminati hostname
+   * @description Get the dns address from the luminati hostname.
+   * @return {Promise<dns.LookupAddress>}
    */
   private getSuperProxyHost(): Promise<dns.LookupAddress> {
     return dns.promises.lookup(
@@ -193,8 +204,9 @@ class Luminator {
   }
 
   /**
-   * switch session id and get dns address for the new sessionId
-   * set the superProxyHost and update the superProxyUrl
+   * @description Switch session id and get dns address for the new sessionId
+   * set the superProxyHost and update the superProxyUrl.
+   * @return {Promise<void>}
    */
   private async switchSuperProxy(): Promise<void> {
     this.switchSessionId();

@@ -4,18 +4,19 @@ jest.mock('axios');
 
 import { Luminator } from '../../src';
 
+jest.mock('axios');
+
 interface IAxiosMock extends AxiosStatic {
   mockResolvedValue: Function
   mockRejectedValue: Function
 }
 
-
 const mockAxios = axios as IAxiosMock;
 
 /**
- * build an AxiosResponse with given status and failMessage
- * @param status
- * @param message
+ * @description Builds an AxiosResponse with given status and failMessage.
+ * @param status {number}
+ * @param message {string}
  */
 function failWith(status: number, message: string): AxiosError {
   return {
@@ -30,8 +31,10 @@ function failWith(status: number, message: string): AxiosError {
 }
 
 /**
- * build an AxiosResponse with given status and success message
- * @param status
+ * @description Builds an AxiosResponse with given status and success message.
+ * @param status {number}
+ * @param message {string}
+ * @return {AxiosResponse}
  */
 function respondWith(status: number, message: string): AxiosResponse {
   return ({
@@ -63,16 +66,15 @@ describe('Luminator', () => {
     });
 
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
-      const errMsg = `failed status 404`;
-      mockAxios.mockRejectedValue(failWith(404, errMsg));
+      const err = failWith(404, `failed status 404`);
+      mockAxios.mockRejectedValue(err);
       try {
         await agent.fetch({
           method: 'GET',
           url: 'https://lumtest.com/myip.json',
         });
       } catch (e) {
-        expect(e.response.status).toBe(404);
-        expect(e.message).toBe(errMsg);
+        expect(e).toEqual(err);
       }
     });
   });
@@ -93,7 +95,7 @@ describe('Luminator', () => {
           });
         } catch (e) {
           expect(spy).toHaveBeenCalledTimes(6);
-          expect(e.message).toBe('MAX_FAILURES_REQ threshold reached');
+          expect(e).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
         }
       });
     });
