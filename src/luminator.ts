@@ -2,15 +2,6 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 
-type Proxy = {
-  host: string;
-  port: number;
-  auth: {
-    username: string;
-    password: string;
-  },
-}
-
 interface IProxyManagerOption {
   host: string;
   port: number;
@@ -45,7 +36,7 @@ class Luminator {
   private readonly country: string;
   private readonly port: number;
   private superProxyHost: string;
-  private superProxyUrl: Proxy;
+  private proxyManagerOptions: IProxyManagerOption;
   private sessionId: number;
 
   constructor(username: string, password: string, config: ILuminatorConfig = Luminator.DEFAULT_CONFIG) {
@@ -106,7 +97,7 @@ class Luminator {
   public switchSessionId(): void {
     this.sessionId = Luminator.getSessionId();
     this.totalRequestsCounter = 0;
-    this.updateSuperProxyUrl();
+    this.updateProxyManagerOptions();
   }
 
   /**
@@ -137,18 +128,6 @@ class Luminator {
   }
 
   /**
-   * @description Build ProxyManagerOption for the httpsProxyAgent.
-   * @return {IProxyManagerOption}
-   */
-  private getProxyOptions(): IProxyManagerOption {
-    return {
-      host: this.superProxyUrl.host,
-      port: this.superProxyUrl.port,
-      auth: `${this.superProxyUrl.auth.username}:${this.superProxyUrl.auth.password}`,
-    };
-  }
-
-  /**
    * @description Builds AxiosRequestConfig for the query.
    * @param params {AxiosRequestConfig}
    * @return {AxiosRequestConfig}
@@ -157,7 +136,7 @@ class Luminator {
     return {
       timeout: Luminator.REQ_TIMEOUT,
       headers: { 'User-Agent': Luminator.USER_AGENT },
-      httpsAgent: new HttpsProxyAgent(this.getProxyOptions()),
+      httpsAgent: new HttpsProxyAgent(this.proxyManagerOptions),
       ...params,
     };
   }
@@ -179,17 +158,14 @@ class Luminator {
   }
 
   /**
-   * @description Set superProxyUrl.
+   * @description Set proxyManagerOptions.
    * @return {void}
    */
-  private updateSuperProxyUrl(): void {
-    this.superProxyUrl = {
+  private updateProxyManagerOptions(): void {
+    this.proxyManagerOptions = {
       host: this.superProxyHost,
       port: this.port,
-      auth: {
-        username: this.getUsername(),
-        password: this.password,
-      },
+      auth: `${this.getUsername()}:${this.password}`
     };
   }
 
@@ -205,19 +181,18 @@ class Luminator {
 
   /**
    * @description Switch session id and get dns address for the new sessionId
-   * set the superProxyHost and update the superProxyUrl.
+   * set the superProxyHost and update the proxyManagerOptions.
    * @return {Promise<void>}
    */
   private async switchSuperProxy(): Promise<void> {
     this.switchSessionId();
     const { address }: dns.LookupAddress = await this.getSuperProxyHost();
     this.superProxyHost = address;
-    this.updateSuperProxyUrl();
+    this.updateProxyManagerOptions();
   }
 }
 
 export {
   Luminator,
   IProxyManagerOption,
-  Proxy,
 };

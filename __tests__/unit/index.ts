@@ -4,8 +4,6 @@ jest.mock('axios');
 
 import { Luminator } from '../../src';
 
-jest.mock('axios');
-
 interface IAxiosMock extends AxiosStatic {
   mockResolvedValue: Function
   mockRejectedValue: Function
