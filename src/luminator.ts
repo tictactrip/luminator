@@ -16,61 +16,52 @@ interface IProxyManagerOption {
   port: number;
   auth: string;
 }
+// 'NL' 'fr' 22225
+interface ILuminatorConfig {
+  superProxy: string;
+  country: string;
+  port: number;
+}
+
 
 /**
  * Luminator doc
  */
 class Luminator {
+  public static DEFAULT_CONFIG: ILuminatorConfig = {superProxy: 'NL', country: 'fr', port:22225 };
   public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
   private static readonly SWITCH_IP_EVERY_N_REQ: number = 30;
   private static readonly MAX_FAILURES: number = 3;
   private static readonly REQ_TIMEOUT: number = 60 * 1000;
-  private static readonly MAX_FAILURES_REQ: number = 11;
-  private failuresCountReq: number = 0;
-  private totalReqsCounter: number = 0;
+  private static readonly MAX_FAILURES_REQ: number = 4;
+  private failuresCountRequests: number = 0;
+  private totalRequestsCounter: number = 0;
   private failCount: number = 0;
   private readonly username: string;
   private readonly password: string;
   private readonly superProxy: string;
   private readonly country: string;
   private readonly port: number;
-
   private superProxyHost: string;
   private superProxyUrl: Proxy;
   private sessionId: number;
 
-  constructor(username: string, password: string, superProxy: string = 'NL', country: string = 'fr', port: number = 22225) {
+  constructor(username: string, password: string, config: ILuminatorConfig = Luminator.DEFAULT_CONFIG) {
     this.username = username;
     this.password = password;
-    this.superProxy = superProxy;
-    this.country = country;
-    this.port = port;
+    this.superProxy = config.superProxy;
+    this.country = config.country;
+    this.port = config.port;
     this.switchSessionId();
-  }
-
-  /**
-   * check if it is STATUS_CODE_FOR_RETRY;
-   * statusCode: number
-   * @param statusCode
-   */
-  private static statusCodeRequiresExitNodeSwitch(statusCode: number): boolean {
-    return Luminator.STATUS_CODE_FOR_RETRY.includes(statusCode);
-  }
-
-  /**
-   * return a float number
-   */
-  private static getRandomNumber(): number {
-    return Math.random();
   }
 
   /**
    *  generate a random int ID
    */
   private static getSessionId(): number {
-    return Math.trunc(Luminator.getRandomNumber() * 1000000);
+    return Math.trunc(Math.random() * 1000000);
   }
 
   /**
@@ -84,13 +75,12 @@ class Luminator {
    * @param params: AxiosRequestConfig
    */
   public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
-    if (this.failuresCountReq >= Luminator.MAX_FAILURES_REQ) {
+    if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       throw new Error('MAX_FAILURES_REQ threshold reached');
-    } // break with too much failure
-    if (this.totalReqsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
+    }
+    if (this.totalRequestsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
       await this.switchSessionId();
     }
-
     if (!this.haveGoodSuperProxy()) {
       await this.switchSuperProxy();
     }
@@ -100,26 +90,26 @@ class Luminator {
       response = await axios(this.getAxiosRequestConfig(params));
       this.onSuccessfulQuery();
     } catch (err) {
-      this.failuresCountReq += 1;
-      if (!Luminator.statusCodeRequiresExitNodeSwitch(err.status)) { // this could be 404 or other website error
-        this.totalReqsCounter += 1;
+      this.failuresCountRequests += 1;
+      if (!Luminator.STATUS_CODE_FOR_RETRY.includes(err.status)) {
+        this.totalRequestsCounter += 1;
         throw err;
       }
       this.switchSessionId();
       this.failCount += 1;
     }
 
-    return response ? response : this.fetch(params);
+    return response || this.fetch(params);
   }
 
   /**
    * set a sessionId: int
-   * reset totalReqsCounter
+   * reset totalRequestsCounter
    * update super proxyu url with the new session
    */
   public switchSessionId(): void {
     this.sessionId = Luminator.getSessionId();
-    this.totalReqsCounter = 0;
+    this.totalRequestsCounter = 0;
     this.updateSuperProxyUrl();
   }
 
@@ -129,8 +119,8 @@ class Luminator {
    */
   private onSuccessfulQuery(): void {
     this.failCount = 0;
-    this.totalReqsCounter += 1;
-    this.failuresCountReq = 0;
+    this.totalRequestsCounter += 1;
+    this.failuresCountRequests = 0;
   }
 
   /**
