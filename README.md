@@ -19,49 +19,40 @@ yarn add @tictactrip/luminator
 ## How to use it?
 
 Make a `get` request
-```js
-import { Luminator } from "@tictactrip/luminator";
 
-const agent = new Luminator(username: string, password: string, config: ILuminatorConfig);
-
-agent.fetch({
-        method: 'get',
-        url: 'http://bit.ly/2mTM3nY',
-      }).then(function (response) {
-        console.log(response);
-      }).catch(error => {
-        console.log(error);
-      })
-```
-
-
-
-Make a `post` request: 
 ```js
 import { Luminator } from "@tictactrip/luminator";
 
 const agent = new Luminator(username, password, config);
-agent.fetch({
-        method: 'post',
-        url: '/user',
-        data: {
-          firstName: 'Fred',
-          lastName: 'Flintstone'
-        }
-      })
-  .then((response) => {
-    console.log(response);
-  })
-  .catch((error) => {
-    console.log(error);
+
+const response = await agent.fetch({ method: 'get', url: 'https://api.domain.com/examples' });
+```
+
+
+Make a `post` request: 
+
+```js
+import { Luminator } from "@tictactrip/luminator";
+
+const agent = new Luminator(username, password, config);
+
+const response = agent.fetch({
+    method: 'post',
+    url: '/user',
+    data: {
+      firstName: 'Fred',
+      lastName: 'Flintstone'
+    }
   });
 ```
-Config schema:
+
+Config object:
+
 ```js
 {
-  url: '/user',
+  url: '/examples',
   method: 'get', // default
-  baseURL: 'https://some-domain.com/api/',
+  baseURL: 'https://api.domain.com/api/',
   transformRequest: [function (data, headers) {
     return data;
   }],
@@ -85,8 +76,8 @@ Config schema:
     /* ... */
   },
   auth: {
-    username: 'janedoe',
-    password: 's00pers3cret'
+    username: 'admin',
+    password: 'password'
   },
   responseType: 'json', // default
   responseEncoding: 'utf8', // default
@@ -109,7 +100,8 @@ Config schema:
 }
 ```
 
-Response schema:
+Response object:
+
 ```js
 {
   // `data` is the response that was provided by the server
