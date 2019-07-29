@@ -28,6 +28,7 @@
     "lint:fix": "tslint --fix -t stylish --project 'tsconfig.json'",
     "pretest": "tslint -t stylish --project 'tsconfig.json'",
     "test": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prepublish": "yarn build"
   }
 }
