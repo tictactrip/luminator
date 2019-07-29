@@ -202,4 +202,5 @@ class Luminator {
 export {
   Luminator,
   IProxyManagerOption,
+  ILuminatorConfig,
 };
