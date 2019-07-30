@@ -115,4 +115,18 @@ describe('Luminator', () => {
       expect(spy).toHaveBeenCalledTimes(2);
     });
   });
+
+  describe('Should throw all errors which is not an axios error', () => {
+    it('Should throw non axios responses error', async () => {
+      mockAxios.mockRejectedValue(new Error('NON_AXIOS_ERROR'));
+      try {
+        await agent.fetch({
+          method: 'GET',
+          url: 'https://lumtest.com/myip.json',
+        });
+      } catch (e) {
+        expect(e).toEqual(new Error('NON_AXIOS_ERROR'))
+      }
+    });
+  });
 });
