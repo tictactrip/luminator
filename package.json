@@ -21,7 +21,7 @@
     "typescript": "3.5.3"
   },
   "scripts": {
-    "clean": "rm -rf coverage build tmp",
+    "clean": "rm -rf coverage dist tmp",
     "build": "tsc -p tsconfig.release.json",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "lint": "tslint -t stylish --project 'tsconfig.json'",
