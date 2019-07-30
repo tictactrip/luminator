@@ -9,7 +9,6 @@
 npm-debug.log*
 logs
 coverage
-dist
 node_modules
 jest_0
 jest.config.js
