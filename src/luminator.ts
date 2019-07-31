@@ -59,9 +59,9 @@ class Luminator {
 
   /**
    * @description return status if it is a valid AxiosError
-   * @return {number}
+   * @param error {axios.AxiosError)}
    * @throws non axios error {Error}
-   * @param error {axios.AxiosError}
+   * @return {number}
    */
   private static getStatusFromAxiosError (error: axios.AxiosError): number {
     try {
@@ -134,7 +134,7 @@ class Luminator {
    * else switch ID and increment fail count
    * and increment the counter of total requests
    * @throws {Error}
-   * @return void
+   * @return {void}
    */
   private onFailedQuery(error: axios.AxiosError): void {
     this.failuresCountRequests += 1;
