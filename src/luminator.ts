@@ -59,8 +59,8 @@ class Luminator {
 
   /**
    * @description return status if it is a valid AxiosError
-   * @param error
    * @return {number}
+   * @param error {axios.AxiosError}
    */
   private static getStatusFromAxiosError (error: axios.AxiosError): number {
     const hasStatus: boolean = error.hasOwnProperty('response') && error.response.hasOwnProperty('status');
