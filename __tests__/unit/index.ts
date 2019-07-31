@@ -116,7 +116,7 @@ describe('Luminator', () => {
     });
   });
 
-  describe('Should throw all errors which is not an axios error', () => {
+  describe('Should throw all errors which are not an axios error', () => {
     it('Should throw non axios responses error', async () => {
       mockAxios.mockRejectedValue(new Error('NON_AXIOS_ERROR'));
       try {
