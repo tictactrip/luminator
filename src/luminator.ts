@@ -58,6 +58,20 @@ class Luminator {
   }
 
   /**
+   * @description return status if it is a valid AxiosError
+   * @param error {axios.AxiosError)}
+   * @throws non axios error {Error}
+   * @return {number}
+   */
+  private static getStatusFromAxiosError (error: axios.AxiosError): number {
+    try {
+      return error.response.status;
+    } catch (e) {
+      throw error
+    }
+  }
+
+  /**
    * @description Method that take an AxiosRequestConfig and:
    * - return AxiosResponse when the server respond with a 200 status,
    * - throw an error if a status is not in the STATUS_CODE_FOR_RETRY
@@ -120,12 +134,13 @@ class Luminator {
    * else switch ID and increment fail count
    * and increment the counter of total requests
    * @throws {Error}
-   * @return void
+   * @return {void}
    */
   private onFailedQuery(error: axios.AxiosError): void {
     this.failuresCountRequests += 1;
+    const status: number = Luminator.getStatusFromAxiosError(error);
 
-    if (Luminator.STATUS_CODE_FOR_RETRY.includes(error.response.status) === false) {
+    if (Luminator.STATUS_CODE_FOR_RETRY.includes(status) === false) {
       this.totalRequestsCounter += 1;
       throw error;
     }
