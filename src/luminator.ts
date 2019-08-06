@@ -85,6 +85,7 @@ class Luminator {
   public async fetch(params: axios.AxiosRequestConfig): Promise<axios.AxiosResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       this.failuresCountRequests = 0;
+      this.failCount = 0;
       this.switchSessionId();
       throw new Error('MAX_FAILURES_REQ threshold reached');
     }
