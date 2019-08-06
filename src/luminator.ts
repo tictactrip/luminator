@@ -28,9 +28,9 @@ class Luminator {
   private static readonly MAX_FAILURES: number = 3;
   private static readonly REQ_TIMEOUT: number = 60 * 1000;
   private static readonly MAX_FAILURES_REQ: number = 4;
-  private failuresCountRequests: number = 0;
+  public failuresCountRequests: number = 0;
+  public failCount: number = 0;
   private totalRequestsCounter: number = 0;
-  private failCount: number = 0;
   private readonly username: string;
   private readonly password: string;
   private readonly superProxy: string;
@@ -84,6 +84,9 @@ class Luminator {
    */
   public async fetch(params: axios.AxiosRequestConfig): Promise<axios.AxiosResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
+      this.failuresCountRequests = 0;
+      this.failCount = 0;
+      this.switchSessionId();
       throw new Error('MAX_FAILURES_REQ threshold reached');
     }
 
