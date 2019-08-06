@@ -49,8 +49,9 @@ function respondWith(status: number, message: string): axios.AxiosResponse {
 }
 
 /**
- * @description successful test case assertion.
+ * @description Successful test case assertion.
  * @param agent {Luminator}
+ * @return {Promise<void>}
  */
 const assertSuccessfulCase = async (agent: Luminator) => {
   const mockedResponse = respondWith(200, `SUCCESS with 200`);
@@ -67,7 +68,7 @@ describe('Luminator', () => {
 
   describe('Should return response with status 200, and fail with the 404 error', () => {
     it('Should return response', async () => {
-      await assertSuccessfulCase(agent)
+      await assertSuccessfulCase(agent);
     });
 
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
@@ -104,7 +105,8 @@ describe('Luminator', () => {
           expect(spy).toHaveBeenCalledTimes(7);
           expect(e).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
         }
-        // success for the next successful request
+
+        // Success for the next successful request
         await assertSuccessfulCase(agent);
       });
     });
