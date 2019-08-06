@@ -48,20 +48,26 @@ function respondWith(status: number, message: string): axios.AxiosResponse {
   });
 }
 
+/**
+ * @description successful test case assertion.
+ * @param agent {Luminator}
+ */
+const assertSuccessfulCase = async (agent: Luminator) => {
+  const mockedResponse = respondWith(200, `SUCCESS with 200`);
+  mockAxios.mockResolvedValue(mockedResponse);
+  const response = await agent.fetch({
+    method: 'GET',
+    url: 'https://lumtest.com/myip.json',
+  });
+  expect(response).toStrictEqual(mockedResponse);
+};
+
 describe('Luminator', () => {
   let agent: Luminator = new Luminator('USERNAME', 'password');
 
   describe('Should return response with status 200, and fail with the 404 error', () => {
     it('Should return response', async () => {
-      const mockedResponse = respondWith(200, `SUCCESS with 200`);
-      mockAxios.mockResolvedValue(mockedResponse);
-      const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
-      const response = await agent.fetch({
-        method: 'GET',
-        url: 'https://lumtest.com/myip.json',
-      });
-      expect(response).toStrictEqual(mockedResponse);
-      expect(spy).toHaveBeenCalled();
+      await assertSuccessfulCase(agent)
     });
 
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
@@ -97,9 +103,9 @@ describe('Luminator', () => {
         } catch (e) {
           expect(spy).toHaveBeenCalledTimes(7);
           expect(e).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
-          expect(agent.failCount).toEqual(0);
-          expect(agent.failuresCountRequests).toEqual(0);
         }
+        // success for the next successful request
+        await assertSuccessfulCase(agent);
       });
     });
 
@@ -127,7 +133,7 @@ describe('Luminator', () => {
           url: 'https://lumtest.com/myip.json',
         });
       } catch (e) {
-        expect(e).toEqual(new Error('NON_AXIOS_ERROR'))
+        expect(e).toEqual(new Error('NON_AXIOS_ERROR'));
       }
     });
   });
