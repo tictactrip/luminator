@@ -28,9 +28,9 @@ class Luminator {
   private static readonly MAX_FAILURES: number = 3;
   private static readonly REQ_TIMEOUT: number = 60 * 1000;
   private static readonly MAX_FAILURES_REQ: number = 4;
-  private failuresCountRequests: number = 0;
+  public failuresCountRequests: number = 0;
+  public failCount: number = 0;
   private totalRequestsCounter: number = 0;
-  private failCount: number = 0;
   private readonly username: string;
   private readonly password: string;
   private readonly superProxy: string;

@@ -97,6 +97,8 @@ describe('Luminator', () => {
         } catch (e) {
           expect(spy).toHaveBeenCalledTimes(7);
           expect(e).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
+          expect(agent.failCount).toEqual(0);
+          expect(agent.failuresCountRequests).toEqual(0);
         }
       });
     });
