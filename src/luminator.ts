@@ -46,7 +46,6 @@ class Luminator {
     this.superProxy = config.superProxy;
     this.country = config.country;
     this.port = config.port;
-    this.switchSuperProxy();
   }
 
   /**
