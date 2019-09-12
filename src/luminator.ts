@@ -46,7 +46,6 @@ class Luminator {
     this.superProxy = config.superProxy;
     this.country = config.country;
     this.port = config.port;
-    this.switchSessionId();
   }
 
   /**
@@ -86,25 +85,25 @@ class Luminator {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       this.failuresCountRequests = 0;
       this.failCount = 0;
-      this.switchSessionId();
-      throw new Error('MAX_FAILURES_REQ threshold reached');
-    }
-
-    if (this.totalRequestsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
-      this.switchSessionId();
-    }
-
-    if (!this.haveGoodSuperProxy()) {
       await this.switchSuperProxy();
+      throw new Error('MAX_FAILURES_REQ threshold reached');
     }
 
     let response: axios.AxiosResponse;
 
     try {
+      if (this.totalRequestsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
+        await this.switchSuperProxy();
+      }
+
+      if (!this.haveGoodSuperProxy()) {
+        await this.switchSuperProxy();
+      }
+
       response = await axios.default(this.getAxiosRequestConfig(params));
       this.onSuccessfulQuery();
     } catch (err) {
-      this.onFailedQuery(err as axios.AxiosError);
+      await this.onFailedQuery(err as axios.AxiosError);
     }
 
     return response !== undefined ? response : this.fetch(params);
@@ -139,7 +138,7 @@ class Luminator {
    * @throws {Error}
    * @return {void}
    */
-  private onFailedQuery(error: axios.AxiosError): void {
+  private async onFailedQuery(error: axios.AxiosError): Promise<void> {
     this.failuresCountRequests += 1;
     const status: number = Luminator.getStatusFromAxiosError(error);
 
@@ -148,7 +147,7 @@ class Luminator {
       throw error;
     }
 
-    this.switchSessionId();
+    await this.switchSuperProxy();
     this.failCount += 1;
   }
 
