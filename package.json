@@ -1,6 +1,6 @@
 {
   "name": "@tictactrip/luminator",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Axios Luminati agent.",
   "author": "Dimitri DO BAIRRO <dimitri.dobairro@tictactrip.eu>",
   "main": "dist/index.js",
