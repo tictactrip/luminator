@@ -1,24 +1,11 @@
 {
-  "extends": [
-    "tslint-microsoft-contrib",
-    "tslint-config-prettier"
-  ],
+  "extends": ["tslint-microsoft-contrib/recommended", "tslint-config-prettier"],
   "rules": {
-    "mocha-no-side-effect-code": false,
-    "missing-jsdoc": false,
     "no-relative-imports": false,
     "export-name": false,
-    "promise-function-async": false,
-    "no-void-expression": false,
-    "no-redundant-jsdoc": false,
-    "prefer-type-cast": false,
-    "max-func-body-length": 120,
-    "typedef": [
-      true,
-      "parameter",
-      "arrow-parameter",
-      "property-declaration",
-      "member-variable-declaration"
-    ]
+    "max-func-body-length": 150,
+    "no-import-side-effect": true,
+    "no-duplicate-imports": true,
+    "no-require-imports": true
   }
 }
