@@ -1,4 +1,4 @@
-import * as axios from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as crypto from 'crypto';
 import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
@@ -20,8 +20,14 @@ interface ILuminatorConfig {
  * @description Luminator class.
  */
 class Luminator {
-  public static DEFAULT_CONFIG: ILuminatorConfig = { superProxy: 'NL', country: 'fr', port: 22225 };
+  public static DEFAULT_CONFIG: ILuminatorConfig = {
+    superProxy: 'NL',
+    country: 'fr',
+    port: 22225,
+  };
   public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
+  public axiosDefaultConfig: AxiosRequestConfig;
+
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
   private static readonly SWITCH_IP_EVERY_N_REQ: number = 30;
@@ -40,12 +46,18 @@ class Luminator {
   private proxyManagerOptions: IProxyManagerOption;
   private sessionId: number;
 
-  constructor(username: string, password: string, config: ILuminatorConfig = Luminator.DEFAULT_CONFIG) {
+  constructor(
+    username: string,
+    password: string,
+    config: ILuminatorConfig = Luminator.DEFAULT_CONFIG,
+    axiosDefaultConfig: AxiosRequestConfig = {},
+  ) {
     this.username = username;
     this.password = password;
     this.superProxy = config.superProxy;
     this.country = config.country;
     this.port = config.port;
+    this.axiosDefaultConfig = axiosDefaultConfig;
   }
 
   /**
@@ -53,20 +65,22 @@ class Luminator {
    * @return {number}
    */
   private static getSessionId(): number {
-    return Math.trunc(crypto.randomBytes(8).readUInt32LE(1) / 0xffffffff * 1000000);
+    return Math.trunc(
+      (crypto.randomBytes(8).readUInt32LE(1) / 0xffffffff) * 1000000,
+    );
   }
 
   /**
    * @description return status if it is a valid AxiosError
-   * @param error {axios.AxiosError)}
-   * @throws non axios error {Error}
+   * @param {AxiosError} error
+   * @throws {Error} non axios error
    * @return {number}
    */
-  private static getStatusFromAxiosError (error: axios.AxiosError): number {
+  private static getStatusFromAxiosError(error: AxiosError): number {
     try {
       return error.response.status;
     } catch (e) {
-      throw error
+      throw error;
     }
   }
 
@@ -77,11 +91,11 @@ class Luminator {
    * - retry if the status is in STATUS_CODE_FOR_RETRY and refresh sessionId:
    *    - if the server respond with a 200 status it returns AxiosResponse
    *    - if it reach the setted threshold it throw an error
-   * @param params {AxiosRequestConfig}
+   * @param {AxiosRequestConfig} params
    * @throws {Error}
    * @return {Promise<AxiosResponse>}
    */
-  public async fetch(params: axios.AxiosRequestConfig): Promise<axios.AxiosResponse> {
+  public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       this.failuresCountRequests = 0;
       this.failCount = 0;
@@ -89,7 +103,7 @@ class Luminator {
       throw new Error('MAX_FAILURES_REQ threshold reached');
     }
 
-    let response: axios.AxiosResponse;
+    let response: AxiosResponse;
 
     try {
       if (this.totalRequestsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
@@ -100,10 +114,10 @@ class Luminator {
         await this.switchSuperProxy();
       }
 
-      response = await axios.default(this.getAxiosRequestConfig(params));
+      response = await axios(this.getAxiosRequestConfig(params));
       this.onSuccessfulQuery();
     } catch (err) {
-      await this.onFailedQuery(err as axios.AxiosError);
+      await this.onFailedQuery(err);
     }
 
     return response !== undefined ? response : this.fetch(params);
@@ -138,7 +152,7 @@ class Luminator {
    * @throws {Error}
    * @return {void}
    */
-  private async onFailedQuery(error: axios.AxiosError): Promise<void> {
+  private async onFailedQuery(error: AxiosError): Promise<void> {
     this.failuresCountRequests += 1;
     const status: number = Luminator.getStatusFromAxiosError(error);
 
@@ -156,11 +170,14 @@ class Luminator {
    * @param params {AxiosRequestConfig}
    * @return {AxiosRequestConfig}
    */
-  private getAxiosRequestConfig(params: axios.AxiosRequestConfig): axios.AxiosRequestConfig {
+  private getAxiosRequestConfig(
+    params: AxiosRequestConfig,
+  ): AxiosRequestConfig {
     return {
       timeout: Luminator.REQ_TIMEOUT,
       headers: { 'User-Agent': Luminator.USER_AGENT },
       httpsAgent: new HttpsProxyAgent(this.proxyManagerOptions),
+      ...this.axiosDefaultConfig,
       ...params,
     };
   }
@@ -170,7 +187,10 @@ class Luminator {
    * @return {boolean}
    */
   private haveGoodSuperProxy(): boolean {
-    return this.superProxyHost !== undefined && this.failCount < Luminator.MAX_FAILURES;
+    return (
+      this.superProxyHost !== undefined &&
+      this.failCount < Luminator.MAX_FAILURES
+    );
   }
 
   /**
@@ -189,7 +209,7 @@ class Luminator {
     this.proxyManagerOptions = {
       host: this.superProxyHost,
       port: this.port,
-      auth: `${this.getUsername()}:${this.password}`
+      auth: `${this.getUsername()}:${this.password}`,
     };
   }
 
@@ -216,8 +236,4 @@ class Luminator {
   }
 }
 
-export {
-  Luminator,
-  IProxyManagerOption,
-  ILuminatorConfig,
-};
+export { Luminator, IProxyManagerOption, ILuminatorConfig };
