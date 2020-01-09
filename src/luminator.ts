@@ -46,6 +46,13 @@ class Luminator {
   private proxyManagerOptions: IProxyManagerOption;
   private sessionId: number;
 
+  /**
+   * @constructor
+   * @param {string} username
+   * @param {string} password
+   * @param {ILuminatorConfig} config
+   * @param {AxiosRequestConfig} axiosDefaultConfig
+   */
   constructor(
     username: string,
     password: string,
@@ -71,7 +78,7 @@ class Luminator {
   }
 
   /**
-   * @description return status if it is a valid AxiosError
+   * @description Return status if it is a valid AxiosError
    * @param {AxiosError} error
    * @throws {Error} non axios error
    * @return {number}
