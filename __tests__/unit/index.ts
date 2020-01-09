@@ -1,5 +1,4 @@
-import * as axios from 'axios';
-import { AxiosStatic, AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosStatic, AxiosError, AxiosResponse } from 'axios';
 import { Luminator } from '../../src';
 
 jest.mock('axios');
@@ -9,7 +8,7 @@ interface IAxiosMock extends AxiosStatic {
   mockRejectedValue: Function;
 }
 
-const mockAxios = axios.default as IAxiosMock;
+const mockAxios = axios as IAxiosMock;
 
 /**
  * @description Builds an AxiosResponse with given status and failMessage.
@@ -62,6 +61,7 @@ const assertSuccessfulCase = async (agent: Luminator): Promise<void> => {
     url: 'https://lumtest.com/myip.json',
   });
   expect(response).toStrictEqual(mockedResponse);
+  expect(mockAxios).toHaveBeenCalled();
 };
 
 describe('Luminator', () => {
