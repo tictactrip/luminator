@@ -5,8 +5,7 @@
     "moduleResolution": "node",
     "alwaysStrict": true,
     "sourceMap": true,
-    "declaration": true,
-    "resolveJsonModule": true
+    "declaration": true
   },
   "include": ["src/**/*", "tests/**/*"]
 }

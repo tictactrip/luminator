@@ -1,23 +1,22 @@
-import * as axios from 'axios';
-
+import axios, { AxiosStatic, AxiosError, AxiosResponse } from 'axios';
 import { Luminator } from '../../src';
 
 jest.mock('axios');
 
-interface IAxiosMock extends axios.AxiosStatic {
-  mockResolvedValue: Function
-  mockRejectedValue: Function
+interface IAxiosMock extends AxiosStatic {
+  mockResolvedValue: Function;
+  mockRejectedValue: Function;
 }
 
-const mockAxios = axios.default as IAxiosMock;
+const mockAxios = axios as IAxiosMock;
 
 /**
  * @description Builds an AxiosResponse with given status and failMessage.
- * @param status {number}
- * @param message {string}
+ * @param {number} status
+ * @param {string} message
  * @return {AxiosError}
  */
-function failWith(status: number, message: string): axios.AxiosError {
+function failWith(status: number, message: string): AxiosError {
   return {
     name: '',
     message,
@@ -26,17 +25,18 @@ function failWith(status: number, message: string): axios.AxiosError {
     request: {},
     response: respondWith(status, message),
     isAxiosError: true,
+    toJSON: () => ({ status, message }),
   };
 }
 
 /**
  * @description Builds an AxiosResponse with given status and success message.
- * @param status {number}
- * @param message {string}
+ * @param {number} status
+ * @param {string} message
  * @return {AxiosResponse}
  */
-function respondWith(status: number, message: string): axios.AxiosResponse {
-  return ({
+function respondWith(status: number, message: string): AxiosResponse {
+  return {
     config: undefined,
     request: undefined,
     data: {
@@ -45,15 +45,15 @@ function respondWith(status: number, message: string): axios.AxiosResponse {
     status: status,
     statusText: status.toString(),
     headers: undefined,
-  });
+  };
 }
 
 /**
  * @description Successful test case assertion.
- * @param agent {Luminator}
+ * @param {Luminator} agent
  * @return {Promise<void>}
  */
-const assertSuccessfulCase = async (agent: Luminator) => {
+const assertSuccessfulCase = async (agent: Luminator): Promise<void> => {
   const mockedResponse = respondWith(200, `SUCCESS with 200`);
   mockAxios.mockResolvedValue(mockedResponse);
   const response = await agent.fetch({
@@ -61,10 +61,15 @@ const assertSuccessfulCase = async (agent: Luminator) => {
     url: 'https://lumtest.com/myip.json',
   });
   expect(response).toStrictEqual(mockedResponse);
+  expect(mockAxios).toHaveBeenCalled();
 };
 
 describe('Luminator', () => {
   let agent: Luminator = new Luminator('USERNAME', 'password');
+
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
 
   describe('Should return response with status 200, and fail with the 404 error', () => {
     it('Should return response', async () => {
