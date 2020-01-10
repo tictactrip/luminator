@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "axios": "0.19.1",
-    "https-proxy-agent": "4.0.0"
+    "https-proxy-agent": "2.2.4"
   },
   "devDependencies": {
     "@types/axios": "0.14.0",
