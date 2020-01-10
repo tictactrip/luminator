@@ -174,7 +174,7 @@ class Luminator {
 
   /**
    * @description Builds AxiosRequestConfig for the query.
-   * @param params {AxiosRequestConfig}
+   * @param {AxiosRequestConfig} params
    * @return {AxiosRequestConfig}
    */
   private getAxiosRequestConfig(
@@ -182,7 +182,7 @@ class Luminator {
   ): AxiosRequestConfig {
     return {
       timeout: Luminator.REQ_TIMEOUT,
-      headers: { 'User-Agent': Luminator.USER_AGENT },
+      headers: { 'User-Agent': Luminator.USER_AGENT, ...params.headers },
       httpsAgent: new HttpsProxyAgent(this.proxyManagerOptions),
       ...this.axiosDefaultConfig,
       ...params,
