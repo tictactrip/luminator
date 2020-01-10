@@ -28,7 +28,6 @@ const agent = new Luminator(username, password, config);
 const response = await agent.fetch({ method: 'get', url: 'https://api.domain.com/examples' });
 ```
 
-
 Make a `post` request: 
 
 ```js
@@ -46,7 +45,19 @@ const response = agent.fetch({
   });
 ```
 
-Config object:
+You can also use default request config options
+
+```js
+import { Luminator } from "@tictactrip/luminator";
+
+const agent = new Luminator(username, password, config, {
+    baseURL: 'https://api.domain.com',
+});
+
+const response = await agent.fetch({ method: 'get', url: '/examples' });
+```
+
+The request config object is transparent with [Axios](https://github.com/axios/axios) request interface:
 
 ```js
 {
