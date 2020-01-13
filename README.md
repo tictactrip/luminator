@@ -28,6 +28,22 @@ const agent = new Luminator(username, password, config);
 const response = await agent.fetch({ method: 'get', url: 'https://api.domain.com/examples' });
 ```
 
+The config parameter is defined by the following interface:
+
+```ts
+ILuminatorConfig {
+  superProxy: string;
+  country: string;
+  port: number;
+}
+
+// Default values
+DEFAULT_CONFIG = {
+  superProxy: 'NL',
+  country: 'fr',
+  port: 22225,
+}
+```
 
 Make a `post` request: 
 
@@ -38,6 +54,7 @@ const agent = new Luminator(username, password, config);
 
 const response = agent.fetch({
     method: 'post',
+    baseURL: 'https://api.domain.com',
     url: '/user',
     data: {
       firstName: 'Fred',
@@ -46,7 +63,19 @@ const response = agent.fetch({
   });
 ```
 
-Config object:
+You can also set default request options
+
+```js
+import { Luminator } from "@tictactrip/luminator";
+
+const agent = new Luminator(username, password, config, {
+    baseURL: 'https://api.domain.com',
+});
+
+const response = await agent.fetch({ method: 'get', url: '/examples' });
+```
+
+The request options are transparent with [Axios](https://github.com/axios/axios) request interface:
 
 ```js
 {
