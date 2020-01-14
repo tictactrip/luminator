@@ -1,5 +1,1 @@
-import { Luminator } from './luminator';
-
-export {
-  Luminator,
-};
+export { Luminator, ILuminatorConfig, LuminatorResponse } from './luminator';

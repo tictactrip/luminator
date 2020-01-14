@@ -15,6 +15,8 @@ interface ILuminatorConfig {
   port: number;
 }
 
+type LuminatorResponse<T> = AxiosResponse<T>;
+
 /**
  * {@inheritDoc}
  * @description Luminator class.
@@ -100,9 +102,11 @@ class Luminator {
    *    - if it reach the setted threshold it throw an error
    * @param {AxiosRequestConfig} params
    * @throws {Error}
-   * @return {Promise<AxiosResponse>}
+   * @return {Promise<LuminatorResponse<unknown>>}
    */
-  public async fetch(params: AxiosRequestConfig): Promise<AxiosResponse> {
+  public async fetch(
+    params: AxiosRequestConfig,
+  ): Promise<LuminatorResponse<unknown>> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       this.failuresCountRequests = 0;
       this.failCount = 0;
@@ -110,7 +114,7 @@ class Luminator {
       throw new Error('MAX_FAILURES_REQ threshold reached');
     }
 
-    let response: AxiosResponse;
+    let response: LuminatorResponse<unknown>;
 
     try {
       if (this.totalRequestsCounter >= Luminator.SWITCH_IP_EVERY_N_REQ) {
@@ -243,4 +247,4 @@ class Luminator {
   }
 }
 
-export { Luminator, IProxyManagerOption, ILuminatorConfig };
+export { Luminator, IProxyManagerOption, ILuminatorConfig, LuminatorResponse };
