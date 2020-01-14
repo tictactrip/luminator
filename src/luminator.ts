@@ -15,7 +15,7 @@ interface ILuminatorConfig {
   port: number;
 }
 
-type LuminatorResponse<T> = AxiosResponse<T>;
+type LuminatorResponse<T = any> = AxiosResponse<T>;
 
 /**
  * {@inheritDoc}
@@ -106,7 +106,7 @@ class Luminator {
    */
   public async fetch(
     params: AxiosRequestConfig,
-  ): Promise<LuminatorResponse<unknown>> {
+  ): Promise<LuminatorResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       this.failuresCountRequests = 0;
       this.failCount = 0;
