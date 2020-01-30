@@ -104,7 +104,7 @@ class Luminator {
    *    - if it reach the setted threshold it throw an error
    * @param {AxiosRequestConfig} params
    * @throws {LuminatorError}
-   * @return {Promise<LuminatorResponse<unknown>>}
+   * @return {Promise<LuminatorResponse>}
    */
   public async fetch(params: AxiosRequestConfig): Promise<LuminatorResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
