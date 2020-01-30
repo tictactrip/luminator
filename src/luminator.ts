@@ -103,7 +103,7 @@ class Luminator {
    *    - if the server respond with a 200 status it returns AxiosResponse
    *    - if it reach the setted threshold it throw an error
    * @param {AxiosRequestConfig} params
-   * @throws {Error}
+   * @throws {LuminatorError}
    * @return {Promise<LuminatorResponse<unknown>>}
    */
   public async fetch(params: AxiosRequestConfig): Promise<LuminatorResponse> {
