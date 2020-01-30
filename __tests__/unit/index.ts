@@ -78,7 +78,7 @@ describe('Luminator', () => {
     });
 
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
-      const responseError =failWith(404, `failed status 404`)
+      const responseError = failWith(404, `failed status 404`);
       mockAxios.mockRejectedValue(responseError);
 
       let err: Error;
@@ -118,7 +118,9 @@ describe('Luminator', () => {
         }
 
         expect(spy).toHaveBeenCalledTimes(7);
-        expect(err).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
+        expect(err).toEqual(
+          new LuminatorError('MAX_FAILURES_REQ threshold reached'),
+        );
 
         // Success for the next successful request
         await assertSuccessfulCase(agent);
@@ -142,9 +144,9 @@ describe('Luminator', () => {
 
   describe('Should throw all errors which are not an axios error', () => {
     it('Should throw non axios responses error', async () => {
-      mockAxios.mockRejectedValue(new Error('NON_AXIOS_ERROR'));
+      mockAxios.mockRejectedValue(new LuminatorError('NON_AXIOS_ERROR'));
 
-      let err: Error;
+      let err: LuminatorError;
 
       try {
         await agent.fetch({
@@ -155,7 +157,7 @@ describe('Luminator', () => {
         err = e;
       }
 
-      expect(err).toEqual(new Error('NON_AXIOS_ERROR'));
+      expect(err).toEqual(new LuminatorError('NON_AXIOS_ERROR'));
     });
   });
 });
