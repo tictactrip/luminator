@@ -84,7 +84,7 @@ class Luminator {
   /**
    * @description Return status if it is a valid AxiosError
    * @param {AxiosError} error
-   * @throws {Error} non axios error
+   * @throws {LuminatorError} non axios error
    * @return {number}
    */
   private static getStatusFromAxiosError(error: AxiosError): number {
