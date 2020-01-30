@@ -17,6 +17,8 @@ interface ILuminatorConfig {
 
 type LuminatorResponse<T = any> = AxiosResponse<T>;
 
+class LuminatorError extends Error {}
+
 /**
  * {@inheritDoc}
  * @description Luminator class.
@@ -82,14 +84,14 @@ class Luminator {
   /**
    * @description Return status if it is a valid AxiosError
    * @param {AxiosError} error
-   * @throws {Error} non axios error
+   * @throws {LuminatorError} non axios error
    * @return {number}
    */
   private static getStatusFromAxiosError(error: AxiosError): number {
     try {
       return error.response.status;
     } catch (e) {
-      throw error;
+      throw new LuminatorError(`NON_AXIOS_ERROR`);
     }
   }
 
@@ -101,17 +103,15 @@ class Luminator {
    *    - if the server respond with a 200 status it returns AxiosResponse
    *    - if it reach the setted threshold it throw an error
    * @param {AxiosRequestConfig} params
-   * @throws {Error}
-   * @return {Promise<LuminatorResponse<unknown>>}
+   * @throws {LuminatorError}
+   * @return {Promise<LuminatorResponse>}
    */
-  public async fetch(
-    params: AxiosRequestConfig,
-  ): Promise<LuminatorResponse> {
+  public async fetch(params: AxiosRequestConfig): Promise<LuminatorResponse> {
     if (this.failuresCountRequests >= Luminator.MAX_FAILURES_REQ) {
       this.failuresCountRequests = 0;
       this.failCount = 0;
       await this.switchSuperProxy();
-      throw new Error('MAX_FAILURES_REQ threshold reached');
+      throw new LuminatorError('MAX_FAILURES_REQ threshold reached');
     }
 
     let response: LuminatorResponse<unknown>;
@@ -247,4 +247,10 @@ class Luminator {
   }
 }
 
-export { Luminator, IProxyManagerOption, ILuminatorConfig, LuminatorResponse };
+export {
+  Luminator,
+  IProxyManagerOption,
+  ILuminatorConfig,
+  LuminatorResponse,
+  LuminatorError,
+};
