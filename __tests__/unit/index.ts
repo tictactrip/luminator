@@ -1,5 +1,5 @@
 import axios, { AxiosStatic, AxiosError, AxiosResponse } from 'axios';
-import { Luminator } from '../../src';
+import { Luminator, LuminatorError } from '../../src';
 
 jest.mock('axios');
 
@@ -60,6 +60,7 @@ const assertSuccessfulCase = async (agent: Luminator): Promise<void> => {
     method: 'GET',
     url: 'https://lumtest.com/myip.json',
   });
+
   expect(response).toStrictEqual(mockedResponse);
   expect(mockAxios).toHaveBeenCalled();
 };
@@ -68,7 +69,7 @@ describe('Luminator', () => {
   let agent: Luminator = new Luminator('USERNAME', 'password');
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    jest.resetAllMocks();
   });
 
   describe('Should return response with status 200, and fail with the 404 error', () => {
@@ -77,8 +78,10 @@ describe('Luminator', () => {
     });
 
     it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
-      const err = failWith(404, `failed status 404`);
-      mockAxios.mockRejectedValue(err);
+      const responseError =failWith(404, `failed status 404`)
+      mockAxios.mockRejectedValue(responseError);
+
+      let err: Error;
 
       try {
         await agent.fetch({
@@ -86,8 +89,10 @@ describe('Luminator', () => {
           url: 'https://lumtest.com/myip.json',
         });
       } catch (e) {
-        expect(e).toEqual(err);
+        err = e;
       }
+
+      expect(err).toEqual(responseError);
     });
   });
 
@@ -101,15 +106,19 @@ describe('Luminator', () => {
         mockAxios.mockRejectedValue(failWith(status, `failed with ${status}`));
         const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
 
+        let err: Error;
+
         try {
           await agent.fetch({
             method: 'GET',
             url: 'https://lumtest.com/myip.json',
           });
         } catch (e) {
-          expect(spy).toHaveBeenCalledTimes(7);
-          expect(e).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
+          err = e;
         }
+
+        expect(spy).toHaveBeenCalledTimes(7);
+        expect(err).toEqual(new Error('MAX_FAILURES_REQ threshold reached'));
 
         // Success for the next successful request
         await assertSuccessfulCase(agent);
@@ -134,14 +143,19 @@ describe('Luminator', () => {
   describe('Should throw all errors which are not an axios error', () => {
     it('Should throw non axios responses error', async () => {
       mockAxios.mockRejectedValue(new Error('NON_AXIOS_ERROR'));
+
+      let err: Error;
+
       try {
         await agent.fetch({
           method: 'GET',
           url: 'https://lumtest.com/myip.json',
         });
       } catch (e) {
-        expect(e).toEqual(new Error('NON_AXIOS_ERROR'));
+        err = e;
       }
+
+      expect(err).toEqual(new Error('NON_AXIOS_ERROR'));
     });
   });
 });

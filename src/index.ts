@@ -1,1 +1,6 @@
-export { Luminator, ILuminatorConfig, LuminatorResponse } from './luminator';
+export {
+  Luminator,
+  ILuminatorConfig,
+  LuminatorResponse,
+  LuminatorError,
+} from './luminator';
