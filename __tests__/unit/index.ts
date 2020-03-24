@@ -117,7 +117,7 @@ describe('Luminator', () => {
           err = e;
         }
 
-        expect(spy).toHaveBeenCalledTimes(7);
+        expect(spy).toHaveBeenCalledTimes(19);
         expect(err).toEqual(
           new LuminatorError('MAX_FAILURES_REQ threshold reached'),
         );
@@ -138,7 +138,7 @@ describe('Luminator', () => {
         });
       }
 
-      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledTimes(11);
     });
   });
 
