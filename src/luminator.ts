@@ -11,7 +11,7 @@ interface IProxyManagerOption {
 
 interface ILuminatorConfig {
   superProxy: string;
-  country: string;
+  country: string[];
   port: number;
 }
 
@@ -26,7 +26,7 @@ class LuminatorError extends Error {}
 class Luminator {
   public static DEFAULT_CONFIG: ILuminatorConfig = {
     superProxy: 'NL',
-    country: 'fr',
+    country: ['it', 'es', 'pt', 'ch', 'gb'],
     port: 22225,
   };
   public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
@@ -34,17 +34,17 @@ class Luminator {
 
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
-  private static readonly SWITCH_IP_EVERY_N_REQ: number = 30;
+  private static readonly SWITCH_IP_EVERY_N_REQ: number = 3;
   private static readonly MAX_FAILURES: number = 3;
   private static readonly REQ_TIMEOUT: number = 60 * 1000;
-  private static readonly MAX_FAILURES_REQ: number = 4;
+  private static readonly MAX_FAILURES_REQ: number = 10;
   private failuresCountRequests: number = 0;
   private failCount: number = 0;
   private totalRequestsCounter: number = 0;
   private readonly username: string;
   private readonly password: string;
   private readonly superProxy: string;
-  private readonly country: string;
+  private readonly country: string[];
   private readonly port: number;
   private superProxyHost: string;
   private proxyManagerOptions: IProxyManagerOption;
@@ -209,7 +209,10 @@ class Luminator {
    * @return {string}
    */
   private getUsername(): string {
-    return `${this.username}-country-${this.country}-session-${this.sessionId}`;
+    // tslint:disable-next-line:insecure-random
+    const country:string = this.country[Math.floor(Math.random() * this.country.length)];
+
+    return `${this.username}-country-${country}-session-${this.sessionId}`;
   }
 
   /**
