@@ -7,6 +7,7 @@ interface IProxyManagerOption {
   host: string;
   port: number;
   auth: string;
+  rejectUnauthorized: boolean;
 }
 
 interface ILuminatorConfig {
@@ -224,6 +225,7 @@ class Luminator {
       host: this.superProxyHost,
       port: this.port,
       auth: `${this.getUsername()}:${this.password}`,
+      rejectUnauthorized: false,
     };
   }
 
