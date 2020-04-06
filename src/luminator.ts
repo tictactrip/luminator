@@ -7,6 +7,7 @@ interface IProxyManagerOption {
   host: string;
   port: number;
   auth: string;
+  rejectUnauthorized: boolean;
 }
 
 interface ILuminatorConfig {
@@ -26,7 +27,7 @@ class LuminatorError extends Error {}
 class Luminator {
   public static DEFAULT_CONFIG: ILuminatorConfig = {
     superProxy: 'NL',
-    country: ['it', 'es', 'pt', 'ch', 'gb'],
+    country: ['fr', 'it', 'es', 'pt', 'ch', 'gb'],
     port: 22225,
   };
   public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
@@ -224,6 +225,7 @@ class Luminator {
       host: this.superProxyHost,
       port: this.port,
       auth: `${this.getUsername()}:${this.password}`,
+      rejectUnauthorized: false,
     };
   }
 
