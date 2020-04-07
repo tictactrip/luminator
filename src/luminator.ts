@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as crypto from 'crypto';
 import * as dns from 'dns';
 import * as HttpsProxyAgent from 'https-proxy-agent';
@@ -32,6 +32,7 @@ class Luminator {
   };
   public static STATUS_CODE_FOR_RETRY: number[] = [403, 429, 502, 503];
   public axiosDefaultConfig: AxiosRequestConfig;
+  public axios: AxiosInstance;
 
   private static readonly USER_AGENT: string =
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36';
@@ -70,6 +71,7 @@ class Luminator {
     this.country = config.country;
     this.port = config.port;
     this.axiosDefaultConfig = axiosDefaultConfig;
+    this.axios = axios;
   }
 
   /**
