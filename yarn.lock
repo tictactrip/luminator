@@ -502,6 +502,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@rimiti/stimmy@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@rimiti/stimmy/-/stimmy-1.8.0.tgz#9cbf87a449eb48f3991611fd430eaf8930ba267e"
+  integrity sha512-H2bKWHfj68/R5bZe9ZZtB3ypzy00OrJ7eHj+zRbQhO2yU3YDaqJvusSlMxAhFTy0aQ7Fe+fHf1/kxoPye0K1+w==
+
 "@sinonjs/commons@^1.7.0":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.7.1.tgz#da5fd19a5f71177a53778073978873964f49acf1"

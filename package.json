@@ -2,10 +2,11 @@
   "name": "@tictactrip/luminator",
   "version": "2.3.0",
   "description": "Axios Luminati agent.",
-  "author": "Dimitri DO BAIRRO <dimitri.dobairro@tictactrip.eu>",
+  "author": "Tictactrip <dev@tictactrip.eu>",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@rimiti/stimmy": "1.8.0",
     "axios": "0.19.1",
     "https-proxy-agent": "2.2.4"
   },
