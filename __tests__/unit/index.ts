@@ -4,8 +4,8 @@ describe('Luminator', () => {
   // tslint:disable-next-line:mocha-no-side-effect-code
   const countryKeys: string[] = Object.values(ELuminatiCountry);
   const luminatiConfig = {
-    zone: "lum-customer-tictactrip-zone-luminatordevtoremove",
-    password: "rpxcdioddewh"
+    zone: "luminati-tictactrip",
+    password: "nf8fxes1oub"
   };
 
   describe('#changeIp', () => {
