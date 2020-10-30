@@ -1,17 +1,18 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { replacer } from '../../utils/replacer';
-import { ELuminatiCountry, IConfig, ICreateProxy, ILuminatiConfig } from './types';
+import { ELuminatiCountry, IChangeIp, IConfig, ICreateProxy, ILuminatiConfig } from './types';
 
 /**
  * @description Luminator class.
  */
-class Luminator {
+export class Luminator {
   public axios: AxiosInstance;
   public httpsProxyAgent: HttpsProxyAgent;
 
   private readonly luminatiConfig: ILuminatiConfig;
-  private readonly luminatiProxy: string = 'zproxy.lum-superproxy.io';
+  private readonly luminatiProxyDomain: string = 'zproxy.lum-superproxy.io';
+  private readonly luminatiProxyPort: number = 22225;
 
   /**
    * @constructor
@@ -19,7 +20,6 @@ class Luminator {
    */
   constructor(config: IConfig) {
     this.luminatiConfig = config.luminatiConfig;
-    this.httpsProxyAgent = new HttpsProxyAgent(config.httpsProxyAgent);
 
     if(config.axiosConfig) {
       this.axios = axios.create({...config.axiosConfig, proxy: false, httpsAgent: this.httpsProxyAgent});
@@ -29,31 +29,30 @@ class Luminator {
   }
 
   /**
-   * @param params
+   * @description Generate a new agent.
+   * @param {IChangeIp} params
+   * @returns {Luminator}
    */
-  changeIp(params?: {country?: ELuminatiCountry, sessionId?: number}): Luminator {
+  changeIp(params?: IChangeIp): Luminator {
 
-    // Creates a random sessionId and country proxy agent
+    // Creates an agent with a random country and sessionId
     if(!params) {
-      const countries: string[] = Object.keys(ELuminatiCountry);
-      const randomCountryKey: string = countries[this.randomNumber(0, countries.length)];
-
       this.axios.defaults.httpsAgent = this.createProxyAgent({
-        country: ELuminatiCountry[randomCountryKey],
+        country: this.getRandomCountry(),
         sessionId: this.randomNumber(0, 99999999),
       });
 
       return this;
     }
 
-    // Creates a specific agent
+    // Creates an agent with a specific country and a specific sessionId
     if(params.country && params.sessionId) {
       this.axios.defaults.httpsAgent = this.createProxyAgent({country: params.country, sessionId: params.sessionId});
 
       return this;
     }
 
-
+    // Create an agent with a specific country and a random sessionId
     if(params.country){
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: params.country,
@@ -61,14 +60,17 @@ class Luminator {
       });
     }
 
+    // Creates an agent with a random country and a specific sessionId
     if(params.sessionId){
-
-
       this.axios.defaults.httpsAgent = this.createProxyAgent({
-        country: params.country,
+        country: this.getRandomCountry(),
         sessionId: params.sessionId,
       });
     }
+  }
+
+  fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
+    return this.axios(axiosRequestConfig);
   }
 
   /**
@@ -88,19 +90,19 @@ class Luminator {
    * @returns {HttpsProxyAgent}
    */
   private createProxyAgent(params: ICreateProxy): HttpsProxyAgent {
-    const { zone, password, port} = this.luminatiConfig;
+    const { zone, password } = this.luminatiConfig;
     const { sessionId, country } = params;
 
-    const auth: string = replacer('{zone}{sessionId}{country}:${password}', {
+    const auth: string = replacer('{zone}{sessionId}{country}:{password}', {
       zone,
-      session: sessionId ? `-session-${sessionId}-` : '',
-      country: country ? `-country-${country}-` : '',
+      sessionId: sessionId ? `-session-${sessionId}` : '',
+      country: country ? `-country-${country}` : '',
       password,
     });
 
     return new HttpsProxyAgent({
-      host: this.luminatiProxy,
-      port,
+      host: this.luminatiProxyDomain,
+      port: this.luminatiProxyPort,
       auth,
       rejectUnauthorized: false,
     });
