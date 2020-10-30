@@ -30,12 +30,11 @@ export class Luminator {
 
   /**
    * @description Generate a new agent.
-   * @param {IChangeIp} params
+   * @param {IChangeIp} [params] - Params to handle multiple strategies.
    * @returns {Luminator}
    */
   changeIp(params?: IChangeIp): Luminator {
-
-    // Creates an agent with a random country and sessionId
+    // Creates an agent with a random countries and sessionId
     if(!params) {
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(),
@@ -45,22 +44,25 @@ export class Luminator {
       return this;
     }
 
-    // Creates an agent with a specific country and a specific sessionId
-    if(params.country && params.sessionId) {
-      this.axios.defaults.httpsAgent = this.createProxyAgent({country: params.country, sessionId: params.sessionId});
+    // Creates an agent with specific countries and a specific sessionId
+    if(params.countries && params.sessionId) {
+      this.axios.defaults.httpsAgent = this.createProxyAgent({
+        country: this.getRandomCountry(params.countries),
+        sessionId: params.sessionId,
+      });
 
       return this;
     }
 
-    // Create an agent with a specific country and a random sessionId
-    if(params.country){
+    // Create an agent with specific countries and a random sessionId
+    if(params.countries){
       this.axios.defaults.httpsAgent = this.createProxyAgent({
-        country: params.country,
+        country: this.getRandomCountry(params.countries),
         sessionId: this.randomNumber(0, 99999999),
       });
     }
 
-    // Creates an agent with a random country and a specific sessionId
+    // Creates an agent with a random countries and a specific sessionId
     if(params.sessionId){
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(),
@@ -75,11 +77,24 @@ export class Luminator {
 
   /**
    * @description Returns a random country.
+   * @params {ELuminatiCountry} [countries] - List of countries
    * @returns {ELuminatiCountry}
    */
-  private getRandomCountry(): ELuminatiCountry {
-    const countries: string[] = Object.keys(ELuminatiCountry);
-    const randomCountryKey: string = countries[this.randomNumber(0, countries.length)];
+  private getRandomCountry(countries?: ELuminatiCountry[]): ELuminatiCountry {
+    let countrykeys: string[];
+    if (countries) {
+      countrykeys = Object.entries(ELuminatiCountry)
+        .map(([key, value]: [string, ELuminatiCountry]) => {
+          if(countries.includes(value)) {
+            return key;
+          }
+        })
+        .filter(Boolean);
+    } else {
+      countrykeys = Object.keys(ELuminatiCountry);
+    }
+
+    const randomCountryKey: string = countrykeys[this.randomNumber(0, countrykeys.length -1)];
 
     return ELuminatiCountry[randomCountryKey];
   }
