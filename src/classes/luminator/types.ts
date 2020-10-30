@@ -4,7 +4,6 @@ import { HttpsProxyAgentOptions } from 'https-proxy-agent';
 interface ILuminatiConfig {
   zone: string;
   password: string;
-  port: string;
 }
 
 interface IConfig {
@@ -98,4 +97,9 @@ interface ICreateProxy {
   country?: ELuminatiCountry;
 }
 
-export {IConfig, ILuminatiConfig, ELuminatiCountry, ICreateProxy };
+interface IChangeIp {
+  country?: ELuminatiCountry,
+  sessionId?: number
+}
+
+export {IConfig, ILuminatiConfig, ELuminatiCountry, ICreateProxy, IChangeIp };
