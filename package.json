@@ -5,32 +5,37 @@
   "author": "Tictactrip <dev@tictactrip.eu>",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "GPL-3.0",
   "dependencies": {
     "@rimiti/stimmy": "1.8.0",
-    "axios": "0.19.1",
+    "axios": "0.21.0",
     "https-proxy-agent": "2.2.4"
   },
   "devDependencies": {
-    "@types/axios": "0.14.0",
-    "@types/jest": "25.2.1",
-    "@types/node": "12.7.5",
-    "jest": "25.2.7",
-    "prettier": "2.0.4",
-    "ts-jest": "25.3.1",
-    "tslint": "6.1.1",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-microsoft-contrib": "6.2.0",
-    "typescript": "3.8.3"
+    "@types/jest": "26.0.14",
+    "@typescript-eslint/eslint-plugin": "4.3.0",
+    "@typescript-eslint/parser": "4.3.0",
+    "eslint": "7.10.0",
+    "eslint-config-prettier": "6.12.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "jest": "26.4.2",
+    "prettier": "2.1.2",
+    "ts-jest": "26.4.1",
+    "typescript": "4.0.3"
   },
   "scripts": {
-    "clean": "rm -rf coverage dist tmp",
-    "build": "tsc -p tsconfig.release.json",
-    "build:watch": "tsc -w -p tsconfig.release.json",
-    "lint": "tslint -t stylish --project 'tsconfig.json'",
-    "lint:fix": "tslint --fix -t stylish --project 'tsconfig.json'",
-    "pretest": "tslint -t stylish --project 'tsconfig.json'",
-    "test": "jest --coverage",
+    "clean": "rm -rf dist coverage",
+    "build:clean": "yarn clean && yarn build",
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "lint": "yarn prettier && yarn eslint",
+    "lint:fix": "yarn prettier:fix && yarn eslint:fix",
+    "prettier": "prettier --check '{src,__tests__}/**/*.ts'",
+    "prettier:fix": "prettier --write '{src,__tests__}/**/*.ts'",
+    "eslint": "eslint {src,__tests__}/**/*.ts",
+    "eslint:fix": "eslint --fix {src,__tests__}/**/*.ts",
+    "test": "jest",
     "test:watch": "jest --watch",
-    "prepublish": "yarn build"
+    "prepublishOnly": "yarn clean && yarn build"
   }
 }
