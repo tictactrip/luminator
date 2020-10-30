@@ -1,5 +1,4 @@
 import { AxiosRequestConfig } from 'axios';
-import { HttpsProxyAgentOptions } from 'https-proxy-agent';
 
 interface ILuminatiConfig {
   zone: string;
@@ -7,7 +6,6 @@ interface ILuminatiConfig {
 }
 
 interface IConfig {
-  // httpsProxyAgent: HttpsProxyAgentOptions;
   axiosConfig?: AxiosRequestConfig;
   luminatiConfig: ILuminatiConfig;
 }
