@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
+import { config } from '../../config';
 import { replacer } from '../../utils/replacer';
 import { ELuminatiCountry, IChangeIp, IConfig, ICreateProxy, ILuminatiConfig } from './types';
 
@@ -11,8 +12,6 @@ export class Luminator {
   public httpsProxyAgent: HttpsProxyAgent;
 
   private readonly luminatiConfig: ILuminatiConfig;
-  private readonly luminatiProxyDomain: string = 'zproxy.lum-superproxy.io';
-  private readonly luminatiProxyPort: number = 22225;
 
   /**
    * @constructor
@@ -38,7 +37,7 @@ export class Luminator {
     if(!params) {
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(),
-        sessionId: this.randomNumber(0, 99999999),
+        sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
 
       return this;
@@ -58,7 +57,7 @@ export class Luminator {
     if(params.countries){
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(params.countries),
-        sessionId: this.randomNumber(0, 99999999),
+        sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
     }
 
@@ -94,7 +93,7 @@ export class Luminator {
       countrykeys = Object.keys(ELuminatiCountry);
     }
 
-    const randomCountryKey: string = countrykeys[this.randomNumber(0, countrykeys.length -1)];
+    const randomCountryKey: string = countrykeys[Luminator.randomNumber(0, countrykeys.length -1)];
 
     return ELuminatiCountry[randomCountryKey];
   }
@@ -116,8 +115,8 @@ export class Luminator {
     });
 
     return new HttpsProxyAgent({
-      host: this.luminatiProxyDomain,
-      port: this.luminatiProxyPort,
+      host: config.luminati.domain,
+      port: config.luminati.port,
       auth,
       rejectUnauthorized: false,
     });
@@ -129,7 +128,7 @@ export class Luminator {
    * @param {number} max
    * @returns {number}
    */
-  private randomNumber(min: number, max: number): number {
+  private static randomNumber(min: number, max: number): number {
     // tslint:disable-next-line:insecure-random
     return Math.floor(min + Math.random() * (max + 1 - min));
   }
