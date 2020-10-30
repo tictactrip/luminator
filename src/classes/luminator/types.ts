@@ -98,7 +98,7 @@ interface ICreateProxy {
 }
 
 interface IChangeIp {
-  country?: ELuminatiCountry,
+  countries?: ELuminatiCountry[],
   sessionId?: number
 }
 
