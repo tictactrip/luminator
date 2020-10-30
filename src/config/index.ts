@@ -1,16 +1,14 @@
 const config = {
   luminati: {
-    domain: "zproxy.lum-superproxy.io",
+    domain: 'zproxy.lum-superproxy.io',
     port: 22225,
   },
-  session:{
+  session: {
     randomLimit: {
       min: 0,
       max: 99999999,
-    }
-  }
+    },
+  },
 };
 
-export {
-  config,
-}
+export { config };

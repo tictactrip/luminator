@@ -20,10 +20,10 @@ export class Luminator {
   constructor(config: IConfig) {
     this.luminatiConfig = config.luminatiConfig;
 
-    if(config.axiosConfig) {
-      this.axios = axios.create({...config.axiosConfig, proxy: false, httpsAgent: this.httpsProxyAgent});
+    if (config.axiosConfig) {
+      this.axios = axios.create({ ...config.axiosConfig, proxy: false, httpsAgent: this.httpsProxyAgent });
     } else {
-      this.axios = axios.create({proxy: false, httpsAgent: this.httpsProxyAgent});
+      this.axios = axios.create({ proxy: false, httpsAgent: this.httpsProxyAgent });
     }
   }
 
@@ -34,7 +34,7 @@ export class Luminator {
    */
   changeIp(params?: IChangeIp): Luminator {
     // Creates an agent with a random countries and sessionId
-    if(!params) {
+    if (!params) {
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
@@ -44,7 +44,7 @@ export class Luminator {
     }
 
     // Creates an agent with specific countries and a specific sessionId
-    if(params.countries && params.sessionId) {
+    if (params.countries && params.sessionId) {
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(params.countries),
         sessionId: params.sessionId,
@@ -54,7 +54,7 @@ export class Luminator {
     }
 
     // Create an agent with specific countries and a random sessionId
-    if(params.countries){
+    if (params.countries) {
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(params.countries),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
@@ -62,7 +62,7 @@ export class Luminator {
     }
 
     // Creates an agent with a random countries and a specific sessionId
-    if(params.sessionId){
+    if (params.sessionId) {
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(),
         sessionId: params.sessionId,
@@ -84,7 +84,7 @@ export class Luminator {
     if (countries) {
       countrykeys = Object.entries(ELuminatiCountry)
         .map(([key, value]: [string, ELuminatiCountry]) => {
-          if(countries.includes(value)) {
+          if (countries.includes(value)) {
             return key;
           }
         })
@@ -93,7 +93,7 @@ export class Luminator {
       countrykeys = Object.keys(ELuminatiCountry);
     }
 
-    const randomCountryKey: string = countrykeys[Luminator.randomNumber(0, countrykeys.length -1)];
+    const randomCountryKey: string = countrykeys[Luminator.randomNumber(0, countrykeys.length - 1)];
 
     return ELuminatiCountry[randomCountryKey];
   }
