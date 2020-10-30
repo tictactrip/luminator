@@ -1,7 +1,6 @@
 logs
 *.log
 npm-debug.log*
-node_modules
 coverage
 .vscode
 !.vscode/tasks.js
@@ -10,3 +9,4 @@ coverage
 .eslintcache
 .DS_Store
 dist
+node_modules
