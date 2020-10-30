@@ -1,163 +1,58 @@
-import axios, { AxiosStatic, AxiosError, AxiosResponse } from 'axios';
-import { Luminator, LuminatorError } from '../../src';
-
-jest.mock('axios');
-
-interface IAxiosMock extends AxiosStatic {
-  mockResolvedValue: Function;
-  mockRejectedValue: Function;
-}
-
-const mockAxios = axios as IAxiosMock;
-
-/**
- * @description Builds an AxiosResponse with given status and failMessage.
- * @param {number} status
- * @param {string} message
- * @return {AxiosError}
- */
-function failWith(status: number, message: string): AxiosError {
-  return {
-    name: '',
-    message,
-    config: {},
-    code: '',
-    request: {},
-    response: respondWith(status, message),
-    isAxiosError: true,
-    toJSON: () => ({ status, message }),
-  };
-}
-
-/**
- * @description Builds an AxiosResponse with given status and success message.
- * @param {number} status
- * @param {string} message
- * @return {AxiosResponse}
- */
-function respondWith(status: number, message: string): AxiosResponse {
-  return {
-    config: undefined,
-    request: undefined,
-    data: {
-      message,
-    },
-    status: status,
-    statusText: status.toString(),
-    headers: undefined,
-  };
-}
-
-/**
- * @description Successful test case assertion.
- * @param {Luminator} agent
- * @return {Promise<void>}
- */
-const assertSuccessfulCase = async (agent: Luminator): Promise<void> => {
-  const mockedResponse = respondWith(200, `SUCCESS with 200`);
-  mockAxios.mockResolvedValue(mockedResponse);
-  const response = await agent.fetch({
-    method: 'GET',
-    url: 'https://lumtest.com/myip.json',
-  });
-
-  expect(response).toStrictEqual(mockedResponse);
-  expect(mockAxios).toHaveBeenCalled();
-};
+import { Luminator, ELuminatiCountry } from '../../src';
 
 describe('Luminator', () => {
-  let agent: Luminator = new Luminator('USERNAME', 'password');
+  // tslint:disable-next-line:mocha-no-side-effect-code
+  const countryKeys: string[] = Object.values(ELuminatiCountry);
+  const luminatiConfig = {
+    zone: "lum-customer-tictactrip-zone-luminatordevtoremove",
+    password: "rpxcdioddewh"
+  };
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
+  describe('#changeIp', () => {
+    let luminator: Luminator;
 
-  describe('Should return response with status 200, and fail with the 404 error', () => {
-    it('Should return response', async () => {
-      await assertSuccessfulCase(agent);
+    beforeAll(() => {
+      luminator = new Luminator({ luminatiConfig });
     });
 
-    it('Should fail with 404 status, with error message MAX_FAILURES_REQ', async () => {
-      const responseError = failWith(404, `failed status 404`);
-      mockAxios.mockRejectedValue(responseError);
+    it('should create an agent with a random country and sessionId', async () => {
+      luminator.changeIp();
 
-      let err: Error;
-
-      try {
-        await agent.fetch({
-          method: 'GET',
-          url: 'https://lumtest.com/myip.json',
-        });
-      } catch (e) {
-        err = e;
-      }
-
-      expect(err).toEqual(responseError);
-    });
-  });
-
-  describe('Should call switchSessionId', () => {
-    beforeEach(() => {
-      agent = new Luminator('USERNAME', 'password');
+      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(new RegExp(`${luminatiConfig.zone}-session-([0-9])*-country-(${countryKeys.join('|')}):${luminatiConfig.password}`));
     });
 
-    Luminator.STATUS_CODE_FOR_RETRY.forEach((status: number) => {
-      it(`Should call switchSessionId with ${status} status, and to be called 20 times`, async () => {
-        mockAxios.mockRejectedValue(failWith(status, `failed with ${status}`));
-        const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
+    it('should create an agent with a specific country and a random sessionId', async () => {
+      luminator.changeIp({country: ELuminatiCountry.FRANCE});
 
-        let err: Error;
-
-        try {
-          await agent.fetch({
-            method: 'GET',
-            url: 'https://lumtest.com/myip.json',
-          });
-        } catch (e) {
-          err = e;
-        }
-
-        expect(spy).toHaveBeenCalledTimes(19);
-        expect(err).toEqual(
-          new LuminatorError('MAX_FAILURES_REQ threshold reached'),
-        );
-
-        // Success for the next successful request
-        await assertSuccessfulCase(agent);
-      });
+      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(new RegExp(`${luminatiConfig.zone}-session-([0-9])*-country-fr:${luminatiConfig.password}`));
     });
 
-    it(`Should switch session id when the query threshold is reached`, async () => {
-      mockAxios.mockResolvedValue(respondWith(200, `SUCCESS with 200`));
-      const spy: jest.SpyInstance = jest.spyOn(agent, 'switchSessionId');
+    it('should create an agent with a specific country and a specific sessionId', async () => {
+      const sessionId: number = 123456789;
 
-      for (let i = 0; i <= 30; i += 1) {
-        await agent.fetch({
-          method: 'GET',
-          url: 'https://lumtest.com/myip.json',
-        });
-      }
+      luminator.changeIp({country: ELuminatiCountry.FRANCE, sessionId });
 
-      expect(spy).toHaveBeenCalledTimes(11);
+      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(new RegExp(`${luminatiConfig.zone}-session-${sessionId}-country-fr:${luminatiConfig.password}`));
     });
-  });
 
-  describe('Should throw all errors which are not an axios error', () => {
-    it('Should throw non axios responses error', async () => {
-      mockAxios.mockRejectedValue(new LuminatorError('NON_AXIOS_ERROR'));
+    it('should create an agent with a random country and a specific sessionId', async () => {
+      const sessionId: number = 123456789;
 
-      let err: LuminatorError;
+      luminator.changeIp({ sessionId });
 
-      try {
-        await agent.fetch({
-          method: 'GET',
-          url: 'https://lumtest.com/myip.json',
-        });
-      } catch (e) {
-        err = e;
-      }
-
-      expect(err).toEqual(new LuminatorError('NON_AXIOS_ERROR'));
+      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(new RegExp(`${luminatiConfig.zone}-session-${sessionId}-country-(${countryKeys.join('|')}):${luminatiConfig.password}`));
     });
   });
 });
