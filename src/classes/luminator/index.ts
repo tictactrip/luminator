@@ -2,14 +2,7 @@ import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { config } from '../../config';
 import { replacer } from '../../utils/replacer';
-import {
-  ELuminatiCountry, EStrategyMode,
-  IChangeIp,
-  IConfig,
-  ICreateProxy,
-  ILuminatiConfig,
-  TStrategy,
-} from './types';
+import { ELuminatiCountry, EStrategyMode, IChangeIp, IConfig, ICreateProxy, ILuminatiConfig, TStrategy } from './types';
 
 /**
  * @description Luminator class.
@@ -80,8 +73,8 @@ export class Luminator {
   }
 
   fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
-    if(this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
-      this.changeIp({countries: this.strategy.countries});
+    if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
+      this.changeIp({ countries: this.strategy.countries });
     }
 
     return this.axios(axiosRequestConfig);
