@@ -112,4 +112,13 @@ interface IChangeIp {
   sessionId?: number;
 }
 
-export { EStrategyMode, TStrategy, TStrategyChangeIpEveryRequest, IConfig, ILuminatiConfig, ELuminatiCountry, ICreateProxy, IChangeIp };
+export {
+  EStrategyMode,
+  TStrategy,
+  TStrategyChangeIpEveryRequest,
+  IConfig,
+  ILuminatiConfig,
+  ELuminatiCountry,
+  ICreateProxy,
+  IChangeIp,
+};
