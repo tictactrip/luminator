@@ -1,5 +1,16 @@
 import { AxiosRequestConfig } from 'axios';
 
+enum EStrategyMode {
+  CHANGE_IP_EVERY_REQUESTS = 'CHANGE_IP_EVERY_REQUESTS',
+}
+
+type TStrategyChangeIpEveryRequest = {
+  mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
+  countries: ELuminatiCountry[];
+};
+
+type TStrategy = TStrategyChangeIpEveryRequest;
+
 interface ILuminatiConfig {
   zone: string;
   password: string;
@@ -8,6 +19,7 @@ interface ILuminatiConfig {
 interface IConfig {
   axiosConfig?: AxiosRequestConfig;
   luminatiConfig: ILuminatiConfig;
+  strategy?: TStrategy;
 }
 
 enum ELuminatiCountry {
@@ -100,4 +112,4 @@ interface IChangeIp {
   sessionId?: number;
 }
 
-export { IConfig, ILuminatiConfig, ELuminatiCountry, ICreateProxy, IChangeIp };
+export { EStrategyMode, TStrategy, TStrategyChangeIpEveryRequest, IConfig, ILuminatiConfig, ELuminatiCountry, ICreateProxy, IChangeIp };
