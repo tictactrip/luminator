@@ -92,7 +92,7 @@ export class Luminator {
       return this;
     }
 
-    // Creates an agent with a random countries and a specific sessionId
+    // Creates an agent with a random country and a specific sessionId
     const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
       country: this.getRandomCountry(),
       sessionId: params.sessionId,
@@ -190,7 +190,7 @@ export class Luminator {
    * @throws {Error} Will throw an error if countries is empty
    * @returns {void}
    */
-  private static checkIfCountriesArrayIsntEmpty(countries: ELuminatiCountry[]) {
+  private static checkIfCountriesArrayIsntEmpty(countries: ELuminatiCountry[]): void {
     if (!countries.length) {
       throw new Error('"countries" array cannot be empty');
     }
