@@ -22,10 +22,15 @@ export class Luminator {
     this.luminatiConfig = config.luminatiConfig;
     this.strategy = config.strategy;
 
+    // Throw an error is country array is empty
+    if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
+      Luminator.checkIfCountriesArrayIsntEmpty(this.strategy.countries);
+    }
+
     if (config.axiosConfig) {
-      this.axios = axios.create({ ...config.axiosConfig, proxy: false, httpsAgent: this.httpsProxyAgent });
+      this.axios = axios.create({ ...config.axiosConfig, proxy: false });
     } else {
-      this.axios = axios.create({ proxy: false, httpsAgent: this.httpsProxyAgent });
+      this.axios = axios.create({ proxy: false });
     }
   }
 
@@ -84,8 +89,6 @@ export class Luminator {
   fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
     if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
       this.changeIp({ countries: this.strategy.countries });
-
-      console.log('==================> CHANGE IPPPPPP');
     }
 
     if (!this.axios.defaults.httpsAgent) {
@@ -150,7 +153,18 @@ export class Luminator {
    * @returns {number}
    */
   private static randomNumber(min: number, max: number): number {
-    // tslint:disable-next-line:insecure-random
     return Math.floor(min + Math.random() * (max + 1 - min));
+  }
+
+  /**
+   * @description Checks if country array isn't empty.
+   * @param {ELuminatiCountry[]} countries
+   * @throws {Error} Will throw an error if countries is empty
+   * @returns {void}
+   */
+  private static checkIfCountriesArrayIsntEmpty(countries: ELuminatiCountry[]) {
+    if (!countries.length) {
+      throw new Error('"countries" array cannot be empty');
+    }
   }
 }
