@@ -62,6 +62,8 @@ export class Luminator {
 
     // Create an agent with specific countries and a random sessionId
     if (params.countries) {
+      Luminator.checkIfCountriesArrayIsntEmpty(params.countries);
+
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(params.countries),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
