@@ -9,6 +9,7 @@
   "dependencies": {
     "@rimiti/stimmy": "1.8.0",
     "axios": "0.21.0",
+    "http-proxy-agent": "4.0.1",
     "https-proxy-agent": "5.0.0"
   },
   "devDependencies": {
