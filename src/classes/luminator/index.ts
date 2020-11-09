@@ -56,7 +56,8 @@ export class Luminator {
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
 
-      this.axios.defaults = { ...agents };
+      this.axios.defaults.httpsAgent = agents.httpsAgent;
+      this.axios.defaults.httpAgent = agents.httpAgent;
 
       return this;
     }
@@ -70,7 +71,8 @@ export class Luminator {
         sessionId: params.sessionId,
       });
 
-      this.axios.defaults = { ...agents };
+      this.axios.defaults.httpsAgent = agents.httpsAgent;
+      this.axios.defaults.httpAgent = agents.httpAgent;
 
       return this;
     }
@@ -84,7 +86,8 @@ export class Luminator {
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
 
-      this.axios.defaults = { ...agents };
+      this.axios.defaults.httpsAgent = agents.httpsAgent;
+      this.axios.defaults.httpAgent = agents.httpAgent;
 
       return this;
     }
@@ -96,7 +99,8 @@ export class Luminator {
         sessionId: params.sessionId,
       });
 
-      this.axios.defaults = { ...agents };
+      this.axios.defaults.httpsAgent = agents.httpsAgent;
+      this.axios.defaults.httpAgent = agents.httpAgent;
 
       return this;
     }
@@ -112,7 +116,7 @@ export class Luminator {
       this.changeIp({ countries: this.strategy.countries });
     }
 
-    if (!this.axios.defaults.httpsAgent) {
+    if (!this.axios.defaults.httpsAgent && !this.axios.defaults.httpAgent) {
       throw new Error('Your are trying to send a request without setting a Strategy or calling changeIp().');
     }
 
