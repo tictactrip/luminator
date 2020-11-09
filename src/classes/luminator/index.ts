@@ -51,13 +51,13 @@ export class Luminator {
   changeIp(params?: IChangeIp): Luminator {
     // Creates an agent with a random countries and sessionId
     if (!params) {
-      const agents: ICreateProxyAgents = this.createProxyAgents({
+      const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
         country: this.getRandomCountry(),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
 
-      this.axios.defaults.httpsAgent = agents.httpsAgent;
-      this.axios.defaults.httpAgent = agents.httpAgent;
+      this.axios.defaults.httpsAgent = httpsAgent;
+      this.axios.defaults.httpAgent = httpAgent;
 
       return this;
     }
@@ -66,13 +66,13 @@ export class Luminator {
     if (params.countries && params.sessionId) {
       Luminator.checkIfCountriesArrayIsntEmpty(params.countries);
 
-      const agents: ICreateProxyAgents = this.createProxyAgents({
+      const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
         country: this.getRandomCountry(params.countries),
         sessionId: params.sessionId,
       });
 
-      this.axios.defaults.httpsAgent = agents.httpsAgent;
-      this.axios.defaults.httpAgent = agents.httpAgent;
+      this.axios.defaults.httpsAgent = httpsAgent;
+      this.axios.defaults.httpAgent = httpAgent;
 
       return this;
     }
@@ -81,29 +81,27 @@ export class Luminator {
     if (params.countries) {
       Luminator.checkIfCountriesArrayIsntEmpty(params.countries);
 
-      const agents: ICreateProxyAgents = this.createProxyAgents({
+      const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
         country: this.getRandomCountry(params.countries),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
 
-      this.axios.defaults.httpsAgent = agents.httpsAgent;
-      this.axios.defaults.httpAgent = agents.httpAgent;
+      this.axios.defaults.httpsAgent = httpsAgent;
+      this.axios.defaults.httpAgent = httpAgent;
 
       return this;
     }
 
     // Creates an agent with a random countries and a specific sessionId
-    if (params.sessionId) {
-      const agents: ICreateProxyAgents = this.createProxyAgents({
-        country: this.getRandomCountry(),
-        sessionId: params.sessionId,
-      });
+    const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
+      country: this.getRandomCountry(),
+      sessionId: params.sessionId,
+    });
 
-      this.axios.defaults.httpsAgent = agents.httpsAgent;
-      this.axios.defaults.httpAgent = agents.httpAgent;
+    this.axios.defaults.httpsAgent = httpsAgent;
+    this.axios.defaults.httpAgent = httpAgent;
 
-      return this;
-    }
+    return this;
   }
 
   /**
@@ -158,8 +156,8 @@ export class Luminator {
 
     const auth: string = replacer('{zone}{sessionId}{country}:{password}', {
       zone,
-      sessionId: sessionId ? `-session-${sessionId}` : '',
-      country: country ? `-country-${country}` : '',
+      sessionId: `-session-${sessionId}`,
+      country: `-country-${country}`,
       password,
     });
 
