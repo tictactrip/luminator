@@ -61,6 +61,8 @@ export class Luminator {
         country: this.getRandomCountry(params.countries),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
+
+      return this;
     }
 
     // Creates an agent with a random countries and a specific sessionId
@@ -69,12 +71,25 @@ export class Luminator {
         country: this.getRandomCountry(),
         sessionId: params.sessionId,
       });
+
+      return this;
     }
   }
 
+  /**
+   * @description Sends request.
+   * @param {AxiosRequestConfig} axiosRequestConfig
+   * @returns {AxiosPromise}
+   */
   fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
     if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
       this.changeIp({ countries: this.strategy.countries });
+
+      console.log('==================> CHANGE IPPPPPP');
+    }
+
+    if (!this.axios.defaults.httpsAgent) {
+      throw new Error('Your are trying to send a request without setting a Strategy or calling changeIp().');
     }
 
     return this.axios(axiosRequestConfig);
