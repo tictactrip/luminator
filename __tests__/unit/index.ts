@@ -67,6 +67,17 @@ describe('Luminator', () => {
         ),
       );
     });
+
+    it('should throw an error if no countries have been given (only countries attribute)', async () => {
+      let error: Error;
+      try {
+        luminator.changeIp({ countries: [] });
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new Error('"countries" array cannot be empty'));
+    });
   });
 
   describe('#strategy', function () {
