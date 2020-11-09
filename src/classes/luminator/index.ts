@@ -9,7 +9,6 @@ import { ELuminatiCountry, EStrategyMode, IChangeIp, IConfig, ICreateProxy, ILum
  */
 export class Luminator {
   public axios: AxiosInstance;
-  public httpsProxyAgent: HttpsProxyAgent;
 
   private readonly luminatiConfig: ILuminatiConfig;
   private readonly strategy: TStrategy;
