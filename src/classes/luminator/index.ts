@@ -19,6 +19,8 @@ import {
  */
 export class Luminator {
   public axios: AxiosInstance;
+  public sessionId: number;
+  public country: ELuminatiCountry;
 
   private readonly luminatiConfig: ILuminatiConfig;
   private readonly strategy: TStrategy;
@@ -153,6 +155,9 @@ export class Luminator {
   private createProxyAgents(params: ICreateProxy): ICreateProxyAgents {
     const { zone, password } = this.luminatiConfig;
     const { sessionId, country } = params;
+
+    this.sessionId = sessionId;
+    this.country = country;
 
     const auth: string = replacer('{zone}{sessionId}{country}:{password}', {
       zone,
