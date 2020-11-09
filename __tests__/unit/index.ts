@@ -18,10 +18,10 @@ describe('Luminator', () => {
     it('should create an agent with a random countries and sessionId', async () => {
       luminator.changeIp();
 
-      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(
+      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(
           `${luminatiConfig.zone}-session-([0-9])*-country-(${countryKeys.join('|')}):${luminatiConfig.password}`,
         ),
@@ -31,10 +31,10 @@ describe('Luminator', () => {
     it('should create an agent with a specific countries and a random sessionId', async () => {
       luminator.changeIp({ countries: [ELuminatiCountry.FRANCE] });
 
-      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(
+      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(`${luminatiConfig.zone}-session-([0-9])*-country-fr:${luminatiConfig.password}`),
       );
     });
@@ -44,10 +44,10 @@ describe('Luminator', () => {
 
       luminator.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
 
-      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(
+      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(`${luminatiConfig.zone}-session-${sessionId}-country-fr:${luminatiConfig.password}`),
       );
     });
@@ -57,10 +57,10 @@ describe('Luminator', () => {
 
       luminator.changeIp({ sessionId });
 
-      expect(luminator.axios.defaults.httpsAgent.options.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.options.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.options.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.options.auth).toMatch(
+      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(
           `${luminatiConfig.zone}-session-${sessionId}-country-(${countryKeys.join('|')}):${luminatiConfig.password}`,
         ),
