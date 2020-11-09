@@ -83,6 +83,7 @@ enum ELuminatiCountry {
   NETHERLANDS = 'nl',
   NEW_ZEALAND = 'nz',
   NORWAY = 'no',
+  PORTUGAL = 'pt',
   PERU = 'pe',
   PHILIPPINES = 'ph',
   RUSSIA = 'ru',
