@@ -52,6 +52,8 @@ export class Luminator {
 
     // Creates an agent with specific countries and a specific sessionId
     if (params.countries && params.sessionId) {
+      Luminator.checkIfCountriesArrayIsntEmpty(params.countries);
+
       this.axios.defaults.httpsAgent = this.createProxyAgent({
         country: this.getRandomCountry(params.countries),
         sessionId: params.sessionId,
