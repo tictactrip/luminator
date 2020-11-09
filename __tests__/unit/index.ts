@@ -78,6 +78,17 @@ describe('Luminator', () => {
 
       expect(error).toStrictEqual(new Error('"countries" array cannot be empty'));
     });
+
+    it('should throw an error if no countries have been given (sessionId and countries attribute)', async () => {
+      let error: Error;
+      try {
+        luminator.changeIp({ sessionId: 123, countries: [] });
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new Error('"countries" array cannot be empty'));
+    });
   });
 
   describe('#strategy', function () {
