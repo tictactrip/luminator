@@ -25,6 +25,55 @@ describe('Luminator', () => {
 
       expect(error).toStrictEqual(new Error('"countries" array cannot be empty'));
     });
+
+    it('should set an axios default configuration (User-Agent header)', async () => {
+      const userAgent =
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36';
+      const response1 = {
+        ip: '216.74.105.107',
+        country: 'BE',
+        asn: {
+          asnum: 9009,
+          org_name: 'M247 Ltd',
+        },
+        geo: {
+          city: 'Brussels',
+          region: 'BRU',
+          region_name: 'Brussels Capital',
+          postal_code: '1000',
+          latitude: 50.8336,
+          longitude: 4.3337,
+          tz: 'Europe/Brussels',
+          lum_city: 'brussels',
+          lum_region: 'bru',
+        },
+      };
+
+      const request1Mock = nock('https://lumtest.com')
+        .get('/myip.json')
+        .matchHeader('User-Agent', userAgent)
+        .once()
+        .reply(200, response1);
+
+      const luminator: Luminator = new Luminator({
+        luminatiConfig,
+        axiosConfig: {
+          headers: {
+            'User-Agent': userAgent,
+          },
+        },
+      });
+
+      const { data } = await luminator.changeIp().fetch({
+        method: 'get',
+        baseURL: 'https://lumtest.com',
+        url: '/myip.json',
+      });
+
+      expect(data).toStrictEqual(response1);
+
+      request1Mock.done();
+    });
   });
 
   describe('#changeIp', () => {
