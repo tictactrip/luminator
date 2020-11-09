@@ -106,8 +106,8 @@ enum ELuminatiCountry {
 }
 
 interface ICreateProxy {
-  sessionId?: number;
-  country?: ELuminatiCountry;
+  sessionId: number;
+  country: ELuminatiCountry;
 }
 
 interface IChangeIp {
