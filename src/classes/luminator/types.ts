@@ -1,4 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
 
 enum EStrategyMode {
   CHANGE_IP_EVERY_REQUESTS = 'CHANGE_IP_EVERY_REQUESTS',
@@ -112,6 +114,11 @@ interface IChangeIp {
   sessionId?: number;
 }
 
+interface ICreateProxyAgents {
+  httpsAgent: HttpsProxyAgent;
+  httpAgent: HttpProxyAgent;
+}
+
 export {
   EStrategyMode,
   TStrategy,
@@ -119,6 +126,7 @@ export {
   IConfig,
   ILuminatiConfig,
   ELuminatiCountry,
+  ICreateProxyAgents,
   ICreateProxy,
   IChangeIp,
 };
