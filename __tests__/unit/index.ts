@@ -27,7 +27,7 @@ describe('Luminator', () => {
     });
 
     it('should set an axios default configuration (User-Agent header)', async () => {
-      const userAgent: string =
+      const userAgent =
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36';
       const response1 = {
         ip: '216.74.105.107',
@@ -79,54 +79,54 @@ describe('Luminator', () => {
   describe('#changeIp', () => {
     let luminator: Luminator;
 
-    const regexPatternAllCountries: string = `${countryKeys.join('|')}`;
+    const regexPatternAllCountries = `${countryKeys.join('|')}`;
 
     beforeEach(() => {
       luminator = new Luminator({ luminatiConfig });
     });
 
     it('should create an agent with a random countries and sessionId', async () => {
-      const response: Luminator = await luminator.changeIp();
+      const agent: Luminator = luminator.changeIp();
 
-      expect(response).toBeInstanceOf(Luminator);
-      expect(typeof luminator.sessionId).toEqual('number');
-      expect(luminator.country).toMatch(new RegExp(regexPatternAllCountries));
-      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
+      expect(agent).toBeInstanceOf(Luminator);
+      expect(typeof agent.sessionId).toEqual('number');
+      expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(
           `${luminatiConfig.zone}-session-([0-9])*-country-(${regexPatternAllCountries}):${luminatiConfig.password}`,
         ),
       );
     });
 
-    it('should create an agent with a specific countries and a random sessionId', async () => {
-      const response: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE] });
+    it('should create an agent with a specific country and a random sessionId', async () => {
+      const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE] });
 
-      expect(response).toBeInstanceOf(Luminator);
-      expect(typeof luminator.sessionId).toEqual('number');
-      expect(luminator.country).toMatch(/fr/);
-      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
+      expect(agent).toBeInstanceOf(Luminator);
+      expect(typeof agent.sessionId).toEqual('number');
+      expect(agent.country).toMatch(/fr/);
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(`${luminatiConfig.zone}-session-([0-9])*-country-fr:${luminatiConfig.password}`),
       );
     });
 
-    it('should create an agent with a specific countries and a specific sessionId', async () => {
+    it('should create an agent with a specific country and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const response: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+      const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
 
-      expect(response).toBeInstanceOf(Luminator);
-      expect(luminator.sessionId).toEqual(123456789);
-      expect(luminator.country).toMatch(/fr/);
-      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
+      expect(agent).toBeInstanceOf(Luminator);
+      expect(agent.sessionId).toEqual(123456789);
+      expect(agent.country).toMatch(/fr/);
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(`${luminatiConfig.zone}-session-${sessionId}-country-fr:${luminatiConfig.password}`),
       );
     });
@@ -134,15 +134,15 @@ describe('Luminator', () => {
     it('should create an agent with a random countries and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const response: Luminator = luminator.changeIp({ sessionId });
+      const agent: Luminator = luminator.changeIp({ sessionId });
 
-      expect(response).toBeInstanceOf(Luminator);
-      expect(luminator.sessionId).toEqual(123456789);
-      expect(luminator.country).toMatch(new RegExp(regexPatternAllCountries));
-      expect(luminator.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(luminator.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(luminator.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(luminator.axios.defaults.httpsAgent.proxy.auth).toMatch(
+      expect(agent).toBeInstanceOf(Luminator);
+      expect(agent.sessionId).toEqual(123456789);
+      expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
+      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
         new RegExp(
           `${luminatiConfig.zone}-session-${sessionId}-country-(${regexPatternAllCountries}):${luminatiConfig.password}`,
         ),
