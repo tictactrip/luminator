@@ -13,3 +13,4 @@ trim_trailing_whitespace = false
 [*.{ts,js}]
 indent_size = 2
 indent_style = space
+max_line_length = 120

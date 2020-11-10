@@ -18,141 +18,115 @@ yarn add @tictactrip/luminator
 
 ## How to use it?
 
-Make a `get` request
+### Strategy: Manual
 
-```js
-import { Luminator } from "@tictactrip/luminator";
+Create your instance:
 
-const agent = new Luminator(username, password, config);
-
-const response = await agent.fetch({ method: 'get', url: 'https://api.domain.com/examples' });
+```typescript
+const luminator: Luminator = new Luminator({ 
+    luminatiConfig: {
+        zone: 'tictactrip',
+        password: 'secret',
+   } 
+});
 ```
 
-The config parameter is defined by the following interface:
+- Create an agent with a random countries and sessionId
 
-```ts
-ILuminatorConfig {
-  superProxy: string;
-  country: string;
-  port: number;
-}
-
-// Default values
-DEFAULT_CONFIG = {
-  superProxy: 'NL',
-  country: 'fr',
-  port: 22225,
-}
+```typescript
+const agent: Luminator =  luminator.changeIp();
 ```
 
-Make a `post` request: 
+- Create an agent with a specific country and a random sessionId
 
-```js
-import { Luminator } from "@tictactrip/luminator";
-
-const agent = new Luminator(username, password, config);
-
-const response = agent.fetch({
-    method: 'post',
-    baseURL: 'https://api.domain.com',
-    url: '/user',
-    data: {
-      firstName: 'Fred',
-      lastName: 'Flintstone'
-    }
-  });
+```typescript
+const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE] });
 ```
 
-You can also set default request options
+- Create an agent with a specific country and a specific sessionId
 
-```js
-import { Luminator } from "@tictactrip/luminator";
+```typescript
+const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+```
 
-const agent = new Luminator(username, password, config, {
-    baseURL: 'https://api.domain.com',
+- Create an agent with a random countries and a specific sessionId
+
+```typescript
+const agent: Luminator = luminator.changeIp({ sessionId });
+```
+
+### Strategy: Change ip every requests
+
+This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests. 
+
+```typescript
+import { Luminator, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
+
+const luminator: Luminator = new Luminator({
+    luminatiConfig: {
+        zone: 'tictactrip',
+        password: 'secret',
+    },   
+    strategy: {
+        mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
+        countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
+    },
 });
 
-const response = await agent.fetch({ method: 'get', url: '/examples' });
-```
-
-The request options are transparent with [Axios](https://github.com/axios/axios) request interface:
-
-```js
-{
-  url: '/examples',
-  method: 'get', // default
-  baseURL: 'https://api.domain.com/api/',
-  transformRequest: [function (data, headers) {
-    return data;
-  }],
-  transformResponse: [function (data) {
-    return data;
-  }],
-  // `headers` are custom headers to be sent
-  headers: {'X-Requested-With': 'XMLHttpRequest'},
-  params: {
-    ID: 12345
-  },
-  paramsSerializer: function (params) {
-    return Qs.stringify(params, {arrayFormat: 'brackets'})
-  },
-  data: {
-    firstName: 'Fred'
-  },
-  timeout: 1000,
-  withCredentials: false, // default
-  adapter: function (config) {
-    /* ... */
-  },
-  auth: {
-    username: 'admin',
-    password: 'password'
-  },
-  responseType: 'json', // default
-  responseEncoding: 'utf8', // default
-  xsrfCookieName: 'XSRF-TOKEN', // default
-  xsrfHeaderName: 'X-XSRF-TOKEN', // default
-  onUploadProgress: function (progressEvent) {
-    // Do whatever you want with the native progress event
-  },
-  onDownloadProgress: function (progressEvent) {
-    // Do whatever you want with the native progress event
-  },
-  maxContentLength: 2000,
-  validateStatus: function (status) {
-    return status >= 200 && status < 300; // default
-  },
-  maxRedirects: 5, 
-  socketPath: null, 
-  cancelToken: new CancelToken(function (cancel) {
-  })
+const requestConfig = {
+    method: 'get',
+    baseURL: 'https://lumtest.com',
+    url: '/myip.json',
 }
+
+const response1 = await luminator.fetch(requestConfig);
+const response2 = await luminator.fetch(requestConfig);
+
+console.log(response1.data);
+console.log(response2.data);
 ```
 
-Response object:
+**Response:**
 
-```js
+```json
 {
-  // `data` is the response that was provided by the server
-  data: {},
+	"ip": "184.174.62.231",
+	"country": "FR",
+	"asn": {
+		"asnum": 9009,
+		"org_name": "M247 Ltd"
+	},
+	"geo": {
+		"city": "Paris",
+		"region": "IDF",
+		"region_name": "Île-de-France",
+		"postal_code": "75014",
+		"latitude": 48.8579,
+		"longitude": 2.3491,
+		"tz": "Europe/Paris",
+		"lum_city": "paris",
+		"lum_region": "idf"
+	}
+}
 
-  // `status` is the HTTP status code from the server response
-  status: 200,
-
-  // `statusText` is the HTTP status message from the server response
-  statusText: 'OK',
-
-  // `headers` the headers that the server responded with
-  // All header names are lower cased
-  headers: {},
-
-  // `config` is the config that was provided to `axios` for the request
-  config: {},
-
-  // `request` is the request that generated this response
-  // It is the last ClientRequest instance in node.js (in redirects)
-  // and an XMLHttpRequest instance the browser
-  request: {}
+{
+	"ip": "178.171.89.101",
+	"country": "ES",
+	"asn": {
+		"asnum": 9009,
+		"org_name": "M247 Ltd"
+	},
+	"geo": {
+		"city": "Madrid",
+		"region": "MD",
+		"region_name": "Madrid",
+		"postal_code": "28001",
+		"latitude": 40.4167,
+		"longitude": -3.6838,
+		"tz": "Europe/Madrid",
+		"lum_city": "madrid",
+		"lum_region": "md"
+	}
 }
 ```
 
