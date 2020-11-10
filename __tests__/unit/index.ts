@@ -64,7 +64,7 @@ describe('Luminator', () => {
         },
       });
 
-      const { data } = await luminator.changeIp().fetch({
+      const { data } = await luminator.setIp().fetch({
         method: 'get',
         baseURL: 'https://lumtest.com',
         url: '/myip.json',
@@ -76,7 +76,7 @@ describe('Luminator', () => {
     });
   });
 
-  describe('#changeIp', () => {
+  describe('#setIp', () => {
     let luminator: Luminator;
 
     const regexPatternAllCountries = `${countryKeys.join('|')}`;
@@ -86,7 +86,7 @@ describe('Luminator', () => {
     });
 
     it('should create an agent with a random countries and sessionId', async () => {
-      const agent: Luminator = luminator.changeIp();
+      const agent: Luminator = luminator.setIp();
 
       expect(agent).toBeInstanceOf(Luminator);
       expect(typeof agent.sessionId).toEqual('number');
@@ -102,7 +102,7 @@ describe('Luminator', () => {
     });
 
     it('should create an agent with a specific country and a random sessionId', async () => {
-      const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE] });
+      const agent: Luminator = luminator.setIp({ countries: [ELuminatiCountry.FRANCE] });
 
       expect(agent).toBeInstanceOf(Luminator);
       expect(typeof agent.sessionId).toEqual('number');
@@ -118,7 +118,7 @@ describe('Luminator', () => {
     it('should create an agent with a specific country and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+      const agent: Luminator = luminator.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
 
       expect(agent).toBeInstanceOf(Luminator);
       expect(agent.sessionId).toEqual(123456789);
@@ -134,7 +134,7 @@ describe('Luminator', () => {
     it('should create an agent with a random countries and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const agent: Luminator = luminator.changeIp({ sessionId });
+      const agent: Luminator = luminator.setIp({ sessionId });
 
       expect(agent).toBeInstanceOf(Luminator);
       expect(agent.sessionId).toEqual(123456789);
@@ -152,7 +152,7 @@ describe('Luminator', () => {
     it('should throw an error if no countries have been given (only countries attribute)', async () => {
       let error: Error;
       try {
-        luminator.changeIp({ countries: [] });
+        luminator.setIp({ countries: [] });
       } catch (e) {
         error = e;
       }
@@ -163,7 +163,7 @@ describe('Luminator', () => {
     it('should throw an error if no countries have been given (sessionId and countries attribute)', async () => {
       let error: Error;
       try {
-        luminator.changeIp({ sessionId: 123, countries: [] });
+        luminator.setIp({ sessionId: 123, countries: [] });
       } catch (e) {
         error = e;
       }
@@ -171,7 +171,7 @@ describe('Luminator', () => {
       expect(error).toStrictEqual(new Error('"countries" array cannot be empty'));
     });
 
-    it('should throw an error if fetch() has been called without previously used changeIp() or set a strategy', async () => {
+    it('should throw an error if fetch() has been called without previously used setIp() or set a strategy', async () => {
       let error: Error;
       try {
         await luminator.fetch({
@@ -184,7 +184,7 @@ describe('Luminator', () => {
       }
 
       expect(error).toStrictEqual(
-        new Error('Your are trying to send a request without setting a Strategy or calling changeIp().'),
+        new Error('Your are trying to send a request without setting a Strategy or calling setIp().'),
       );
     });
   });

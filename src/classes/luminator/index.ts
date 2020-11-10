@@ -50,7 +50,7 @@ export class Luminator {
    * @param {IChangeIp} [params] - Params to handle multiple strategies.
    * @returns {Luminator}
    */
-  changeIp(params?: IChangeIp): Luminator {
+  setIp(params?: IChangeIp): Luminator {
     // Creates an agent with a random countries and sessionId
     if (!params) {
       const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
@@ -113,11 +113,11 @@ export class Luminator {
    */
   fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
     if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
-      this.changeIp({ countries: this.strategy.countries });
+      this.setIp({ countries: this.strategy.countries });
     }
 
     if (!this.axios.defaults.httpsAgent && !this.axios.defaults.httpAgent) {
-      throw new Error('Your are trying to send a request without setting a Strategy or calling changeIp().');
+      throw new Error('Your are trying to send a request without setting a Strategy or calling setIp().');
     }
 
     return this.axios(axiosRequestConfig);
