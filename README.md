@@ -24,10 +24,10 @@ Create your instance:
 
 ```typescript
 const luminator: Luminator = new Luminator({ 
-    luminatiConfig: {
-        zone: 'tictactrip',
-        password: 'secret',
-   } 
+  luminatiConfig: {
+    zone: 'tictactrip',
+    password: 'secret',
+  } 
 });
 ```
 
@@ -63,20 +63,20 @@ This strategy aims to make a GET request with a **FR** or **PT** IP randomly eve
 import { Luminator, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
 
 const luminator: Luminator = new Luminator({
-    luminatiConfig: {
-        zone: 'tictactrip',
-        password: 'secret',
-    },   
-    strategy: {
-        mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
-        countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
-    },
+  luminatiConfig: {
+    zone: 'tictactrip',
+    password: 'secret',
+  },   
+  strategy: {
+    mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
+    countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
+  },
 });
 
 const requestConfig = {
-    method: 'get',
-    baseURL: 'https://lumtest.com',
-    url: '/myip.json',
+  method: 'get',
+  baseURL: 'https://lumtest.com',
+  url: '/myip.json',
 }
 
 const response1 = await luminator.fetch(requestConfig);
@@ -90,43 +90,45 @@ console.log(response2.data);
 
 ```json
 {
-	"ip": "184.174.62.231",
-	"country": "FR",
-	"asn": {
-		"asnum": 9009,
-		"org_name": "M247 Ltd"
-	},
-	"geo": {
-		"city": "Paris",
-		"region": "IDF",
-		"region_name": "Île-de-France",
-		"postal_code": "75014",
-		"latitude": 48.8579,
-		"longitude": 2.3491,
-		"tz": "Europe/Paris",
-		"lum_city": "paris",
-		"lum_region": "idf"
-	}
+  "ip": "184.174.62.231",
+  "country": "FR",
+  "asn": {
+    "asnum": 9009,
+	"org_name": "M247 Ltd"
+  },
+  "geo": {
+    "city": "Paris",
+    "region": "IDF",
+    "region_name": "Île-de-France",
+    "postal_code": "75014",
+    "latitude": 48.8579,
+    "longitude": 2.3491,
+    "tz": "Europe/Paris",
+    "lum_city": "paris",
+    "lum_region": "idf"
+  }
 }
+```
 
+```json
 {
-	"ip": "178.171.89.101",
-	"country": "ES",
-	"asn": {
-		"asnum": 9009,
-		"org_name": "M247 Ltd"
-	},
-	"geo": {
-		"city": "Madrid",
-		"region": "MD",
-		"region_name": "Madrid",
-		"postal_code": "28001",
-		"latitude": 40.4167,
-		"longitude": -3.6838,
-		"tz": "Europe/Madrid",
-		"lum_city": "madrid",
-		"lum_region": "md"
-	}
+  "ip": "178.171.89.101",
+  "country": "ES",
+  "asn": {
+    "asnum": 9009,
+    "org_name": "M247 Ltd"
+  },
+  "geo": {
+    "city": "Madrid",
+    "region": "MD",
+    "region_name": "Madrid",
+    "postal_code": "28001",
+    "latitude": 40.4167,
+    "longitude": -3.6838,
+    "tz": "Europe/Madrid",
+    "lum_city": "madrid",
+    "lum_region": "md"
+  }
 }
 ```
 
