@@ -1,11 +1,13 @@
 import * as nock from 'nock';
-import { ELuminatiCountry, EStrategyMode, Luminator } from '../../src';
+import { ECountry, EProvider, EStrategyMode, Luminator } from '../../src';
 
 describe('Luminator', () => {
-  const countryKeys: string[] = Object.values(ELuminatiCountry);
-  const luminatiConfig = {
-    zone: 'tictactrip',
+  const countryKeys: string[] = Object.values(ECountry);
+  const proxy = {
+    username: 'tictactrip',
     password: 'secret',
+    host: 'zproxy.lum-superproxy.io',
+    port: 22225,
   };
 
   describe('#constructor', () => {
@@ -13,7 +15,8 @@ describe('Luminator', () => {
       let error: Error;
       try {
         new Luminator({
-          luminatiConfig,
+          proxy,
+          provider: EProvider.LUMINATI,
           strategy: {
             mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
             countries: [],
@@ -56,7 +59,8 @@ describe('Luminator', () => {
         .reply(200, response1);
 
       const luminator: Luminator = new Luminator({
-        luminatiConfig,
+        proxy,
+        provider: EProvider.LUMINATI,
         axiosConfig: {
           headers: {
             'User-Agent': userAgent,
@@ -82,7 +86,7 @@ describe('Luminator', () => {
     const regexPatternAllCountries = `${countryKeys.join('|')}`;
 
     beforeEach(() => {
-      luminator = new Luminator({ luminatiConfig });
+      luminator = new Luminator({ proxy, provider: EProvider.LUMINATI });
     });
 
     it('should create an agent with a random countries and sessionId', async () => {
@@ -95,14 +99,12 @@ describe('Luminator', () => {
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(
-          `${luminatiConfig.zone}-session-([0-9])*-country-(${regexPatternAllCountries}):${luminatiConfig.password}`,
-        ),
+        new RegExp(`${proxy.username}-session-([0-9])*-country-(${regexPatternAllCountries}):${proxy.password}`),
       );
     });
 
     it('should create an agent with a specific country and a random sessionId', async () => {
-      const agent: Luminator = luminator.setIp({ countries: [ELuminatiCountry.FRANCE] });
+      const agent: Luminator = luminator.setIp({ countries: [ECountry.FRANCE] });
 
       expect(agent).toBeInstanceOf(Luminator);
       expect(typeof agent.sessionId).toEqual('number');
@@ -111,14 +113,14 @@ describe('Luminator', () => {
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${luminatiConfig.zone}-session-([0-9])*-country-fr:${luminatiConfig.password}`),
+        new RegExp(`${proxy.username}-session-([0-9])*-country-fr:${proxy.password}`),
       );
     });
 
     it('should create an agent with a specific country and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const agent: Luminator = luminator.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+      const agent: Luminator = luminator.setIp({ countries: [ECountry.FRANCE], sessionId });
 
       expect(agent).toBeInstanceOf(Luminator);
       expect(agent.sessionId).toEqual(123456789);
@@ -127,7 +129,7 @@ describe('Luminator', () => {
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${luminatiConfig.zone}-session-${sessionId}-country-fr:${luminatiConfig.password}`),
+        new RegExp(`${proxy.username}-session-${sessionId}-country-fr:${proxy.password}`),
       );
     });
 
@@ -143,9 +145,7 @@ describe('Luminator', () => {
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(
-          `${luminatiConfig.zone}-session-${sessionId}-country-(${regexPatternAllCountries}):${luminatiConfig.password}`,
-        ),
+        new RegExp(`${proxy.username}-session-${sessionId}-country-(${regexPatternAllCountries}):${proxy.password}`),
       );
     });
 
@@ -192,10 +192,11 @@ describe('Luminator', () => {
   describe('#strategy', () => {
     describe('CHANGE_IP_EVERY_REQUESTS', () => {
       const luminator: Luminator = new Luminator({
-        luminatiConfig,
+        proxy,
+        provider: EProvider.LUMINATI,
         strategy: {
           mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
-          countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
+          countries: [ECountry.FRANCE, ECountry.SPAIN],
         },
       });
 
