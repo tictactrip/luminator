@@ -1,3 +1,6 @@
+import HttpsProxyAgent from 'https-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
+
 interface IProviderConfig {
   host: string;
   port: number;
@@ -6,13 +9,8 @@ interface IProviderConfig {
 }
 
 interface ICreateProxyConfig {
-  proxy: {
-    host: string;
-    port: number;
-    auth: string;
-  };
-  session?: number;
-  country?: ECountry;
+  httpsAgent: HttpsProxyAgent;
+  httpAgent: HttpProxyAgent;
 }
 
 interface ICreateProxy {
