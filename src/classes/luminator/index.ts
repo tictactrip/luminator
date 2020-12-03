@@ -2,17 +2,9 @@ import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { config } from '../../config';
-import { replacer } from '../../utils/replacer';
-import {
-  ELuminatiCountry,
-  EStrategyMode,
-  IChangeIp,
-  IConfig,
-  ICreateProxy,
-  ICreateProxyAgents,
-  ILuminatiConfig,
-  TStrategy,
-} from './types';
+import { EProvider, EStrategyMode, IChangeIp, IConfig, ICreateProxyAgents, TProvider, TStrategy } from './types';
+import { Luminati } from '../providers/luminati';
+import { ECountry, IProviderConfig, ICreateProxy } from '../providers/base/types';
 
 /**
  * @description Luminator class.
@@ -20,18 +12,18 @@ import {
 export class Luminator {
   public axios: AxiosInstance;
   public sessionId: number;
-  public country: ELuminatiCountry;
+  public country: ECountry;
 
-  private readonly luminatiConfig: ILuminatiConfig;
   private readonly strategy: TStrategy;
+  private provider: TProvider;
 
   /**
    * @constructor
    * @param {IConfig} config
    */
   constructor(config: IConfig) {
-    this.luminatiConfig = config.luminatiConfig;
     this.strategy = config.strategy;
+    this.provider = Luminator.getProvider(config.provider, config.proxy);
 
     // Throw an error is country array is empty
     if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
@@ -125,26 +117,26 @@ export class Luminator {
 
   /**
    * @description Returns a random country.
-   * @params {ELuminatiCountry} [countries] - List of countries
-   * @returns {ELuminatiCountry}
+   * @params {ECountry} [countries] - List of countries
+   * @returns {ECountry}
    */
-  private getRandomCountry(countries?: ELuminatiCountry[]): ELuminatiCountry {
+  private getRandomCountry(countries?: ECountry[]): ECountry {
     let countrykeys: string[];
     if (countries) {
-      countrykeys = Object.entries(ELuminatiCountry)
-        .map(([key, value]: [string, ELuminatiCountry]) => {
+      countrykeys = Object.entries(ECountry)
+        .map(([key, value]: [string, ECountry]) => {
           if (countries.includes(value)) {
             return key;
           }
         })
         .filter(Boolean);
     } else {
-      countrykeys = Object.keys(ELuminatiCountry);
+      countrykeys = Object.keys(ECountry);
     }
 
     const randomCountryKey: string = countrykeys[Luminator.randomNumber(0, countrykeys.length - 1)];
 
-    return ELuminatiCountry[randomCountryKey];
+    return ECountry[randomCountryKey];
   }
 
   /**
@@ -153,29 +145,14 @@ export class Luminator {
    * @returns {ICreateProxyAgents}
    */
   private createProxyAgents(params: ICreateProxy): ICreateProxyAgents {
-    const { zone, password } = this.luminatiConfig;
-    const { sessionId, country } = params;
+    const { proxy, country, session } = this.provider.createProxyAgents(params);
 
-    this.sessionId = sessionId;
+    this.sessionId = session;
     this.country = country;
 
-    const auth: string = replacer('{zone}{sessionId}{country}:{password}', {
-      zone,
-      sessionId: `-session-${sessionId}`,
-      country: `-country-${country}`,
-      password,
-    });
-
-    const proxyAgentConfig = {
-      host: config.luminati.domain,
-      port: config.luminati.port,
-      auth,
-      rejectUnauthorized: false,
-    };
-
     return {
-      httpsAgent: new HttpsProxyAgent(proxyAgentConfig),
-      httpAgent: new HttpProxyAgent(proxyAgentConfig),
+      httpsAgent: new HttpsProxyAgent({ ...proxy, rejectUnauthorized: false }),
+      httpAgent: new HttpProxyAgent({ ...proxy, rejectUnauthorized: false }),
     };
   }
 
@@ -191,13 +168,25 @@ export class Luminator {
 
   /**
    * @description Checks if country array isn't empty.
-   * @param {ELuminatiCountry[]} countries
+   * @param {ECountry[]} countries
    * @throws {Error} Will throw an error if countries is empty
    * @returns {void}
    */
-  private static checkIfCountriesArrayIsntEmpty(countries: ELuminatiCountry[]): void {
+  private static checkIfCountriesArrayIsntEmpty(countries: ECountry[]): void {
     if (!countries.length) {
       throw new Error('"countries" array cannot be empty');
+    }
+  }
+
+  /**
+   * @description Instantiate right provider.
+   * @param {EProvider} provider
+   * @param {IProviderConfig} proxy
+   * @returns: {TProvider}
+   */
+  private static getProvider(provider: EProvider, proxy: IProviderConfig): TProvider {
+    if (provider === EProvider.LUMINATI) {
+      return new Luminati(proxy);
     }
   }
 }
