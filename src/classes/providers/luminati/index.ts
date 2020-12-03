@@ -1,8 +1,8 @@
 import { Provider } from '../base';
-import {ECountry, ICreateProxy, ICreateProxyConfig, IProviderConfig} from '../base/types';
+import { ECountry, ICreateProxy, ICreateProxyConfig, IProviderConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
-import HttpsProxyAgent from "https-proxy-agent";
-import {HttpProxyAgent} from "http-proxy-agent";
+import * as HttpsProxyAgent from 'https-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
 
 /**
  * @description Luminati proxy provider.
