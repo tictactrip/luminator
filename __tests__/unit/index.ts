@@ -93,8 +93,8 @@ describe('Luminator', () => {
       const agent: Luminator = luminator.setIp();
 
       expect(agent).toBeInstanceOf(Luminator);
-      expect(typeof agent.sessionId).toEqual('number');
-      expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
+      expect(typeof agent.getSessionId()).toEqual('number');
+      expect(agent.getCountry()).toMatch(new RegExp(regexPatternAllCountries));
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
@@ -107,8 +107,8 @@ describe('Luminator', () => {
       const agent: Luminator = luminator.setIp({ countries: [ECountry.FRANCE] });
 
       expect(agent).toBeInstanceOf(Luminator);
-      expect(typeof agent.sessionId).toEqual('number');
-      expect(agent.country).toMatch(/fr/);
+      expect(typeof agent.getSessionId()).toEqual('number');
+      expect(agent.getCountry()).toMatch(/fr/);
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
@@ -123,8 +123,8 @@ describe('Luminator', () => {
       const agent: Luminator = luminator.setIp({ countries: [ECountry.FRANCE], sessionId });
 
       expect(agent).toBeInstanceOf(Luminator);
-      expect(agent.sessionId).toEqual(123456789);
-      expect(agent.country).toMatch(/fr/);
+      expect(agent.getSessionId()).toEqual(123456789);
+      expect(agent.getCountry()).toMatch(/fr/);
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
@@ -139,8 +139,8 @@ describe('Luminator', () => {
       const agent: Luminator = luminator.setIp({ sessionId });
 
       expect(agent).toBeInstanceOf(Luminator);
-      expect(agent.sessionId).toEqual(123456789);
-      expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
+      expect(agent.getSessionId()).toEqual(123456789);
+      expect(agent.getCountry()).toMatch(new RegExp(regexPatternAllCountries));
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
@@ -257,8 +257,8 @@ describe('Luminator', () => {
             url: '/myip.json',
           });
 
-          expect(typeof luminator.sessionId).toEqual('number');
-          expect(luminator.country).toMatch(/fr|es/);
+          expect(typeof luminator.getSessionId()).toEqual('number');
+          expect(luminator.getCountry()).toMatch(/fr|es/);
           expect(result1.data).toStrictEqual(response1);
           expect(result2.data).toStrictEqual(response2);
 
@@ -284,8 +284,8 @@ describe('Luminator', () => {
             url: '/myip.json',
           });
 
-          expect(typeof luminator.sessionId).toEqual('number');
-          expect(luminator.country).toMatch(/fr|es/);
+          expect(typeof luminator.getSessionId()).toEqual('number');
+          expect(luminator.getCountry()).toMatch(/fr|es/);
           expect(result1.data).toStrictEqual(response1);
           expect(result2.data).toStrictEqual(response2);
 
