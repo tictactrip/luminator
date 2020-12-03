@@ -34,6 +34,7 @@ interface ICreateProxyAgents {
 
 enum EProvider {
   LUMINATI,
+  PROXYRACK,
 }
 
 type TProvider = Luminati;
@@ -46,6 +47,5 @@ export {
   TStrategyChangeIpEveryRequest,
   IConfig,
   ICreateProxyAgents,
-  // ICreateProxy,
   IChangeIp,
 };
