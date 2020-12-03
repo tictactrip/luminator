@@ -1,8 +1,8 @@
+import * as HttpsProxyAgent from 'https-proxy-agent';
+import { HttpProxyAgent } from 'http-proxy-agent';
 import { Provider } from '../base';
 import { ECountry, ICreateProxy, ICreateProxyConfig, IProviderConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
-import * as HttpsProxyAgent from 'https-proxy-agent';
-import { HttpProxyAgent } from 'http-proxy-agent';
 
 /**
  * @description Proxyrack proxy provider.
