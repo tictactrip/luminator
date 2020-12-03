@@ -1,7 +1,6 @@
-import {ICreateProxyConfig, ICreateProxy, ECountry} from './types';
+import { ICreateProxyConfig, ICreateProxy, ECountry } from './types';
 
 export abstract class Provider {
-
   /**
    * @description Returns session id.
    * @returns {number}
