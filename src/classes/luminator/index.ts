@@ -1,21 +1,18 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
-import * as HttpsProxyAgent from 'https-proxy-agent';
-import { HttpProxyAgent } from 'http-proxy-agent';
 import { config } from '../../config';
-import { EProvider, EStrategyMode, IChangeIp, IConfig, ICreateProxyAgents, TProvider, TStrategy } from './types';
+import { EProvider, EStrategyMode, IChangeIp, IConfig, TProvider, TStrategy } from './types';
 import { Luminati } from '../providers/luminati';
-import { ECountry, IProviderConfig, ICreateProxy } from '../providers/base/types';
+import { ECountry, IProviderConfig } from '../providers/base/types';
+// import {Proxyrack} from "../providers/proxyrack";
 
 /**
  * @description Luminator class.
  */
 export class Luminator {
   public axios: AxiosInstance;
-  public sessionId: number;
-  public country: ECountry;
 
   private readonly strategy: TStrategy;
-  private provider: TProvider;
+  private readonly provider: TProvider;
 
   /**
    * @constructor
@@ -38,6 +35,22 @@ export class Luminator {
   }
 
   /**
+   * @description Returns session id.
+   * @returns {number}
+   */
+  getSessionId(): number {
+    return this.provider.getSessionId();
+  }
+
+  /**
+   * @description Returns country.
+   * @returns {ECountry}
+   */
+  getCountry(): ECountry {
+    return this.provider.getCountry();
+  }
+
+  /**
    * @description Generate a new agent.
    * @param {IChangeIp} [params] - Params to handle multiple strategies.
    * @returns {Luminator}
@@ -45,7 +58,7 @@ export class Luminator {
   setIp(params?: IChangeIp): Luminator {
     // Creates an agent with a random countries and sessionId
     if (!params) {
-      const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
+      const { httpAgent, httpsAgent } = this.provider.createAgentsWithRandomCountryAndSessionId({
         country: this.getRandomCountry(),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
@@ -60,7 +73,7 @@ export class Luminator {
     if (params.countries && params.sessionId) {
       Luminator.checkIfCountriesArrayIsntEmpty(params.countries);
 
-      const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
+      const { httpsAgent, httpAgent } = this.provider.createAgentsSpecificCountryAndSessionsId({
         country: this.getRandomCountry(params.countries),
         sessionId: params.sessionId,
       });
@@ -75,7 +88,7 @@ export class Luminator {
     if (params.countries) {
       Luminator.checkIfCountriesArrayIsntEmpty(params.countries);
 
-      const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
+      const { httpAgent, httpsAgent } = this.provider.createAgentsSpecificCountriesAndRandomSessionId({
         country: this.getRandomCountry(params.countries),
         sessionId: Luminator.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
       });
@@ -87,7 +100,7 @@ export class Luminator {
     }
 
     // Creates an agent with a random country and a specific sessionId
-    const { httpAgent, httpsAgent }: ICreateProxyAgents = this.createProxyAgents({
+    const { httpsAgent, httpAgent } = this.provider.createAgentsRandomCountryAndSpecificSessionId({
       country: this.getRandomCountry(),
       sessionId: params.sessionId,
     });
@@ -140,23 +153,6 @@ export class Luminator {
   }
 
   /**
-   * @description Create https and http proxies.
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyAgents}
-   */
-  private createProxyAgents(params: ICreateProxy): ICreateProxyAgents {
-    const { proxy, country, session } = this.provider.createProxyAgents(params);
-
-    this.sessionId = session;
-    this.country = country;
-
-    return {
-      httpsAgent: new HttpsProxyAgent({ ...proxy, rejectUnauthorized: false }),
-      httpAgent: new HttpProxyAgent({ ...proxy, rejectUnauthorized: false }),
-    };
-  }
-
-  /**
    * @returns Returns a number between two included numbers.
    * @param {number} min
    * @param {number} max
@@ -188,5 +184,8 @@ export class Luminator {
     if (provider === EProvider.LUMINATI) {
       return new Luminati(proxy);
     }
+    // else if (provider === EProvider.PROXYRACK) {
+    //   return new Proxyrack(proxy);
+    // }
   }
 }
