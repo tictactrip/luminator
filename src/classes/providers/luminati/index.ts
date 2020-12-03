@@ -1,6 +1,6 @@
-import {Provider} from "../base";
-import {ICreateProxy, ICreateProxyConfig, IProviderConfig} from "../base/types";
-import {replacer} from "../../../utils/replacer";
+import { Provider } from '../base';
+import { ICreateProxy, ICreateProxyConfig, IProviderConfig } from '../base/types';
+import { replacer } from '../../../utils/replacer';
 
 /**
  * @description Luminati proxy provider.
@@ -32,9 +32,13 @@ export class Luminati implements Provider {
     });
 
     return {
-      host: this.config.host,
-      port: this.config.port,
-      auth,
+      proxy: {
+        host: this.config.host,
+        port: this.config.port,
+        auth,
+      },
+      country,
+      session: sessionId,
     };
   }
 }
