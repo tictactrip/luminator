@@ -1,7 +1,23 @@
-import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
+
+interface IBaseConfig {
+  axiosConfig?: AxiosRequestConfig;
+}
 
 export class Base {
   public axios: AxiosInstance;
+
+  /**
+   * @constructor
+   * @param {IBaseConfig} config
+   */
+  constructor(config: IBaseConfig) {
+    if (config.axiosConfig) {
+      this.axios = axios.create({ ...config.axiosConfig, proxy: false });
+    } else {
+      this.axios = axios.create({ proxy: false });
+    }
+  }
 
   /**
    * @description Sends request.
