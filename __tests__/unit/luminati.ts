@@ -1,7 +1,7 @@
 import * as nock from 'nock';
 import { ELuminatiCountry, EStrategyMode, Luminati } from '../../src';
 
-describe('luminati', () => {
+describe('Luminati', () => {
   const countryKeys: string[] = Object.values(ELuminatiCountry);
   const proxy = {
     username: 'tictactrip',
