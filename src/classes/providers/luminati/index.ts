@@ -1,95 +1,175 @@
+import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
-import { Provider } from '../base';
-import { ECountry, ICreateProxy, ICreateProxyConfig, IProviderConfig } from '../base/types';
+import { ICreateProxyConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
+import { Base } from '../base';
+import { EStrategyMode, IConfig, TStrategy } from './types';
+import { config } from '../../../config';
+import { ELuminatiCountry, ILuminatiCreateProxy, IChangeIp } from './types';
 
 /**
  * @description Luminati proxy provider.
+ * @extends {Base}
  */
-export class Luminati implements Provider {
-  private readonly config: IProviderConfig;
+export class Luminati extends Base {
+  private readonly config: IConfig;
+  public axios: AxiosInstance;
+
   public sessionId: number;
-  public country: ECountry;
+  public country: ELuminatiCountry;
+
+  private readonly strategy: TStrategy;
 
   /**
    * @constructor
-   * @param {IProviderConfig} config
+   * @param {IConfig} config
    */
-  constructor(config: IProviderConfig) {
+  constructor(config: IConfig) {
+    super();
     this.config = config;
+    this.strategy = config.strategy;
+
+    // Throw an error is country array is empty
+    if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
+      Luminati.checkIfCountriesArrayIsntEmpty(this.strategy.countries);
+    }
+
+    if (config.axiosConfig) {
+      this.axios = axios.create({ ...config.axiosConfig, proxy: false });
+    } else {
+      this.axios = axios.create({ proxy: false });
+    }
   }
 
   /**
-   * @description Returns session id.
-   * @returns {number}
+   * @description Generate a new agent.
+   * @param {IChangeIp} [params] - Params to handle multiple strategies.
+   * @returns {Luminati}
    */
-  getSessionId(): number {
-    return this.sessionId;
+  setIp(params?: IChangeIp): Luminati {
+    // Creates an agent with a random countries and sessionId
+    if (!params) {
+      const { httpAgent, httpsAgent } = this.createProxyAgents({
+        country: this.getRandomCountry(),
+        sessionId: this.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
+      });
+
+      this.axios.defaults.httpsAgent = httpsAgent;
+      this.axios.defaults.httpAgent = httpAgent;
+
+      return this;
+    }
+
+    // Creates an agent with specific countries and a specific sessionId
+    if (params.countries && params.sessionId) {
+      Luminati.checkIfCountriesArrayIsntEmpty(params.countries);
+
+      const { httpsAgent, httpAgent } = this.createProxyAgents({
+        country: this.getRandomCountry(params.countries),
+        sessionId: params.sessionId,
+      });
+
+      this.axios.defaults.httpsAgent = httpsAgent;
+      this.axios.defaults.httpAgent = httpAgent;
+
+      return this;
+    }
+
+    // Create an agent with specific countries and a random sessionId
+    if (params.countries) {
+      Luminati.checkIfCountriesArrayIsntEmpty(params.countries);
+
+      const { httpAgent, httpsAgent } = this.createProxyAgents({
+        country: this.getRandomCountry(params.countries),
+        sessionId: this.randomNumber(config.session.randomLimit.min, config.session.randomLimit.max),
+      });
+
+      this.axios.defaults.httpsAgent = httpsAgent;
+      this.axios.defaults.httpAgent = httpAgent;
+
+      return this;
+    }
+
+    // Creates an agent with a random country and a specific sessionId
+    const { httpsAgent, httpAgent } = this.createProxyAgents({
+      country: this.getRandomCountry(),
+      sessionId: params.sessionId,
+    });
+
+    this.axios.defaults.httpsAgent = httpsAgent;
+    this.axios.defaults.httpAgent = httpAgent;
+
+    return this;
   }
 
   /**
-   * @description Returns country.
-   * @returns {ECountry}
+   * @description Sends request.
+   * @param {AxiosRequestConfig} axiosRequestConfig
+   * @returns {AxiosPromise}
    */
-  getCountry(): ECountry {
-    return this.country;
+  fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
+    if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
+      this.setIp({ countries: this.strategy.countries });
+    }
+
+    return this.sendRequest(axiosRequestConfig);
   }
 
   /**
-   * @description Creates proxy agents with a random country and sessionId.
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
+   * @description Returns a random country.
+   * @params {ELuminatiCountry} [countries] - List of countries
+   * @returns {ELuminatiCountry}
    */
-  public createAgentsWithRandomCountryAndSessionId(params: ICreateProxy): ICreateProxyConfig {
-    return this.createProxyAgents(params);
+  private getRandomCountry(countries?: ELuminatiCountry[]): ELuminatiCountry {
+    let countrykeys: string[];
+    if (countries) {
+      countrykeys = Object.entries(ELuminatiCountry)
+        .map(([key, value]: [string, ELuminatiCountry]) => {
+          if (countries.includes(value)) {
+            return key;
+          }
+        })
+        .filter(Boolean);
+    } else {
+      countrykeys = Object.keys(ELuminatiCountry);
+    }
+
+    const randomCountryKey: string = countrykeys[this.randomNumber(0, countrykeys.length - 1)];
+
+    return ELuminatiCountry[randomCountryKey];
   }
 
   /**
-   * @description Creates proxy agents with specific countries and a specific sessionId.
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
+   * @description Checks if country array isn't empty.
+   * @param {ELuminatiCountry[]} countries
+   * @throws {Error} Will throw an error if countries is empty
+   * @returns {void}
    */
-  public createAgentsSpecificCountryAndSessionsId(params: ICreateProxy): ICreateProxyConfig {
-    return this.createProxyAgents(params);
-  }
-
-  /**
-   * @description Create proxy agents with a specific country and a random sessionId.
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
-   */
-  public createAgentsSpecificCountriesAndRandomSessionId(params: ICreateProxy): ICreateProxyConfig {
-    return this.createProxyAgents(params);
-  }
-
-  /**
-   * @description Creates proxy agents with a random country and a specific sessionId
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
-   */
-  public createAgentsRandomCountryAndSpecificSessionId(params: ICreateProxy): ICreateProxyConfig {
-    return this.createProxyAgents(params);
+  private static checkIfCountriesArrayIsntEmpty(countries: ELuminatiCountry[]): void {
+    if (!countries.length) {
+      throw new Error('"countries" array cannot be empty');
+    }
   }
 
   /**
    * @description Create https and http proxies.
-   * @param {ICreateProxy} params
+   * @param {ILuminatiCreateProxy} params
    * @returns {ICreateProxyConfig}
    */
-  private createProxyAgents(params: ICreateProxy): ICreateProxyConfig {
+  private createProxyAgents(params: ILuminatiCreateProxy): ICreateProxyConfig {
     const { sessionId, country } = params;
 
     const auth: string = replacer('{zone}{sessionId}{country}:{password}', {
-      zone: this.config.username,
+      zone: this.config.proxy.username,
       sessionId: `-session-${sessionId}`,
       country: `-country-${country}`,
-      password: this.config.password,
+      password: this.config.proxy.password,
     });
 
     const proxy = {
-      host: this.config.host,
-      port: this.config.port,
+      host: this.config.proxy.host,
+      port: this.config.proxy.port,
       auth,
     };
 
