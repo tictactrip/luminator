@@ -1,5 +1,5 @@
-import { IProviderConfig, EStrategyMode } from '../base/types';
 import { AxiosRequestConfig } from 'axios';
+import { IProviderConfig, EStrategyMode } from '../base/types';
 
 type TLuminatiStrategy = TLuminatiStrategyChangeIpEveryRequest;
 
