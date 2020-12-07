@@ -1,19 +1,19 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
-import { ICreateProxyConfig } from '../base/types';
+import { ICreateProxyConfig, EStrategyMode } from '../base/types';
 import { replacer } from '../../../utils/replacer';
 import { Base } from '../base';
-import { EStrategyMode, IConfig, TStrategy } from './types';
+import { ILuminatiConfig, TStrategy } from './types';
 import { config } from '../../../config';
-import { ELuminatiCountry, ILuminatiCreateProxy, IChangeIp } from './types';
+import { ELuminatiCountry, ILuminatiCreateProxy, ILuminatiChangeIp } from './types';
 
 /**
  * @description Luminati proxy provider.
  * @extends {Base}
  */
 export class Luminati extends Base {
-  private readonly config: IConfig;
+  private readonly config: ILuminatiConfig;
   public axios: AxiosInstance;
 
   public sessionId: number;
@@ -23,9 +23,9 @@ export class Luminati extends Base {
 
   /**
    * @constructor
-   * @param {IConfig} config
+   * @param {ILuminatiConfig} config
    */
-  constructor(config: IConfig) {
+  constructor(config: ILuminatiConfig) {
     super();
     this.config = config;
     this.strategy = config.strategy;
@@ -44,10 +44,10 @@ export class Luminati extends Base {
 
   /**
    * @description Generate a new agent.
-   * @param {IChangeIp} [params] - Params to handle multiple strategies.
+   * @param {ILuminatiChangeIp} [params] - Params to handle multiple strategies.
    * @returns {Luminati}
    */
-  setIp(params?: IChangeIp): Luminati {
+  setIp(params?: ILuminatiChangeIp): Luminati {
     // Creates an agent with a random countries and sessionId
     if (!params) {
       const { httpAgent, httpsAgent } = this.createProxyAgents({
