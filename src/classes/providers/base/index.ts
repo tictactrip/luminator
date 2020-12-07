@@ -8,7 +8,7 @@ export class Base {
    * @param {AxiosRequestConfig} axiosRequestConfig
    * @returns {AxiosPromise}
    */
-  fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
+  sendRequest(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
     if (!this.axios.defaults.httpsAgent && !this.axios.defaults.httpAgent) {
       throw new Error('Your are trying to send a request without setting a Strategy or calling setIp().');
     }
