@@ -4,7 +4,7 @@ import { HttpProxyAgent } from 'http-proxy-agent';
 import { ICreateProxyConfig, EStrategyMode } from '../base/types';
 import { replacer } from '../../../utils/replacer';
 import { Base } from '../base';
-import { ILuminatiConfig, TStrategy } from './types';
+import { ILuminatiConfig, TLuminatiStrategy } from './types';
 import { config } from '../../../config';
 import { ELuminatiCountry, ILuminatiCreateProxy, ILuminatiChangeIp } from './types';
 
@@ -19,7 +19,7 @@ export class Luminati extends Base {
   public sessionId: number;
   public country: ELuminatiCountry;
 
-  private readonly strategy: TStrategy;
+  private readonly strategy: TLuminatiStrategy;
 
   /**
    * @constructor
@@ -43,7 +43,7 @@ export class Luminati extends Base {
   }
 
   /**
-   * @description Generate a new agent.
+   * @description Create and set proxy agents.
    * @param {ILuminatiChangeIp} [params] - Params to handle multiple strategies.
    * @returns {Luminati}
    */
