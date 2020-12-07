@@ -1,91 +1,69 @@
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
-import { Provider } from '../base';
-import { ECountry, ICreateProxy, ICreateProxyConfig, IProviderConfig } from '../base/types';
+import { ICreateProxyConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
+import { Base } from '../base';
+import { AxiosPromise, AxiosRequestConfig } from 'axios';
+import { IProxyrackConfig } from './types';
 
 /**
  * @description Proxyrack proxy provider.
  */
-export class Proxyrack implements Provider {
-  private readonly config: IProviderConfig;
-  public sessionId: number;
-  public country: ECountry;
+export class Proxyrack extends Base {
+  private readonly config: IProxyrackConfig;
+  private setIpInitialized: boolean;
 
   /**
    * @constructor
-   * @param {IProviderConfig} config
+   * @param {IProxyrackConfig} config
    */
-  constructor(config: IProviderConfig) {
+  constructor(config: IProxyrackConfig) {
+    super();
     this.config = config;
+    this.setIpInitialized = false;
   }
 
   /**
-   * @description Returns session id.
-   * @returns {number}
+   * @description Sends request.
+   * @param {AxiosRequestConfig} axiosRequestConfig
+   * @returns {AxiosPromise}
    */
-  getSessionId(): number {
-    throw new Error('Unavailable method for this provider.');
+  fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
+    if (!this.setIpInitialized) {
+      this.setIp();
+    }
+
+    return this.sendRequest(axiosRequestConfig);
   }
 
   /**
-   * @description Returns country.
-   * @returns {ECountry}
+   * @description Create and set proxy agents.
+   * @returns {Proxyrack}
    */
-  getCountry(): ECountry {
-    throw new Error('Unavailable method for this provider.');
-  }
+  setIp(): Proxyrack {
+    const { httpAgent, httpsAgent } = this.createProxyAgents();
 
-  /**
-   * @description Creates proxy agents with a random country and sessionId.
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
-   */
-  public createAgentsWithRandomCountryAndSessionId(params: ICreateProxy): ICreateProxyConfig {
-    return this.createProxyAgents(params);
-  }
+    this.axios.defaults.httpsAgent = httpsAgent;
+    this.axios.defaults.httpAgent = httpAgent;
 
-  /**
-   * @description Creates proxy agents with specific countries and a specific sessionId.
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
-   */
-  public createAgentsSpecificCountryAndSessionsId(params: ICreateProxy): ICreateProxyConfig {
-    throw new Error('Unavailable method for this provider.');
-  }
+    this.setIpInitialized = true;
 
-  /**
-   * @description Create proxy agents with a specific country and a random sessionId.
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
-   */
-  public createAgentsSpecificCountriesAndRandomSessionId(params: ICreateProxy): ICreateProxyConfig {
-    throw new Error('Unavailable method for this provider.');
-  }
-
-  /**
-   * @description Creates proxy agents with a random country and a specific sessionId
-   * @param {ICreateProxy} params
-   * @returns {ICreateProxyConfig}
-   */
-  public createAgentsRandomCountryAndSpecificSessionId(params: ICreateProxy): ICreateProxyConfig {
-    throw new Error('Unavailable method for this provider.');
+    return this;
   }
 
   /**
    * @description Create https and http proxies.
-   * @param {ICreateProxy} params
    * @returns {ICreateProxyConfig}
    */
-  private createProxyAgents(params: ICreateProxy): ICreateProxyConfig {
+  private createProxyAgents(): ICreateProxyConfig {
     const auth: string = replacer('{username}:{password}', {
-      username: this.config.username,
-      password: this.config.password,
+      username: this.config.proxy.username,
+      password: this.config.proxy.password,
     });
 
     const proxy = {
-      host: this.config.host,
-      port: this.config.port,
+      host: this.config.proxy.host,
+      port: this.config.proxy.port,
       auth,
     };
 
