@@ -1,4 +1,4 @@
-import {AxiosInstance, AxiosPromise, AxiosRequestConfig} from "axios";
+import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 
 export class Base {
   public axios: AxiosInstance;
