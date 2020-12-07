@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { ICreateProxyConfig, EStrategyMode } from '../base/types';
@@ -26,19 +26,13 @@ export class Luminati extends Base {
    * @param {ILuminatiConfig} config
    */
   constructor(config: ILuminatiConfig) {
-    super();
+    super({ axiosConfig: config.axiosConfig });
     this.config = config;
     this.strategy = config.strategy;
 
     // Throw an error is country array is empty
     if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
       Luminati.checkIfCountriesArrayIsntEmpty(this.strategy.countries);
-    }
-
-    if (config.axiosConfig) {
-      this.axios = axios.create({ ...config.axiosConfig, proxy: false });
-    } else {
-      this.axios = axios.create({ proxy: false });
     }
   }
 
