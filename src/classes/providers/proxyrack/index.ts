@@ -1,9 +1,9 @@
+import { AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { ICreateProxyConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
 import { Base } from '../base';
-import { AxiosPromise, AxiosRequestConfig } from 'axios';
 import { IProxyrackConfig } from './types';
 
 /**
@@ -18,7 +18,8 @@ export class Proxyrack extends Base {
    * @param {IProxyrackConfig} config
    */
   constructor(config: IProxyrackConfig) {
-    super();
+    super({ axiosConfig: config.axiosConfig });
+
     this.config = config;
     this.setIpInitialized = false;
   }
