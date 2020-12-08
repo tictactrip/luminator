@@ -8,13 +8,18 @@
 
 ## Description
 
-This repository provides an Axios Luminati agent.
+This repository provides Axios proxy agents.
 
 ## Install
 
 ```
 yarn add @tictactrip/luminator
 ```
+
+## Available proxy providers
+
+- [Luminati](https://luminati.io)
+- [Proxyrack](https://www.proxyrack.com)
 
 ## How to use it?
 
@@ -23,36 +28,40 @@ yarn add @tictactrip/luminator
 Create your instance:
 
 ```typescript
-const luminator: Luminator = new Luminator({ 
-  luminatiConfig: {
-    zone: 'tictactrip',
+import { Luminati } from '@tictactrip/luminator';
+
+const luminati: Luminati = new Luminati({
+  proxy: {
+    username: 'tictactrip',
     password: 'secret',
-  } 
+    host: 'zproxy.lum-superproxy.io',
+    port: 22225,
+  }
 });
 ```
 
 - Create an agent with a random countries and sessionId
 
 ```typescript
-const agent: Luminator =  luminator.changeIp();
+const agent: Luminati =  luminati.changeIp();
 ```
 
 - Create an agent with a specific country and a random sessionId
 
 ```typescript
-const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE] });
+const agent: Luminati = luminati.changeIp({ countries: [ELuminatiCountry.FRANCE] });
 ```
 
 - Create an agent with a specific country and a specific sessionId
 
 ```typescript
-const agent: Luminator = luminator.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+const agent: Luminati = luminati.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
 ```
 
 - Create an agent with a random countries and a specific sessionId
 
 ```typescript
-const agent: Luminator = luminator.changeIp({ sessionId });
+const agent: Luminati = luminati.changeIp({ sessionId });
 ```
 
 ### Strategy: Change ip every requests
@@ -60,13 +69,15 @@ const agent: Luminator = luminator.changeIp({ sessionId });
 This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests. 
 
 ```typescript
-import { Luminator, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
+import { Luminati, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
 
-const luminator: Luminator = new Luminator({
-  luminatiConfig: {
-    zone: 'tictactrip',
+const luminati: Luminati = new Luminati({
+  proxy: {
+    username: 'tictactrip',
     password: 'secret',
-  },   
+    host: 'zproxy.lum-superproxy.io',
+    port: 22225,
+  }, 
   strategy: {
     mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
     countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
@@ -79,8 +90,8 @@ const requestConfig = {
   url: '/myip.json',
 }
 
-const response1 = await luminator.fetch(requestConfig);
-const response2 = await luminator.fetch(requestConfig);
+const response1 = await luminati.fetch(requestConfig);
+const response2 = await luminati.fetch(requestConfig);
 
 console.log(response1.data);
 console.log(response2.data);
@@ -152,7 +163,7 @@ GPL-3.0 © [Tictactrip](https://www.tictactrip.eu)
 [prod-dependencies]: https://david-dm.org/tictactrip/luminator
 [coverage-badge]: https://codecov.io/gh/tictactrip/luminator/branch/master/graph/badge.svg
 [coverage]: https://codecov.io/gh/tictactrip/luminator
-[travis-badge]: https://travis-ci.org/tictactrip/luminator.svg?branch=master
+[travis-badge]: https://travis-ci.org/tictactrip/luminati.svg?branch=master
 [travis-ci]: https://travis-ci.org/tictactrip/luminator
 [license-badge]: https://img.shields.io/badge/license-GPL3-blue.svg?style=flat-square
 [license]: https://github.com/tictactrip/luminator/blob/master/LICENSE
