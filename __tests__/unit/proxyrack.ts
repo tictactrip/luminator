@@ -71,8 +71,8 @@ describe('Proxyrack', () => {
       const agent: Proxyrack = proxyrack.setIp();
 
       expect(agent).toBeInstanceOf(Proxyrack);
-      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('megaproxy.rotating.proxyrack.net');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(222);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(new RegExp(`${proxy.username}:${proxy.password}`));
     });
