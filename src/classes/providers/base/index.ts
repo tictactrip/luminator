@@ -1,8 +1,5 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
-
-interface IBaseConfig {
-  axiosConfig?: AxiosRequestConfig;
-}
+import { IBaseConfig } from './types';
 
 export class Base {
   public axios: AxiosInstance;
