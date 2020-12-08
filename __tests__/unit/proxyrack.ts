@@ -10,7 +10,7 @@ describe('Proxyrack', () => {
   };
 
   describe('#constructor', () => {
-    it.only('should set an axios default configuration (User-Agent header)', async () => {
+    it('should set an axios default configuration (User-Agent header)', async () => {
       const userAgent =
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36';
       const response1 = {
