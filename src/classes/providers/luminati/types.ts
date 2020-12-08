@@ -1,28 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import { HttpProxyAgent } from 'http-proxy-agent';
+import { IProviderConfig, EStrategyMode } from '../base/types';
 
-enum EStrategyMode {
-  CHANGE_IP_EVERY_REQUESTS = 'CHANGE_IP_EVERY_REQUESTS',
-}
-
-type TStrategyChangeIpEveryRequest = {
-  mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
-  countries: ELuminatiCountry[];
-};
-
-type TStrategy = TStrategyChangeIpEveryRequest;
-
-interface ILuminatiConfig {
-  zone: string;
-  password: string;
-}
-
-interface IConfig {
-  axiosConfig?: AxiosRequestConfig;
-  luminatiConfig: ILuminatiConfig;
-  strategy?: TStrategy;
-}
+type TLuminatiStrategy = TLuminatiStrategyChangeIpEveryRequest;
 
 enum ELuminatiCountry {
   UNITED_STATES = 'us',
@@ -105,29 +84,25 @@ enum ELuminatiCountry {
   VIETNAM = 'vn',
 }
 
-interface ICreateProxy {
+interface ILuminatiConfig {
+  proxy: IProviderConfig;
+  axiosConfig?: AxiosRequestConfig;
+  strategy?: TLuminatiStrategy;
+}
+
+interface ILuminatiCreateProxy {
   sessionId: number;
   country: ELuminatiCountry;
 }
 
-interface IChangeIp {
-  countries?: ELuminatiCountry[];
+interface ILuminatiChangeIp {
   sessionId?: number;
+  countries?: ELuminatiCountry[];
 }
 
-interface ICreateProxyAgents {
-  httpsAgent: HttpsProxyAgent;
-  httpAgent: HttpProxyAgent;
-}
-
-export {
-  EStrategyMode,
-  TStrategy,
-  TStrategyChangeIpEveryRequest,
-  IConfig,
-  ILuminatiConfig,
-  ELuminatiCountry,
-  ICreateProxyAgents,
-  ICreateProxy,
-  IChangeIp,
+type TLuminatiStrategyChangeIpEveryRequest = {
+  mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
+  countries: ELuminatiCountry[];
 };
+
+export { ELuminatiCountry, EStrategyMode, TLuminatiStrategy, ILuminatiCreateProxy, ILuminatiChangeIp, ILuminatiConfig };

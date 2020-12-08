@@ -1,19 +1,21 @@
 import * as nock from 'nock';
-import { ELuminatiCountry, EStrategyMode, Luminator } from '../../src';
+import { ELuminatiCountry, EStrategyMode, Luminati } from '../../src';
 
-describe('Luminator', () => {
+describe('Luminati', () => {
   const countryKeys: string[] = Object.values(ELuminatiCountry);
-  const luminatiConfig = {
-    zone: 'tictactrip',
+  const proxy = {
+    username: 'tictactrip',
     password: 'secret',
+    host: 'zproxy.lum-superproxy.io',
+    port: 22225,
   };
 
   describe('#constructor', () => {
     it('should throw an error if a strategy has been set without any countries', async () => {
       let error: Error;
       try {
-        new Luminator({
-          luminatiConfig,
+        new Luminati({
+          proxy,
           strategy: {
             mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
             countries: [],
@@ -55,8 +57,8 @@ describe('Luminator', () => {
         .once()
         .reply(200, response1);
 
-      const luminator: Luminator = new Luminator({
-        luminatiConfig,
+      const luminati: Luminati = new Luminati({
+        proxy,
         axiosConfig: {
           headers: {
             'User-Agent': userAgent,
@@ -64,7 +66,7 @@ describe('Luminator', () => {
         },
       });
 
-      const { data } = await luminator.setIp().fetch({
+      const { data } = await luminati.setIp().fetch({
         method: 'get',
         baseURL: 'https://lumtest.com',
         url: '/myip.json',
@@ -77,82 +79,78 @@ describe('Luminator', () => {
   });
 
   describe('#setIp', () => {
-    let luminator: Luminator;
+    let luminati: Luminati;
 
     const regexPatternAllCountries = `${countryKeys.join('|')}`;
 
     beforeEach(() => {
-      luminator = new Luminator({ luminatiConfig });
+      luminati = new Luminati({ proxy });
     });
 
     it('should create an agent with a random countries and sessionId', async () => {
-      const agent: Luminator = luminator.setIp();
+      const agent: Luminati = luminati.setIp();
 
-      expect(agent).toBeInstanceOf(Luminator);
+      expect(agent).toBeInstanceOf(Luminati);
       expect(typeof agent.sessionId).toEqual('number');
       expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(
-          `${luminatiConfig.zone}-session-([0-9])*-country-(${regexPatternAllCountries}):${luminatiConfig.password}`,
-        ),
+        new RegExp(`${proxy.username}-session-([0-9])*-country-(${regexPatternAllCountries}):${proxy.password}`),
       );
     });
 
     it('should create an agent with a specific country and a random sessionId', async () => {
-      const agent: Luminator = luminator.setIp({ countries: [ELuminatiCountry.FRANCE] });
+      const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE] });
 
-      expect(agent).toBeInstanceOf(Luminator);
+      expect(agent).toBeInstanceOf(Luminati);
       expect(typeof agent.sessionId).toEqual('number');
       expect(agent.country).toMatch(/fr/);
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${luminatiConfig.zone}-session-([0-9])*-country-fr:${luminatiConfig.password}`),
+        new RegExp(`${proxy.username}-session-([0-9])*-country-fr:${proxy.password}`),
       );
     });
 
     it('should create an agent with a specific country and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const agent: Luminator = luminator.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+      const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
 
-      expect(agent).toBeInstanceOf(Luminator);
+      expect(agent).toBeInstanceOf(Luminati);
       expect(agent.sessionId).toEqual(123456789);
       expect(agent.country).toMatch(/fr/);
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${luminatiConfig.zone}-session-${sessionId}-country-fr:${luminatiConfig.password}`),
+        new RegExp(`${proxy.username}-session-${sessionId}-country-fr:${proxy.password}`),
       );
     });
 
     it('should create an agent with a random countries and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const agent: Luminator = luminator.setIp({ sessionId });
+      const agent: Luminati = luminati.setIp({ sessionId });
 
-      expect(agent).toBeInstanceOf(Luminator);
+      expect(agent).toBeInstanceOf(Luminati);
       expect(agent.sessionId).toEqual(123456789);
       expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
       expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
       expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
       expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(
-          `${luminatiConfig.zone}-session-${sessionId}-country-(${regexPatternAllCountries}):${luminatiConfig.password}`,
-        ),
+        new RegExp(`${proxy.username}-session-${sessionId}-country-(${regexPatternAllCountries}):${proxy.password}`),
       );
     });
 
     it('should throw an error if no countries have been given (only countries attribute)', async () => {
       let error: Error;
       try {
-        luminator.setIp({ countries: [] });
+        luminati.setIp({ countries: [] });
       } catch (e) {
         error = e;
       }
@@ -163,7 +161,7 @@ describe('Luminator', () => {
     it('should throw an error if no countries have been given (sessionId and countries attribute)', async () => {
       let error: Error;
       try {
-        luminator.setIp({ sessionId: 123, countries: [] });
+        luminati.setIp({ sessionId: 123, countries: [] });
       } catch (e) {
         error = e;
       }
@@ -174,7 +172,7 @@ describe('Luminator', () => {
     it('should throw an error if fetch() has been called without previously used setIp() or set a strategy', async () => {
       let error: Error;
       try {
-        await luminator.fetch({
+        await luminati.fetch({
           method: 'get',
           baseURL: 'https://lumtest.com',
           url: '/myip.json',
@@ -191,8 +189,8 @@ describe('Luminator', () => {
 
   describe('#strategy', () => {
     describe('CHANGE_IP_EVERY_REQUESTS', () => {
-      const luminator: Luminator = new Luminator({
-        luminatiConfig,
+      const luminati: Luminati = new Luminati({
+        proxy,
         strategy: {
           mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
           countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
@@ -244,20 +242,20 @@ describe('Luminator', () => {
           const request1Mock = nock('http://lumtest.com').get('/myip.json').once().reply(200, response1);
           const request2Mock = nock('http://lumtest.com').get('/myip.json').once().reply(200, response2);
 
-          const result1 = await luminator.fetch({
+          const result1 = await luminati.fetch({
             method: 'get',
             baseURL: 'http://lumtest.com',
             url: '/myip.json',
           });
 
-          const result2 = await luminator.fetch({
+          const result2 = await luminati.fetch({
             method: 'get',
             baseURL: 'http://lumtest.com',
             url: '/myip.json',
           });
 
-          expect(typeof luminator.sessionId).toEqual('number');
-          expect(luminator.country).toMatch(/fr|es/);
+          expect(typeof luminati.sessionId).toEqual('number');
+          expect(luminati.country).toMatch(/fr|es/);
           expect(result1.data).toStrictEqual(response1);
           expect(result2.data).toStrictEqual(response2);
 
@@ -271,20 +269,20 @@ describe('Luminator', () => {
           const request1Mock = nock('https://lumtest.com').get('/myip.json').once().reply(200, response1);
           const request2Mock = nock('https://lumtest.com').get('/myip.json').once().reply(200, response2);
 
-          const result1 = await luminator.fetch({
+          const result1 = await luminati.fetch({
             method: 'get',
             baseURL: 'https://lumtest.com',
             url: '/myip.json',
           });
 
-          const result2 = await luminator.fetch({
+          const result2 = await luminati.fetch({
             method: 'get',
             baseURL: 'https://lumtest.com',
             url: '/myip.json',
           });
 
-          expect(typeof luminator.sessionId).toEqual('number');
-          expect(luminator.country).toMatch(/fr|es/);
+          expect(typeof luminati.sessionId).toEqual('number');
+          expect(luminati.country).toMatch(/fr|es/);
           expect(result1.data).toStrictEqual(response1);
           expect(result2.data).toStrictEqual(response2);
 
