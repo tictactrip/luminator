@@ -42,7 +42,7 @@ export class Proxyrack extends Base {
    * @returns {Proxyrack}
    */
   setIp(): Proxyrack {
-    const { httpAgent, httpsAgent } = this.createProxyAgents();
+    const { httpAgent, httpsAgent }: ICreateProxyConfig = this.createProxyAgents();
 
     this.axios.defaults.httpsAgent = httpsAgent;
     this.axios.defaults.httpAgent = httpAgent;
