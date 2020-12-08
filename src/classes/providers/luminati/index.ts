@@ -59,7 +59,7 @@ export class Luminati extends Base {
     if (params.countries && params.sessionId) {
       Luminati.checkIfCountriesArrayIsntEmpty(params.countries);
 
-      const { httpsAgent, httpAgent } = this.createProxyAgents({
+      const { httpsAgent, httpAgent }: ICreateProxyConfig = this.createProxyAgents({
         country: this.getRandomCountry(params.countries),
         sessionId: params.sessionId,
       });
@@ -86,7 +86,7 @@ export class Luminati extends Base {
     }
 
     // Creates an agent with a random country and a specific sessionId
-    const { httpsAgent, httpAgent } = this.createProxyAgents({
+    const { httpsAgent, httpAgent }: ICreateProxyConfig = this.createProxyAgents({
       country: this.getRandomCountry(),
       sessionId: params.sessionId,
     });
