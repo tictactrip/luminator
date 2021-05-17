@@ -1,4 +1,4 @@
-import * as stimmy from '@rimiti/stimmy';
+import stimmy from '@rimiti/stimmy';
 
 const replacer = stimmy();
 
