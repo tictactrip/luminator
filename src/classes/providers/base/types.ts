@@ -18,8 +18,8 @@ interface ICreateProxyConfig {
 interface IProviderConfig {
   host: string;
   port: number;
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
 }
 
-export { EStrategyMode, ICreateProxyConfig, IProviderConfig, IBaseConfig };
+export { EStrategyMode, IBaseConfig, ICreateProxyConfig, IProviderConfig };
