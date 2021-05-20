@@ -20,6 +20,7 @@ yarn add @tictactrip/luminator
 
 - [Luminati](https://luminati.io)
 - [Proxyrack](https://www.proxyrack.com)
+- [Shifter.io](https://www.shifter.io)
 
 ## How to use it?
 
@@ -66,7 +67,7 @@ const agent: Luminati = luminati.changeIp({ sessionId });
 
 ### Strategy: Change ip every requests
 
-This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests. 
+This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests.
 
 ```typescript
 import { Luminati, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
@@ -77,7 +78,7 @@ const luminati: Luminati = new Luminati({
     password: 'secret',
     host: 'zproxy.lum-superproxy.io',
     port: 22225,
-  }, 
+  },
   strategy: {
     mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
     countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
