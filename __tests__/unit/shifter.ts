@@ -31,7 +31,7 @@ describe('Shifter', () => {
 
   describe('#constructor', () => {
     describe('when is not given a strategy with a single country', () => {
-      it('should throw an error if a strateg has been set without any countries', async () => {
+      it('should throw an error if a strategy has been set without any countries', async () => {
         let error: Error;
 
         try {
