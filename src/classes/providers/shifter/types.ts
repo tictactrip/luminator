@@ -10,9 +10,9 @@ enum EShifterCountry {
 }
 
 interface IShifterCountryPortMapping {
-  fr: number[];
-  be: number[];
-  ch: number[];
+  fr?: number[];
+  be?: number[];
+  ch?: number[];
 }
 
 interface IShifterConfig {
