@@ -16,10 +16,10 @@ import {
  * @extends {Base}
  */
 export class Shifter extends Base {
-  private readonly config: IShifterConfig;
   public axios: AxiosInstance;
-
   public country: EShifterCountry;
+
+  private readonly config: IShifterConfig;
   private readonly strategy: TShifterStrategy;
 
   /**
