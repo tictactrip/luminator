@@ -71,13 +71,7 @@ export class Shifter extends Base {
     let countryKeys: string[];
 
     if (countries) {
-      countryKeys = Object.entries(EShifterCountry)
-        .map(([key, value]: [string, EShifterCountry]) => {
-          if (countries.includes(value)) {
-            return value;
-          }
-        })
-        .filter(Boolean);
+      countryKeys = Object.values(EShifterCountry).filter((country) => countries.includes(country));
     } else {
       countryKeys = Object.values(EShifterCountry);
     }
