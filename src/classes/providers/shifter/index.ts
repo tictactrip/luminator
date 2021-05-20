@@ -76,9 +76,7 @@ export class Shifter extends Base {
       countryKeys = Object.values(EShifterCountry);
     }
 
-    const randomCountryKey: string = countryKeys[this.randomNumber(0, countryKeys.length - 1)];
-
-    return randomCountryKey;
+    return countryKeys[this.randomNumber(0, countryKeys.length - 1)];
   }
 
   private isCountryPortMappingEmpty(mapping: IShifterCountryPortMapping): void {
