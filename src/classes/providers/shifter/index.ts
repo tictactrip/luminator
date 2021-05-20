@@ -83,7 +83,7 @@ export class Shifter extends Base {
     if (countries) {
       countryKeys = Object.values(EShifterCountry).filter((country) => countries.includes(country));
     } else {
-      countryKeys = Object.values(EShifterCountry);
+      countryKeys = Object.keys(this.config.strategy.mapping);
     }
 
     return countryKeys[this.randomNumber(0, countryKeys.length - 1)];
