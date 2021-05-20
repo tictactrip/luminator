@@ -1,14 +1,14 @@
 import * as nock from 'nock';
 import {
-  ICreateProxyConfig,
   EShifterCountry,
   EStrategyMode,
-  EShifterCountryPortMapping,
-  TShifterStrategyChangeIpEveryRequest,
+  IProviderConfig,
+  IShifterCountryPortMapping,
+  TShifterStrategy,
   Shifter,
 } from '../../src';
 
-const getMappingPorts: number[] = (mapping) => {
+const getMappingPorts = (mapping: IShifterCountryPortMapping): number[] => {
   return Object.values(mapping).reduce((acc, ports) => [...acc, ...ports], []);
 };
 
@@ -24,7 +24,7 @@ describe('Shifter', () => {
     ch: [12358],
   };
 
-  const strategy: TShifterStrategyChangeIpEveryRequest = {
+  const strategy: TShifterStrategy = {
     mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
     mapping,
   };
@@ -55,14 +55,14 @@ describe('Shifter', () => {
     let shifter: Shifter;
 
     beforeEach(() => {
-      shifter = new Shifter({ proxy, mapping, strategy });
+      shifter = new Shifter({ proxy, strategy });
     });
 
     describe('when not given any specific country to target', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        const expectedProxyAgent: ICreateProxyConfig = {
+        const expectedProxyAgent = {
           host: proxy.host,
           port: expect.any(Number),
           rejectUnauthorized: false,
@@ -84,7 +84,7 @@ describe('Shifter', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        const expectedProxyAgent: ICreateProxyConfig = {
+        const expectedProxyAgent = {
           host: proxy.host,
           port: expect.any(Number),
           rejectUnauthorized: false,
@@ -118,7 +118,7 @@ describe('Shifter', () => {
       let shifter: Shifter;
 
       beforeEach(() => {
-        shifter = new Shifter({ proxy, mapping, strategy });
+        shifter = new Shifter({ proxy, strategy });
       });
 
       const response1 = {
