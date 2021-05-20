@@ -19,9 +19,9 @@ describe('Shifter', () => {
   };
 
   const mapping: IShifterCountryPortMapping = {
-    fr: [12356],
+    fr: [12356, 12359, 12360],
     be: [12357],
-    ch: [12358],
+    ch: [12358, 12361],
   };
 
   const strategy: TShifterStrategy = {
