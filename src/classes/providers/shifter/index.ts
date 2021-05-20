@@ -81,7 +81,7 @@ export class Shifter extends Base {
 
   private isCountryPortMappingEmpty(mapping: IShifterCountryPortMapping): void {
     if (!Object.keys(mapping).length) {
-      throw new Error('A port-to-country mapping has to be provided');
+      throw new Error('A port-to-country mapping has to be provided.');
     }
   }
 

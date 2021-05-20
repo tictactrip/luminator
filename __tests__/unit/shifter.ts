@@ -46,7 +46,7 @@ describe('Shifter', () => {
           error = e;
         }
 
-        expect(error).toStrictEqual(new Error('A port-to-country mapping has to be provided'));
+        expect(error).toStrictEqual(new Error('A port-to-country mapping has to be provided.'));
       });
     });
   });
