@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
-import { ICreateProxyConfig, EStrategyMode } from '../base/types';
+import { ICreateProxyConfig, EStrategyMode, IProviderConfig } from '../base/types';
 import { Base } from '../base';
 import {
   IShifterConfig,
@@ -24,7 +24,7 @@ export class Shifter extends Base {
 
   /**
    * @constructor
-   * @param config
+   * @param {IShifterConfig} config
    */
   constructor(config: IShifterConfig) {
     super({ axiosConfig: config.axiosConfig });
@@ -38,9 +38,9 @@ export class Shifter extends Base {
 
   /**
    * @description Create and set proxy agents. A different port matches a
-   * different country / IP
-   * @param {IShifterChangeIp} [params] Params to handle multiple strategies
-   * @returns
+   * different country / IP.
+   * @param {IShifterChangeIp} params Params to handle multiple strategies.
+   * @returns {Shifter} An instance of a shifter proxy provider.
    */
   setIp(params?: IShifterChangeIp): Shifter {
     let proxyConfig: ICreateProxyConfig;
@@ -61,12 +61,22 @@ export class Shifter extends Base {
     return this;
   }
 
+  /**
+   * @description Picks a random port from a list of matching countries.
+   * @param {EShifterCountry[]} countries A list of verified countries.
+   * @returns {number} A port number.
+   */
   private getRandomPort(countries?: EShifterCountry[]): number {
     const ports: number[] = this.config.strategy.mapping[this.getRandomCountry(countries)];
 
     return ports[this.randomNumber(0, ports.length - 1)];
   }
 
+  /**
+   * @description Picks a random country among a given list of them.
+   * @param {EShifterCountry[]} countries A list of verified countries.
+   * @returns {string} A single country from the given list.
+   */
   private getRandomCountry(countries?: EShifterCountry[]): string {
     let countryKeys: string[];
 
@@ -79,6 +89,11 @@ export class Shifter extends Base {
     return countryKeys[this.randomNumber(0, countryKeys.length - 1)];
   }
 
+  /**
+   * @description Checks weither or not the mapping contains a single entry.
+   * @param {IShifterCountryPortmapping} mapping country to port mapping.
+   * @throws {Error} Will throw if mapping has no entries.
+   */
   private isCountryPortMappingEmpty(mapping: IShifterCountryPortMapping): void {
     if (!Object.keys(mapping).length) {
       throw new Error('A port-to-country mapping has to be provided.');
@@ -86,8 +101,8 @@ export class Shifter extends Base {
   }
 
   /**
-   * @description Sends request.
-   * @param axiosRequestConfig
+   * @description Sends a request.
+   * @param {AxiosRequestConfig} axiosRequestConfig
    * @returns {AxiosPromise}
    */
   fetch(axiosRequestConfig: AxiosRequestConfig): AxiosPromise {
@@ -98,8 +113,13 @@ export class Shifter extends Base {
     return this.sendRequest(axiosRequestConfig);
   }
 
-  private createProxyAgents(params): ICreateProxyConfig {
-    const proxy = {
+  /**
+   * @description Creates both an HTTP and HTTPS proxy
+   * @param { port: number } params
+   * @returns {ICreateProxyConfig}
+   */
+  private createProxyAgents(params: { port: number }): ICreateProxyConfig {
+    const proxy: IProviderConfig = {
       host: this.config.proxy.host,
       port: params.port,
     };
