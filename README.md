@@ -50,25 +50,25 @@ const luminati: Luminati = new Luminati({
 - Create an agent with a random countries and sessionId
 
 ```typescript
-const agent: Luminati =  luminati.changeIp();
+const agent: Luminati =  luminati.setIp();
 ```
 
 - Create an agent with a specific country and a random sessionId
 
 ```typescript
-const agent: Luminati = luminati.changeIp({ countries: [ELuminatiCountry.FRANCE] });
+const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE] });
 ```
 
 - Create an agent with a specific country and a specific sessionId
 
 ```typescript
-const agent: Luminati = luminati.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
 ```
 
 - Create an agent with a random countries and a specific sessionId
 
 ```typescript
-const agent: Luminati = luminati.changeIp({ sessionId });
+const agent: Luminati = luminati.setIp({ sessionId });
 ```
 
 #### Strategy: Change ip every requests
@@ -168,13 +168,13 @@ const shifter: Shifter = new Shifter({
 - Create an agent using a random country
 
 ```typescript
-const agent: Shifter =  shifter.changeIp();
+const agent: Shifter =  shifter.setIp();
 ```
 
 - Create an agent using a specific country
 
 ```typescript
-const agent: Shifter = shifter.changeIp({ countries: [EShifterCountry.FRANCE] });
+const agent: Shifter = shifter.setIp({ countries: [EShifterCountry.FRANCE] });
 ```
 
 #### Strategy: Change ip every requests
