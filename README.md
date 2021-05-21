@@ -1,9 +1,8 @@
 # luminator
 
-[![Dependencies][prod-dependencies-badge]][prod-dependencies]
-[![Coverage][coverage-badge]][coverage]
-[![Build Status][travis-badge]][travis-ci]
-[![License][license-badge]][LICENSE]
+[![Dependencies][dependencies-badge]][dependencies]
+[![Build][build-badge]][build]
+[![License][license-badge]][license]
 [![PRs Welcome][prs-badge]][prs]
 
 ## Description
@@ -231,13 +230,11 @@ Run using yarn run `<script>` command.
 
 GPL-3.0 © [Tictactrip](https://www.tictactrip.eu)
 
-[prod-dependencies-badge]: https://david-dm.org/tictactrip/luminator/status.svg
-[prod-dependencies]: https://david-dm.org/tictactrip/luminator
-[coverage-badge]: https://codecov.io/gh/tictactrip/luminator/branch/master/graph/badge.svg
-[coverage]: https://codecov.io/gh/tictactrip/luminator
-[travis-badge]: https://travis-ci.org/tictactrip/luminati.svg?branch=master
-[travis-ci]: https://travis-ci.org/tictactrip/luminator
-[license-badge]: https://img.shields.io/badge/license-GPL3-blue.svg?style=flat-square
+[dependencies-badge]: https://img.shields.io/david/tictactrip/luminator
+[dependencies]: https://img.shields.io/david/tictactrip/luminator
+[build-badge]: https://github.com/tictactrip/luminator/workflows/Test/badge.svg
+[build]: https://github.com/tictactrip/luminator/actions?query=workflow%3ATest+branch%3Amaster
+[license-badge]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
 [license]: https://github.com/tictactrip/luminator/blob/master/LICENSE
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prs]: http://makeapullrequest.com
