@@ -174,7 +174,7 @@ const agent: Shifter =  shifter.changeIp();
 - Create an agent using a specific country
 
 ```typescript
-const agent: Shifter = shifter.changeIp({ countries: [ELuminatiCountry.FRANCE] });
+const agent: Shifter = shifter.changeIp({ countries: [EShifterCountry.FRANCE] });
 ```
 
 #### Strategy: Change ip every requests
