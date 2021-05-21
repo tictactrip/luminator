@@ -3,12 +3,12 @@ import {
   EShifterCountry,
   EStrategyMode,
   IProviderConfig,
-  IShifterCountryPortMapping,
+  TShifterCountryPortMapping,
   TShifterStrategy,
   Shifter,
 } from '../../src';
 
-const getMappingPorts = (mapping: IShifterCountryPortMapping): number[] => {
+const getMappingPorts = (mapping: TShifterCountryPortMapping): number[] => {
   return Object.values(mapping).reduce((acc, ports) => [...acc, ...ports], []);
 };
 
@@ -18,7 +18,7 @@ describe('Shifter', () => {
     port: 12355,
   };
 
-  const mapping: IShifterCountryPortMapping = {
+  const mapping: TShifterCountryPortMapping = {
     fr: [12356, 12359, 12360],
     be: [12357],
     ch: [12358, 12361],

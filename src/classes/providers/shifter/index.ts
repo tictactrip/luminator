@@ -4,11 +4,11 @@ import { HttpProxyAgent } from 'http-proxy-agent';
 import { ICreateProxyConfig, EStrategyMode, IProviderConfig } from '../base/types';
 import { Base } from '../base';
 import {
-  IShifterConfig,
-  TShifterStrategy,
   EShifterCountry,
+  IShifterConfig,
   IShifterChangeIp,
-  IShifterCountryPortMapping,
+  TShifterStrategy,
+  TShifterCountryPortMapping,
 } from './types';
 
 /**
@@ -94,7 +94,7 @@ export class Shifter extends Base {
    * @param {IShifterCountryPortmapping} mapping country to port mapping.
    * @throws {Error} Will throw if mapping has no entries.
    */
-  private isCountryPortMappingEmpty(mapping: IShifterCountryPortMapping): void {
+  private isCountryPortMappingEmpty(mapping: TShifterCountryPortMapping): void {
     if (!Object.keys(mapping).length) {
       throw new Error('A port-to-country mapping has to be provided.');
     }
