@@ -1,8 +1,13 @@
 import { AxiosRequestConfig } from 'axios';
 import { EStrategyMode, IProviderConfig } from '../base/types';
 
+interface IProxyrackProviderConfig extends IProviderConfig {
+  username: string;
+  password: string;
+}
+
 interface IProxyrackConfig {
-  proxy: IProviderConfig;
+  proxy: IProxyrackProviderConfig;
   axiosConfig?: AxiosRequestConfig;
   strategy?: TProxyrackStrategy;
 }

@@ -84,8 +84,13 @@ enum ELuminatiCountry {
   VIETNAM = 'vn',
 }
 
+interface ILuminatiProviderConfig extends IProviderConfig {
+  username: string;
+  password: string;
+}
+
 interface ILuminatiConfig {
-  proxy: IProviderConfig;
+  proxy: ILuminatiProviderConfig;
   axiosConfig?: AxiosRequestConfig;
   strategy?: TLuminatiStrategy;
 }

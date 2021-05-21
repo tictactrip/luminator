@@ -5,3 +5,5 @@ export * from './classes/providers/luminati';
 export * from './classes/providers/luminati/types';
 export * from './classes/providers/proxyrack';
 export * from './classes/providers/proxyrack/types';
+export * from './classes/providers/shifter';
+export * from './classes/providers/shifter/types';

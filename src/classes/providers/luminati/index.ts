@@ -13,12 +13,11 @@ import { ELuminatiCountry, ILuminatiCreateProxy, ILuminatiChangeIp } from './typ
  * @extends {Base}
  */
 export class Luminati extends Base {
-  private readonly config: ILuminatiConfig;
   public axios: AxiosInstance;
-
   public sessionId: number;
   public country: ELuminatiCountry;
 
+  private readonly config: ILuminatiConfig;
   private readonly strategy: TLuminatiStrategy;
 
   /**

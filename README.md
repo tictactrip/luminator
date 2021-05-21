@@ -20,10 +20,17 @@ yarn add @tictactrip/luminator
 
 - [Luminati](https://luminati.io)
 - [Proxyrack](https://www.proxyrack.com)
+- [Shifter](https://www.shifter.io)
 
 ## How to use it?
 
-### Strategy: Manual
+> ⚠️ Specific strategies are currently only supported for Luminati and Shifter
+
+### Luminati
+
+#### Strategy: Manual
+This kind of agent strategy allow to specifically set how and when a change of IP (through `country`) or `sessionId`
+is done.
 
 Create your instance:
 
@@ -43,30 +50,30 @@ const luminati: Luminati = new Luminati({
 - Create an agent with a random countries and sessionId
 
 ```typescript
-const agent: Luminati =  luminati.changeIp();
+const agent: Luminati =  luminati.setIp();
 ```
 
 - Create an agent with a specific country and a random sessionId
 
 ```typescript
-const agent: Luminati = luminati.changeIp({ countries: [ELuminatiCountry.FRANCE] });
+const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE] });
 ```
 
 - Create an agent with a specific country and a specific sessionId
 
 ```typescript
-const agent: Luminati = luminati.changeIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
 ```
 
 - Create an agent with a random countries and a specific sessionId
 
 ```typescript
-const agent: Luminati = luminati.changeIp({ sessionId });
+const agent: Luminati = luminati.setIp({ sessionId });
 ```
 
-### Strategy: Change ip every requests
+#### Strategy: Change ip every requests
 
-This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests. 
+This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests.
 
 ```typescript
 import { Luminati, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
@@ -77,7 +84,7 @@ const luminati: Luminati = new Luminati({
     password: 'secret',
     host: 'zproxy.lum-superproxy.io',
     port: 22225,
-  }, 
+  },
   strategy: {
     mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
     countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
@@ -141,6 +148,71 @@ console.log(response2.data);
     "lum_region": "md"
   }
 }
+```
+
+### Shifter
+
+#### Strategy: Manual
+
+```typescript
+import { Shifter } from '@tictactrip/luminator';
+
+const shifter: Shifter = new Shifter({
+  proxy: {
+    host: '76.34.12.53',
+    port: 17664,
+  },
+  strategy: {
+    mapping: {
+      fr: [17643, 17644],
+      es: [17645, 17646],
+    },
+  },
+});
+```
+
+- Create an agent using a random country
+
+```typescript
+const agent: Shifter =  shifter.setIp();
+```
+
+- Create an agent using a specific country
+
+```typescript
+const agent: Shifter = shifter.setIp({ countries: [EShifterCountry.FRANCE] });
+```
+
+#### Strategy: Change ip every requests
+
+```typescript
+import { Shifter, EStrategyMode, EShifterCountry } from "@tictactrip/luminator";
+
+const shifter: Shifter = new Shifter({
+  proxy: {
+    host: '76.34.12.53',
+    port: 17664,
+  },
+  strategy: {
+    mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
+    mapping: {
+        fr: [17643, 17644],
+        es: [17645, 17646],
+    },
+  },
+});
+
+const requestConfig = {
+  method: 'get',
+  baseURL: 'https://lumtest.com',
+  url: '/myip.json',
+}
+
+const response1 = await shifter.fetch(requestConfig);
+const response2 = await shifter.fetch(requestConfig);
+
+console.log(response1.data);
+console.log(response2.data);
 ```
 
 ## Scripts
