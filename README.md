@@ -161,7 +161,13 @@ const shifter: Shifter = new Shifter({
   proxy: {
     host: '76.34.12.53',
     port: 17664,
-  }
+  },
+  strategy: {
+    mapping: {
+      fr: [17643, 17644],
+      es: [17645, 17646],
+    },
+  },
 });
 ```
 
@@ -189,7 +195,10 @@ const shifter: Shifter = new Shifter({
   },
   strategy: {
     mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
-    countries: [EShifterCountry.FRANCE, EShifterCountry.SPAIN],
+    mapping: {
+        fr: [17643, 17644],
+        es: [17645, 17646],
+    },
   },
 });
 
