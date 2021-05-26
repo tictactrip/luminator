@@ -253,8 +253,8 @@ interface IShifterChangeIp {
 
 type TShifterCountryPortMapping = Partial<Record<EShifterCountry, number[]>>;
 
-type TShifterStrategyChangeIpEveryRequest = {
-  mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
+type TShifterStrategy = {
+  mode?: EStrategyMode.CHANGE_IP_EVERY_REQUESTS | EStrategyMode.MANUAL;
   mapping?: TShifterCountryPortMapping;
 };
 
