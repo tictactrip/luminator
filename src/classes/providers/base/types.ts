@@ -3,6 +3,7 @@ import { HttpProxyAgent } from 'http-proxy-agent';
 import { AxiosRequestConfig } from 'axios';
 
 enum EStrategyMode {
+  MANUAL = 'MANUAL',
   CHANGE_IP_EVERY_REQUESTS = 'CHANGE_IP_EVERY_REQUESTS',
 }
 

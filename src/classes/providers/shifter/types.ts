@@ -1,8 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { IProviderConfig, EStrategyMode } from '../base/types';
 
-type TShifterStrategy = TShifterStrategyChangeIpEveryRequest;
-
 interface IShifterConfig {
   proxy: IProviderConfig;
   axiosConfig?: AxiosRequestConfig;
