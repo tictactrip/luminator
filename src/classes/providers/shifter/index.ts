@@ -31,8 +31,10 @@ export class Shifter extends Base {
     this.config = config;
     this.strategy = config.strategy;
 
-    if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
-      this.isCountryPortMappingEmpty(this.strategy.mapping);
+    this.isCountryPortMappingEmpty(this.strategy.mapping);
+
+    if (!this.strategy.mode) {
+      this.strategy.mode == EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
     }
   }
 
