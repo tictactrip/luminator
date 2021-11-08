@@ -35,8 +35,7 @@ export class Proxyrack extends Base {
     }
 
     if (this.config.strategy === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
-      this.setIp();
-      return this.sendRequest(axiosRequestConfig);
+      return this.setIp().sendRequest(axiosRequestConfig);
     } else {
       return this.sendRequest(axiosRequestConfig);
     }
