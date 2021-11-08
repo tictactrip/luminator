@@ -1,21 +1,34 @@
 import { AxiosRequestConfig } from 'axios';
-import { EStrategyMode, IProviderConfig } from '../base/types';
+import { EStrategyMode } from '../base/types';
 
-interface IProxyrackProviderConfig extends IProviderConfig {
+type TProxyrackProviderConfigStrategyChangeIpEveryRequest = {
   username: string;
   password: string;
-}
-
-interface IProxyrackConfig {
-  proxy: IProxyrackProviderConfig;
-  axiosConfig?: AxiosRequestConfig;
-  strategy?: TProxyrackStrategy;
-}
-
-type TProxyrackStrategy = TProxyrackStrategyChangeIpEveryRequest;
-
-type TProxyrackStrategyChangeIpEveryRequest = {
-  mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
+  host: string;
+  port: number;
 };
 
-export { IProxyrackConfig, TProxyrackStrategy, TProxyrackStrategyChangeIpEveryRequest };
+type TProxyrackProviderConfigStrategyManual = {
+  username: string;
+  password: string;
+  host: string;
+  ports: number[];
+};
+
+interface IProxyrackCommonConfig {
+  axiosConfig?: AxiosRequestConfig;
+}
+
+interface IProxyrackConfigStategyChangeIpEveryRequest extends IProxyrackCommonConfig {
+  proxy: TProxyrackProviderConfigStrategyChangeIpEveryRequest;
+  strategy: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
+}
+
+interface IProxyrackConfigStategyManual extends IProxyrackCommonConfig {
+  proxy: TProxyrackProviderConfigStrategyManual;
+  strategy: EStrategyMode.MANUAL;
+}
+
+type TProxyrackConfig = IProxyrackConfigStategyChangeIpEveryRequest | IProxyrackConfigStategyManual;
+
+export { TProxyrackConfig, IProxyrackConfigStategyChangeIpEveryRequest, IProxyrackConfigStategyManual };

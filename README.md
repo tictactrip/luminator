@@ -37,12 +37,12 @@ Create your instance:
 import { Luminati } from '@tictactrip/luminator';
 
 const luminati: Luminati = new Luminati({
-  proxy: {
-    username: 'tictactrip',
-    password: 'secret',
-    host: 'zproxy.lum-superproxy.io',
-    port: 22225,
-  }
+    proxy: {
+        username: 'tictactrip',
+        password: 'secret',
+        host: 'zproxy.lum-superproxy.io',
+        port: 22225,
+    }
 });
 ```
 
@@ -70,7 +70,7 @@ const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE], s
 const agent: Luminati = luminati.setIp({ sessionId });
 ```
 
-#### Strategy: Change ip every requests
+#### Strategy: Change IP every requests
 
 This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests.
 
@@ -78,22 +78,22 @@ This strategy aims to make a GET request with a **FR** or **PT** IP randomly eve
 import { Luminati, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
 
 const luminati: Luminati = new Luminati({
-  proxy: {
-    username: 'tictactrip',
-    password: 'secret',
-    host: 'zproxy.lum-superproxy.io',
-    port: 22225,
-  },
-  strategy: {
-    mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
-    countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
-  },
+    proxy: {
+        username: 'tictactrip',
+        password: 'secret',
+        host: 'zproxy.lum-superproxy.io',
+        port: 22225,
+    },
+    strategy: {
+        mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
+        countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
+    },
 });
 
 const requestConfig = {
-  method: 'get',
-  baseURL: 'https://lumtest.com',
-  url: '/myip.json',
+    method: 'get',
+    baseURL: 'https://lumtest.com',
+    url: '/myip.json',
 }
 
 const response1 = await luminati.fetch(requestConfig);
@@ -111,7 +111,7 @@ console.log(response2.data);
   "country": "FR",
   "asn": {
     "asnum": 9009,
-	"org_name": "M247 Ltd"
+    "org_name": "M247 Ltd"
   },
   "geo": {
     "city": "Paris",
@@ -157,16 +157,16 @@ console.log(response2.data);
 import { Shifter } from '@tictactrip/luminator';
 
 const shifter: Shifter = new Shifter({
-  proxy: {
-    host: '76.34.12.53',
-    port: 17664,
-  },
-  strategy: {
-    mapping: {
-      fr: [17643, 17644],
-      es: [17645, 17646],
+    proxy: {
+        host: '76.34.12.53',
+        port: 17664,
     },
-  },
+    strategy: {
+        mapping: {
+            fr: [17643, 17644],
+            es: [17645, 17646],
+        },
+    },
 });
 ```
 
@@ -182,29 +182,29 @@ const agent: Shifter =  shifter.setIp();
 const agent: Shifter = shifter.setIp({ countries: [EShifterCountry.FRANCE] });
 ```
 
-#### Strategy: Change ip every requests
+#### Strategy: Change IP every requests
 
 ```typescript
 import { Shifter, EStrategyMode, EShifterCountry } from "@tictactrip/luminator";
 
 const shifter: Shifter = new Shifter({
-  proxy: {
-    host: '76.34.12.53',
-    port: 17664,
-  },
-  strategy: {
-    mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
-    mapping: {
-        fr: [17643, 17644],
-        es: [17645, 17646],
+    proxy: {
+        host: '76.34.12.53',
+        port: 17664,
     },
-  },
+    strategy: {
+        mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
+        mapping: {
+            fr: [17643, 17644],
+            es: [17645, 17646],
+        },
+    },
 });
 
 const requestConfig = {
-  method: 'get',
-  baseURL: 'https://lumtest.com',
-  url: '/myip.json',
+    method: 'get',
+    baseURL: 'https://lumtest.com',
+    url: '/myip.json',
 }
 
 const response1 = await shifter.fetch(requestConfig);
@@ -212,6 +212,186 @@ const response2 = await shifter.fetch(requestConfig);
 
 console.log(response1.data);
 console.log(response2.data);
+```
+
+
+
+
+
+### Proxyrack
+
+#### Strategy: Manual
+
+```typescript
+import { Proxyrack } from '@tictactrip/luminator';
+
+const proxyrack: Proxyrack = new Proxyrack({
+    proxy: {
+        username: "tictactrip",
+        password: "secret",
+        host: 'mixed.rotating.proxyrack.net',
+        ports: [10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007, 10008, 10009, 10010],
+    },
+    strategy: EStrategyMode.MANUAL,
+});
+
+const requestConfig = {
+    method: 'get',
+    baseURL: 'https://lumtest.com',
+    url: '/myip.json',
+}
+
+const response1 = await proxyrack.fetch(requestConfig);
+const response2 = await proxyrack.fetch(requestConfig);
+
+// Change IP
+proxyrack.setIp();
+
+const response3 = await proxyrack.fetch(requestConfig);
+
+console.log(response1.data);
+console.log(response3.data);
+console.log(response3.data)
+```
+
+**Response:**
+
+```json
+{
+  "ip": "184.174.62.231",
+  "country": "FR",
+  "asn": {
+    "asnum": 9009,
+    "org_name": "M247 Ltd"
+  },
+  "geo": {
+    "city": "Paris",
+    "region": "IDF",
+    "region_name": "Île-de-France",
+    "postal_code": "75014",
+    "latitude": 48.8579,
+    "longitude": 2.3491,
+    "tz": "Europe/Paris",
+    "lum_city": "paris",
+    "lum_region": "idf"
+  }
+}
+```
+
+```json
+{
+  "ip": "184.174.62.231",
+  "country": "FR",
+  "asn": {
+    "asnum": 9009,
+    "org_name": "M247 Ltd"
+  },
+  "geo": {
+    "city": "Paris",
+    "region": "IDF",
+    "region_name": "Île-de-France",
+    "postal_code": "75014",
+    "latitude": 48.8579,
+    "longitude": 2.3491,
+    "tz": "Europe/Paris",
+    "lum_city": "paris",
+    "lum_region": "idf"
+  }
+}
+```
+
+```json
+{
+  "ip": "178.171.89.101",
+  "country": "ES",
+  "asn": {
+    "asnum": 9009,
+    "org_name": "M247 Ltd"
+  },
+  "geo": {
+    "city": "Madrid",
+    "region": "MD",
+    "region_name": "Madrid",
+    "postal_code": "28001",
+    "latitude": 40.4167,
+    "longitude": -3.6838,
+    "tz": "Europe/Madrid",
+    "lum_city": "madrid",
+    "lum_region": "md"
+  }
+}
+```
+
+#### Strategy: Change IP every requests
+
+```typescript
+import { Shifter, EStrategyMode, EShifterCountry } from "@tictactrip/luminator";
+
+const proxyrack: Proxyrack = new Proxyrack({
+    proxy: {
+        username: "tictactrip",
+        password: "secret",
+        host: 'megaproxy.rotating.proxyrack.net',
+        port: 222,
+    },
+    strategy: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
+});
+
+const requestConfig = {
+    method: 'get',
+    baseURL: 'https://lumtest.com',
+    url: '/myip.json',
+}
+
+const response1 = await shifter.fetch(requestConfig);
+const response2 = await shifter.fetch(requestConfig);
+
+console.log(response1.data);
+console.log(response2.data);
+```
+
+```json
+{
+  "ip": "184.174.62.231",
+  "country": "FR",
+  "asn": {
+    "asnum": 9009,
+    "org_name": "M247 Ltd"
+  },
+  "geo": {
+    "city": "Paris",
+    "region": "IDF",
+    "region_name": "Île-de-France",
+    "postal_code": "75014",
+    "latitude": 48.8579,
+    "longitude": 2.3491,
+    "tz": "Europe/Paris",
+    "lum_city": "paris",
+    "lum_region": "idf"
+  }
+}
+```
+
+```json
+{
+  "ip": "178.171.89.101",
+  "country": "ES",
+  "asn": {
+    "asnum": 9009,
+    "org_name": "M247 Ltd"
+  },
+  "geo": {
+    "city": "Madrid",
+    "region": "MD",
+    "region_name": "Madrid",
+    "postal_code": "28001",
+    "latitude": 40.4167,
+    "longitude": -3.6838,
+    "tz": "Europe/Madrid",
+    "lum_city": "madrid",
+    "lum_region": "md"
+  }
+}
 ```
 
 ## Scripts

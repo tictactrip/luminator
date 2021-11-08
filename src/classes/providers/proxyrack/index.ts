@@ -1,23 +1,23 @@
 import { AxiosPromise, AxiosRequestConfig } from 'axios';
 import * as HttpsProxyAgent from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
-import { ICreateProxyConfig } from '../base/types';
+import { EStrategyMode, ICreateProxyConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
 import { Base } from '../base';
-import { IProxyrackConfig } from './types';
+import { TProxyrackConfig } from './types';
 
 /**
  * @description Proxyrack proxy provider.
  */
 export class Proxyrack extends Base {
-  private readonly config: IProxyrackConfig;
+  private readonly config: TProxyrackConfig;
   private setIpInitialized: boolean;
 
   /**
    * @constructor
-   * @param {IProxyrackConfig} config
+   * @param {TProxyrackConfig} config
    */
-  constructor(config: IProxyrackConfig) {
+  constructor(config: TProxyrackConfig) {
     super({ axiosConfig: config.axiosConfig });
 
     this.config = config;
@@ -34,7 +34,11 @@ export class Proxyrack extends Base {
       this.setIp();
     }
 
-    return this.sendRequest(axiosRequestConfig);
+    if (this.config.strategy === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
+      return this.setIp().sendRequest(axiosRequestConfig);
+    } else {
+      return this.sendRequest(axiosRequestConfig);
+    }
   }
 
   /**
@@ -62,9 +66,17 @@ export class Proxyrack extends Base {
       password: this.config.proxy.password,
     });
 
+    let port: number;
+    if (this.config.strategy === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
+      port = this.config.proxy.port;
+    } else {
+      const randomArrayIndex: number = Math.floor(Math.random() * (this.config.proxy.ports.length + 1));
+      port = this.config.proxy.ports[randomArrayIndex];
+    }
+
     const proxy = {
       host: this.config.proxy.host,
-      port: this.config.proxy.port,
+      port,
       auth,
     };
 
