@@ -23,8 +23,6 @@ yarn add @tictactrip/luminator
 
 ## How to use it?
 
-> ⚠️ Specific strategies are currently only supported for Luminati and Shifter
-
 ### Luminati
 
 #### Strategy: Manual
