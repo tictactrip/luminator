@@ -70,7 +70,7 @@ export class Proxyrack extends Base {
     if (this.config.strategy === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
       port = this.config.proxy.port;
     } else {
-      const randomArrayIndex: number = Math.floor(Math.random() * (this.config.proxy.ports.length + 1));
+      const randomArrayIndex: number = Math.floor(Math.random() * (this.config.proxy.ports.length - 1));
       port = this.config.proxy.ports[randomArrayIndex];
     }
 
