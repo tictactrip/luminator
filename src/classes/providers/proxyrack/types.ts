@@ -1,14 +1,14 @@
 import { AxiosRequestConfig } from 'axios';
 import { EStrategyMode } from '../base/types';
 
-type TProxyrackProviderConfigStategyChangeIpEveryRequest = {
+type TProxyrackProviderConfigStrategyChangeIpEveryRequest = {
   username: string;
   password: string;
   host: string;
   port: number;
 };
 
-type TProxyrackProviderConfigStategyManual = {
+type TProxyrackProviderConfigStrategyManual = {
   username: string;
   password: string;
   host: string;
@@ -20,12 +20,12 @@ interface IProxyrackCommonConfig {
 }
 
 interface IProxyrackConfigStategyChangeIpEveryRequest extends IProxyrackCommonConfig {
-  proxy: TProxyrackProviderConfigStategyChangeIpEveryRequest;
+  proxy: TProxyrackProviderConfigStrategyChangeIpEveryRequest;
   strategy: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
 }
 
 interface IProxyrackConfigStategyManual extends IProxyrackCommonConfig {
-  proxy: TProxyrackProviderConfigStategyManual;
+  proxy: TProxyrackProviderConfigStrategyManual;
   strategy: EStrategyMode.MANUAL;
 }
 
