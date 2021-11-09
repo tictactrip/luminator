@@ -31,4 +31,10 @@ interface IProxyrackConfigStategyManual extends IProxyrackCommonConfig {
 
 type TProxyrackConfig = IProxyrackConfigStategyChangeIpEveryRequest | IProxyrackConfigStategyManual;
 
-export { TProxyrackConfig, IProxyrackConfigStategyChangeIpEveryRequest, IProxyrackConfigStategyManual };
+export {
+  TProxyrackConfig,
+  IProxyrackConfigStategyChangeIpEveryRequest,
+  IProxyrackConfigStategyManual,
+  TProxyrackProviderConfigStrategyManual,
+  TProxyrackProviderConfigStrategyChangeIpEveryRequest,
+};
