@@ -110,4 +110,12 @@ type TLuminatiStrategyChangeIpEveryRequest = {
   countries: ELuminatiCountry[];
 };
 
-export { ELuminatiCountry, EStrategyMode, TLuminatiStrategy, ILuminatiCreateProxy, ILuminatiChangeIp, ILuminatiConfig };
+export {
+  ELuminatiCountry,
+  EStrategyMode,
+  TLuminatiStrategy,
+  ILuminatiCreateProxy,
+  ILuminatiChangeIp,
+  ILuminatiConfig,
+  ILuminatiProviderConfig,
+};
