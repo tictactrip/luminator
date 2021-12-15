@@ -1,5 +1,5 @@
 import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
-import * as HttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { ICreateProxyConfig, EStrategyMode, IProviderConfig } from '../base/types';
 import { Base } from '../base';
