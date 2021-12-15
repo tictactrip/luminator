@@ -1,8 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { IProviderConfig, EStrategyMode } from '../base/types';
 
-type TLuminatiStrategy = TLuminatiStrategyChangeIpEveryRequest;
-
 enum ELuminatiCountry {
   UNITED_STATES = 'us',
   GREAT_BRITAIN = 'gb',
@@ -105,8 +103,8 @@ interface ILuminatiChangeIp {
   countries?: ELuminatiCountry[];
 }
 
-type TLuminatiStrategyChangeIpEveryRequest = {
-  mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS;
+type TLuminatiStrategy = {
+  mode: EStrategyMode;
   countries: ELuminatiCountry[];
 };
 
