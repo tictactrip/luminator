@@ -537,10 +537,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@rimiti/stimmy@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@rimiti/stimmy/-/stimmy-1.9.0.tgz#a4b31fb7cdd0fb7f4cbb7cf27e324d28625865f4"
-  integrity sha512-ZHmlA4JIY2nvMKL4jLD7mt9n1YD8NUdT7UZpWs3LZ6K56WtlC5No3BD9uBOqWoUgFvT8Sl7pCZ4WrO83HCBADg==
+"@rimiti/stimmy@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@rimiti/stimmy/-/stimmy-1.10.0.tgz#557799ba1d4925c78c5ce726d7bd5914f831071d"
+  integrity sha512-acNPGWoLRw2DaQLerQnDczPilPZjwyZ5CS4W4XqYw+GUz0o1bofuSmu0MvreQHFw+tszSMHNrimMMelymahuFA==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
