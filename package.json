@@ -7,10 +7,10 @@
   "types": "dist/index.d.ts",
   "license": "GPL-3.0",
   "dependencies": {
-    "@rimiti/stimmy": "1.9.0",
+    "@rimiti/stimmy": "1.10.0",
     "axios": "0.24.0",
     "http-proxy-agent": "4.0.1",
-    "https-proxy-agent": "5.0.0"
+    "https-proxy-agent": "4.0.0"
   },
   "devDependencies": {
     "@types/jest": "27.0.2",
