@@ -1,4 +1,4 @@
-import * as HttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { AxiosRequestConfig } from 'axios';
 
