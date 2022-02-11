@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import { HttpProxyAgent } from 'http-proxy-agent';
+import createHttpsProxyAgent from 'https-proxy-agent';
+import createHttpProxyAgent from 'http-proxy-agent';
 import { ICreateProxyConfig, EStrategyMode, IProviderConfig } from '../base/types';
 import { Base } from '../base';
 import {
@@ -127,8 +127,8 @@ export class Shifter extends Base {
     };
 
     return {
-      httpsAgent: new HttpsProxyAgent({ ...proxy, rejectUnauthorized: false }),
-      httpAgent: new HttpProxyAgent({ ...proxy, rejectUnauthorized: false }),
+      httpsAgent: createHttpsProxyAgent({ ...proxy, rejectUnauthorized: false }),
+      httpAgent: createHttpProxyAgent({ ...proxy, rejectUnauthorized: false }),
     };
   }
 }
