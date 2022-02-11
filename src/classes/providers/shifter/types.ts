@@ -4,7 +4,7 @@ import { IProviderConfig, EStrategyMode } from '../base/types';
 interface IShifterConfig {
   proxy: IProviderConfig;
   axiosConfig?: AxiosRequestConfig;
-  strategy?: TShifterStrategy;
+  strategy: TShifterStrategy;
 }
 
 enum EShifterCountry {
@@ -255,7 +255,7 @@ type TShifterCountryPortMapping = Partial<Record<EShifterCountry, number[]>>;
 
 type TShifterStrategy = {
   mode?: EStrategyMode.CHANGE_IP_EVERY_REQUESTS | EStrategyMode.MANUAL;
-  mapping?: TShifterCountryPortMapping;
+  mapping: TShifterCountryPortMapping;
 };
 
 export { TShifterStrategy, IShifterConfig, EShifterCountry, IShifterChangeIp, TShifterCountryPortMapping };
