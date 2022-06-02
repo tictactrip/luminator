@@ -8,7 +8,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@rimiti/stimmy": "1.10.0",
-    "axios": "0.24.0",
+    "axios": "0.27.2",
     "http-proxy-agent": "4.0.1",
     "https-proxy-agent": "2.2.4"
   },
