@@ -17,13 +17,13 @@ yarn add @tictactrip/luminator
 
 ## Available proxy providers
 
-- [Luminati](https://luminati.io)
+- [BrightData](https://brightdata.com)
 - [Proxyrack](https://www.proxyrack.com)
 - [Shifter](https://www.shifter.io)
 
 ## How to use it?
 
-### Luminati
+### BrightData
 
 #### Strategy: Manual
 This kind of agent strategy allow to specifically set how and when a change of IP (through `country`) or `sessionId`
@@ -32,9 +32,9 @@ is done.
 Create your instance:
 
 ```typescript
-import { Luminati } from '@tictactrip/luminator';
+import { BrightData } from '@tictactrip/luminator';
 
-const luminati: Luminati = new Luminati({
+const BrightData: BrightData = new BrightData({
     proxy: {
         username: 'tictactrip',
         password: 'secret',
@@ -47,25 +47,25 @@ const luminati: Luminati = new Luminati({
 - Create an agent with a random countries and sessionId
 
 ```typescript
-const agent: Luminati =  luminati.setIp();
+const agent: BrightData =  BrightData.setIp();
 ```
 
 - Create an agent with a specific country and a random sessionId
 
 ```typescript
-const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE] });
+const agent: BrightData = BrightData.setIp({ countries: [EBrightDataCountry.FRANCE] });
 ```
 
 - Create an agent with a specific country and a specific sessionId
 
 ```typescript
-const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+const agent: BrightData = BrightData.setIp({ countries: [EBrightDataCountry.FRANCE], sessionId });
 ```
 
 - Create an agent with a random countries and a specific sessionId
 
 ```typescript
-const agent: Luminati = luminati.setIp({ sessionId });
+const agent: BrightData = BrightData.setIp({ sessionId });
 ```
 
 #### Strategy: Change IP every requests
@@ -73,9 +73,9 @@ const agent: Luminati = luminati.setIp({ sessionId });
 This strategy aims to make a GET request with a **FR** or **PT** IP randomly every requests.
 
 ```typescript
-import { Luminati, EStrategyMode, ELuminatiCountry } from "@tictactrip/luminator";
+import { BrightData, EStrategyMode, EBrightDataCountry } from "@tictactrip/luminator";
 
-const luminati: Luminati = new Luminati({
+const BrightData: BrightData = new BrightData({
     proxy: {
         username: 'tictactrip',
         password: 'secret',
@@ -84,7 +84,7 @@ const luminati: Luminati = new Luminati({
     },
     strategy: {
         mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
-        countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
+        countries: [EBrightDataCountry.FRANCE, EBrightDataCountry.SPAIN],
     },
 });
 
@@ -94,8 +94,8 @@ const requestConfig = {
     url: '/myip.json',
 }
 
-const response1 = await luminati.fetch(requestConfig);
-const response2 = await luminati.fetch(requestConfig);
+const response1 = await BrightData.fetch(requestConfig);
+const response2 = await BrightData.fetch(requestConfig);
 
 console.log(response1.data);
 console.log(response2.data);

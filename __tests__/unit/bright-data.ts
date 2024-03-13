@@ -1,8 +1,8 @@
 import * as nock from 'nock';
-import { ELuminatiCountry, EStrategyMode, Luminati } from '../../src';
+import { EBrightDataCountry, EStrategyMode, BrightData } from '../../src';
 
-describe('Luminati', () => {
-  const countryKeys: string[] = Object.values(ELuminatiCountry);
+describe('BrightData', () => {
+  const countryKeys: string[] = Object.values(EBrightDataCountry);
   const proxy = {
     username: 'tictactrip',
     password: 'secret',
@@ -14,7 +14,7 @@ describe('Luminati', () => {
     it('should throw an error if a strategy has been set without any countries', async () => {
       let error: Error;
       try {
-        new Luminati({
+        new BrightData({
           proxy,
           strategy: {
             mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
@@ -57,7 +57,7 @@ describe('Luminati', () => {
         .once()
         .reply(200, response1);
 
-      const luminati: Luminati = new Luminati({
+      const brightData: BrightData = new BrightData({
         proxy,
         axiosConfig: {
           headers: {
@@ -66,7 +66,7 @@ describe('Luminati', () => {
         },
       });
 
-      const { data } = await luminati.setIp().fetch({
+      const { data } = await brightData.setIp().fetch({
         method: 'get',
         baseURL: 'https://lumtest.com',
         url: '/myip.json',
@@ -79,18 +79,18 @@ describe('Luminati', () => {
   });
 
   describe('#setIp', () => {
-    let luminati: Luminati;
+    let brightData: BrightData;
 
     const regexPatternAllCountries = `${countryKeys.join('|')}`;
 
     beforeEach(() => {
-      luminati = new Luminati({ proxy });
+      brightData = new BrightData({ proxy });
     });
 
     it('should create an agent with a random countries and sessionId', async () => {
-      const agent: Luminati = luminati.setIp();
+      const agent: BrightData = brightData.setIp();
 
-      expect(agent).toBeInstanceOf(Luminati);
+      expect(agent).toBeInstanceOf(BrightData);
       expect(typeof agent.sessionId).toEqual('number');
       expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
@@ -102,9 +102,9 @@ describe('Luminati', () => {
     });
 
     it('should create an agent with a specific country and a random sessionId', async () => {
-      const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE] });
+      const agent: BrightData = brightData.setIp({ countries: [EBrightDataCountry.FRANCE] });
 
-      expect(agent).toBeInstanceOf(Luminati);
+      expect(agent).toBeInstanceOf(BrightData);
       expect(typeof agent.sessionId).toEqual('number');
       expect(agent.country).toMatch(/fr/);
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
@@ -118,9 +118,9 @@ describe('Luminati', () => {
     it('should create an agent with a specific country and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const agent: Luminati = luminati.setIp({ countries: [ELuminatiCountry.FRANCE], sessionId });
+      const agent: BrightData = brightData.setIp({ countries: [EBrightDataCountry.FRANCE], sessionId });
 
-      expect(agent).toBeInstanceOf(Luminati);
+      expect(agent).toBeInstanceOf(BrightData);
       expect(agent.sessionId).toEqual(123456789);
       expect(agent.country).toMatch(/fr/);
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
@@ -134,9 +134,9 @@ describe('Luminati', () => {
     it('should create an agent with a random countries and a specific sessionId', async () => {
       const sessionId = 123456789;
 
-      const agent: Luminati = luminati.setIp({ sessionId });
+      const agent: BrightData = brightData.setIp({ sessionId });
 
-      expect(agent).toBeInstanceOf(Luminati);
+      expect(agent).toBeInstanceOf(BrightData);
       expect(agent.sessionId).toEqual(123456789);
       expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
       expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
@@ -150,7 +150,7 @@ describe('Luminati', () => {
     it('should throw an error if no countries have been given (only countries attribute)', async () => {
       let error: Error;
       try {
-        luminati.setIp({ countries: [] });
+        brightData.setIp({ countries: [] });
       } catch (e) {
         error = e;
       }
@@ -161,7 +161,7 @@ describe('Luminati', () => {
     it('should throw an error if no countries have been given (sessionId and countries attribute)', async () => {
       let error: Error;
       try {
-        luminati.setIp({ sessionId: 123, countries: [] });
+        brightData.setIp({ sessionId: 123, countries: [] });
       } catch (e) {
         error = e;
       }
@@ -172,7 +172,7 @@ describe('Luminati', () => {
     it('should throw an error if fetch() has been called without previously used setIp() or set a strategy', async () => {
       let error: Error;
       try {
-        await luminati.fetch({
+        await brightData.fetch({
           method: 'get',
           baseURL: 'https://lumtest.com',
           url: '/myip.json',
@@ -189,11 +189,11 @@ describe('Luminati', () => {
 
   describe('#strategy', () => {
     describe('CHANGE_IP_EVERY_REQUESTS', () => {
-      const luminati: Luminati = new Luminati({
+      const brightData: BrightData = new BrightData({
         proxy,
         strategy: {
           mode: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
-          countries: [ELuminatiCountry.FRANCE, ELuminatiCountry.SPAIN],
+          countries: [EBrightDataCountry.FRANCE, EBrightDataCountry.SPAIN],
         },
       });
 
@@ -242,20 +242,20 @@ describe('Luminati', () => {
           const request1Mock = nock('http://lumtest.com').get('/myip.json').once().reply(200, response1);
           const request2Mock = nock('http://lumtest.com').get('/myip.json').once().reply(200, response2);
 
-          const result1 = await luminati.fetch({
+          const result1 = await brightData.fetch({
             method: 'get',
             baseURL: 'http://lumtest.com',
             url: '/myip.json',
           });
 
-          const result2 = await luminati.fetch({
+          const result2 = await brightData.fetch({
             method: 'get',
             baseURL: 'http://lumtest.com',
             url: '/myip.json',
           });
 
-          expect(typeof luminati.sessionId).toEqual('number');
-          expect(luminati.country).toMatch(/fr|es/);
+          expect(typeof brightData.sessionId).toEqual('number');
+          expect(brightData.country).toMatch(/fr|es/);
           expect(result1.data).toStrictEqual(response1);
           expect(result2.data).toStrictEqual(response2);
 
@@ -269,20 +269,20 @@ describe('Luminati', () => {
           const request1Mock = nock('https://lumtest.com').get('/myip.json').once().reply(200, response1);
           const request2Mock = nock('https://lumtest.com').get('/myip.json').once().reply(200, response2);
 
-          const result1 = await luminati.fetch({
+          const result1 = await brightData.fetch({
             method: 'get',
             baseURL: 'https://lumtest.com',
             url: '/myip.json',
           });
 
-          const result2 = await luminati.fetch({
+          const result2 = await brightData.fetch({
             method: 'get',
             baseURL: 'https://lumtest.com',
             url: '/myip.json',
           });
 
-          expect(typeof luminati.sessionId).toEqual('number');
-          expect(luminati.country).toMatch(/fr|es/);
+          expect(typeof brightData.sessionId).toEqual('number');
+          expect(brightData.country).toMatch(/fr|es/);
           expect(result1.data).toStrictEqual(response1);
           expect(result2.data).toStrictEqual(response2);
 

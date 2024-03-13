@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import { IProviderConfig, EStrategyMode } from '../base/types';
 
-enum ELuminatiCountry {
+enum EBrightDataCountry {
   UNITED_STATES = 'us',
   GREAT_BRITAIN = 'gb',
   ALBANIA = 'al',
@@ -82,38 +82,38 @@ enum ELuminatiCountry {
   VIETNAM = 'vn',
 }
 
-interface ILuminatiProviderConfig extends IProviderConfig {
+interface IBrightDataProviderConfig extends IProviderConfig {
   username: string;
   password: string;
 }
 
-interface ILuminatiConfig {
-  proxy: ILuminatiProviderConfig;
+interface IBrightDataConfig {
+  proxy: IBrightDataProviderConfig;
   axiosConfig?: AxiosRequestConfig;
-  strategy?: TLuminatiStrategy;
+  strategy?: TBrightDataStrategy;
 }
 
-interface ILuminatiCreateProxy {
+interface IBrightDataCreateProxy {
   sessionId: number;
-  country: ELuminatiCountry;
+  country: EBrightDataCountry;
 }
 
-interface ILuminatiChangeIp {
+interface IBrightDataChangeIp {
   sessionId?: number;
-  countries?: ELuminatiCountry[];
+  countries?: EBrightDataCountry[];
 }
 
-type TLuminatiStrategy = {
+type TBrightDataStrategy = {
   mode: EStrategyMode;
-  countries: ELuminatiCountry[];
+  countries: EBrightDataCountry[];
 };
 
 export {
-  ELuminatiCountry,
+  EBrightDataCountry,
   EStrategyMode,
-  TLuminatiStrategy,
-  ILuminatiCreateProxy,
-  ILuminatiChangeIp,
-  ILuminatiConfig,
-  ILuminatiProviderConfig,
+  TBrightDataStrategy,
+  IBrightDataCreateProxy,
+  IBrightDataChangeIp,
+  IBrightDataConfig,
+  IBrightDataProviderConfig,
 };

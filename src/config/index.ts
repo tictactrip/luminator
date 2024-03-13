@@ -1,6 +1,6 @@
 const config = {
-  luminati: {
-    domain: 'zproxy.lum-superproxy.io',
+  brightData: {
+    domain: 'brd.superproxy.io',
     port: 22225,
   },
   session: {
