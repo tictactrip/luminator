@@ -4,43 +4,43 @@ import { HttpProxyAgent } from 'http-proxy-agent';
 import { ICreateProxyConfig, EStrategyMode } from '../base/types';
 import { replacer } from '../../../utils/replacer';
 import { Base } from '../base';
-import { ILuminatiConfig, TLuminatiStrategy } from './types';
+import { IBrightDataConfig, TBrightDataStrategy } from './types';
 import { config } from '../../../config';
-import { ELuminatiCountry, ILuminatiCreateProxy, ILuminatiChangeIp } from './types';
+import { EBrightDataCountry, IBrightDataCreateProxy, IBrightDataChangeIp } from './types';
 
 /**
- * @description Luminati proxy provider.
+ * @description BrightData proxy provider.
  * @extends {Base}
  */
-export class Luminati extends Base {
+export class BrightData extends Base {
   public axios: AxiosInstance;
   public sessionId: number;
-  public country: ELuminatiCountry;
+  public country: EBrightDataCountry;
 
-  private readonly config: ILuminatiConfig;
-  private readonly strategy: TLuminatiStrategy;
+  private readonly config: IBrightDataConfig;
+  private readonly strategy: TBrightDataStrategy;
 
   /**
    * @constructor
-   * @param {ILuminatiConfig} config
+   * @param {IBrightDataConfig} config
    */
-  constructor(config: ILuminatiConfig) {
+  constructor(config: IBrightDataConfig) {
     super({ axiosConfig: config.axiosConfig });
     this.config = config;
     this.strategy = config.strategy;
 
     // Throw an error is country array is empty
     if (this.strategy && this.strategy.mode === EStrategyMode.CHANGE_IP_EVERY_REQUESTS) {
-      Luminati.checkIfCountriesArrayIsntEmpty(this.strategy.countries);
+      BrightData.checkIfCountriesArrayIsntEmpty(this.strategy.countries);
     }
   }
 
   /**
    * @description Create and set proxy agents.
-   * @param {ILuminatiChangeIp} [params] - Params to handle multiple strategies.
-   * @returns {Luminati}
+   * @param {IBrightDataChangeIp} [params] - Params to handle multiple strategies.
+   * @returns {BrightData}
    */
-  setIp(params?: ILuminatiChangeIp): Luminati {
+  setIp(params?: IBrightDataChangeIp): BrightData {
     // Creates an agent with a random countries and sessionId
     if (!params) {
       const { httpAgent, httpsAgent } = this.createProxyAgents({
@@ -56,7 +56,7 @@ export class Luminati extends Base {
 
     // Creates an agent with specific countries and a specific sessionId
     if (params.countries && params.sessionId) {
-      Luminati.checkIfCountriesArrayIsntEmpty(params.countries);
+      BrightData.checkIfCountriesArrayIsntEmpty(params.countries);
 
       const { httpsAgent, httpAgent }: ICreateProxyConfig = this.createProxyAgents({
         country: this.getRandomCountry(params.countries),
@@ -71,7 +71,7 @@ export class Luminati extends Base {
 
     // Create an agent with specific countries and a random sessionId
     if (params.countries) {
-      Luminati.checkIfCountriesArrayIsntEmpty(params.countries);
+      BrightData.checkIfCountriesArrayIsntEmpty(params.countries);
 
       const { httpAgent, httpsAgent } = this.createProxyAgents({
         country: this.getRandomCountry(params.countries),
@@ -111,35 +111,35 @@ export class Luminati extends Base {
 
   /**
    * @description Returns a random country.
-   * @params {ELuminatiCountry} [countries] - List of countries
-   * @returns {ELuminatiCountry}
+   * @params {EBrightDataCountry} [countries] - List of countries
+   * @returns {EBrightDataCountry}
    */
-  private getRandomCountry(countries?: ELuminatiCountry[]): ELuminatiCountry {
+  private getRandomCountry(countries?: EBrightDataCountry[]): EBrightDataCountry {
     let countrykeys: string[];
     if (countries) {
-      countrykeys = Object.entries(ELuminatiCountry)
-        .map(([key, value]: [string, ELuminatiCountry]) => {
+      countrykeys = Object.entries(EBrightDataCountry)
+        .map(([key, value]: [string, EBrightDataCountry]) => {
           if (countries.includes(value)) {
             return key;
           }
         })
         .filter(Boolean);
     } else {
-      countrykeys = Object.keys(ELuminatiCountry);
+      countrykeys = Object.keys(EBrightDataCountry);
     }
 
     const randomCountryKey: string = countrykeys[this.randomNumber(0, countrykeys.length - 1)];
 
-    return ELuminatiCountry[randomCountryKey];
+    return EBrightDataCountry[randomCountryKey];
   }
 
   /**
    * @description Checks if country array isn't empty.
-   * @param {ELuminatiCountry[]} countries
+   * @param {EBrightDataCountry[]} countries
    * @throws {Error} Will throw an error if countries is empty
    * @returns {void}
    */
-  private static checkIfCountriesArrayIsntEmpty(countries: ELuminatiCountry[]): void {
+  private static checkIfCountriesArrayIsntEmpty(countries: EBrightDataCountry[]): void {
     if (!countries.length) {
       throw new Error('"countries" array cannot be empty');
     }
@@ -147,10 +147,10 @@ export class Luminati extends Base {
 
   /**
    * @description Create https and http proxies.
-   * @param {ILuminatiCreateProxy} params
+   * @param {IBrightDataCreateProxy} params
    * @returns {ICreateProxyConfig}
    */
-  private createProxyAgents(params: ILuminatiCreateProxy): ICreateProxyConfig {
+  private createProxyAgents(params: IBrightDataCreateProxy): ICreateProxyConfig {
     const { sessionId, country } = params;
 
     const auth: string = replacer('{zone}{sessionId}{country}:{password}', {
