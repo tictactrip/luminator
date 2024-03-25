@@ -171,8 +171,12 @@ export class BrightData extends Base {
     this.country = country;
 
     return {
-      httpsAgent: new HttpsProxyAgent(new URL(`https://${proxy.host}:${proxy.port}`)),
-      httpAgent: new HttpProxyAgent(new URL(`http://${proxy.host}:${proxy.port}`)),
+      httpsAgent: new HttpsProxyAgent(new URL(`https://${proxy.auth}@${proxy.host}:${proxy.port}`), {
+        rejectUnauthorized: false,
+      }),
+      httpAgent: new HttpProxyAgent(new URL(`http://${proxy.auth}@${proxy.host}:${proxy.port}`), {
+        rejectUnauthorized: false,
+      }),
     };
   }
 }
