@@ -1,5 +1,5 @@
 import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
-import * as HttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { ICreateProxyConfig, EStrategyMode, IProviderConfig } from '../base/types';
 import { Base } from '../base';
@@ -10,6 +10,7 @@ import {
   TShifterStrategy,
   TShifterCountryPortMapping,
 } from './types';
+import { URL } from 'node:url';
 
 /**
  * @description Schifter proxy provider.
@@ -127,8 +128,8 @@ export class Shifter extends Base {
     };
 
     return {
-      httpsAgent: new HttpsProxyAgent({ ...proxy, rejectUnauthorized: false }),
-      httpAgent: new HttpProxyAgent({ ...proxy, rejectUnauthorized: false }),
+      httpsAgent: new HttpsProxyAgent(new URL(`https://${proxy.host}:${proxy.port}`)),
+      httpAgent: new HttpProxyAgent(new URL(`http://${proxy.host}:${proxy.port}`)),
     };
   }
 }
