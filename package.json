@@ -1,6 +1,6 @@
 {
   "name": "@tictactrip/luminator",
-  "version": "5.0.0-0",
+  "version": "5.0.1-0",
   "description": "Axios proxy provider agent.",
   "author": "Tictactrip <dev@tictactrip.eu>",
   "main": "dist/index.js",
