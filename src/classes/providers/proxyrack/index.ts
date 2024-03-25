@@ -5,7 +5,6 @@ import { EStrategyMode, ICreateProxyConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
 import { Base } from '../base';
 import { TProxyrackConfig } from './types';
-import { URL } from 'node:url';
 
 /**
  * @description Proxyrack proxy provider.
@@ -82,12 +81,10 @@ export class Proxyrack extends Base {
     };
 
     return {
-      httpsAgent: new HttpsProxyAgent(new URL(`https://${proxy.auth}@${proxy.host}:${proxy.port}`), {
-        rejectUnauthorized: false,
+      httpsAgent: new HttpsProxyAgent(`https://${proxy.auth}@${proxy.host}:${proxy.port}`, {
+        rejectUnauthorized: true,
       }),
-      httpAgent: new HttpProxyAgent(new URL(`http://${proxy.auth}@${proxy.host}:${proxy.port}`), {
-        rejectUnauthorized: false,
-      }),
+      httpAgent: new HttpProxyAgent(`http://${proxy.auth}@${proxy.host}:${proxy.port}`),
     };
   }
 }

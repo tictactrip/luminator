@@ -1,7 +1,6 @@
 import { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
-import { URL } from 'node:url';
 import { ICreateProxyConfig, EStrategyMode } from '../base/types';
 import { replacer } from '../../../utils/replacer';
 import { Base } from '../base';
@@ -171,12 +170,10 @@ export class BrightData extends Base {
     this.country = country;
 
     return {
-      httpsAgent: new HttpsProxyAgent(new URL(`https://${proxy.auth}@${proxy.host}:${proxy.port}`), {
-        rejectUnauthorized: false,
+      httpsAgent: new HttpsProxyAgent(`https://${proxy.auth}@${proxy.host}:${proxy.port}`, {
+        rejectUnauthorized: true,
       }),
-      httpAgent: new HttpProxyAgent(new URL(`http://${proxy.auth}@${proxy.host}:${proxy.port}`), {
-        rejectUnauthorized: false,
-      }),
+      httpAgent: new HttpProxyAgent(`http://${proxy.auth}@${proxy.host}:${proxy.port}`),
     };
   }
 }

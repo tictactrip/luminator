@@ -10,7 +10,6 @@ import {
   TShifterStrategy,
   TShifterCountryPortMapping,
 } from './types';
-import { URL } from 'node:url';
 
 /**
  * @description Schifter proxy provider.
@@ -128,12 +127,10 @@ export class Shifter extends Base {
     };
 
     return {
-      httpsAgent: new HttpsProxyAgent(new URL(`https://${proxy.host}:${proxy.port}`), {
-        rejectUnauthorized: false,
+      httpsAgent: new HttpsProxyAgent(`https://${proxy.host}:${proxy.port}`, {
+        rejectUnauthorized: true,
       }),
-      httpAgent: new HttpProxyAgent(new URL(`http://${proxy.host}:${proxy.port}`), {
-        rejectUnauthorized: false,
-      }),
+      httpAgent: new HttpProxyAgent(`http://${proxy.host}:${proxy.port}`),
     };
   }
 }
