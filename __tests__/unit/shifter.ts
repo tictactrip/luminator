@@ -62,8 +62,8 @@ describe('Shifter', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        expect(agent.axios.defaults.httpsAgent.proxy).toMatchSnapshot();
-        expect(agent.axios.defaults.httpAgent.proxy).toMatchSnapshot();
+        expect(agent.axios.defaults.httpsAgent.proxy.toString()).toMatch(new RegExp(`https://${proxy.host}:[0-9]+`));
+        expect(agent.axios.defaults.httpAgent.proxy.toString()).toMatch(new RegExp(`http://${proxy.host}:[0-9]+`));
       });
 
       it('creates a proxy agent having a random port among the given mapping', () => {
@@ -78,8 +78,8 @@ describe('Shifter', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        expect(agent.axios.defaults.httpsAgent.proxy).toMatchSnapshot();
-        expect(agent.axios.defaults.httpAgent.proxy).toMatchSnapshot();
+        expect(agent.axios.defaults.httpsAgent.proxy.toString()).toMatch(new RegExp(`https://${proxy.host}:[0-9]+`));
+        expect(agent.axios.defaults.httpAgent.proxy.toString()).toMatch(new RegExp(`http://${proxy.host}:[0-9]+`));
       });
 
       it('create a proxy agent having a port matching one of the options in the mapping', () => {
