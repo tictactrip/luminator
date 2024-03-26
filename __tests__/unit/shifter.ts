@@ -62,21 +62,15 @@ describe('Shifter', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        const expectedProxyAgent = {
-          host: proxy.host,
-          port: expect.any(Number),
-          rejectUnauthorized: false,
-        };
-
-        expect(agent.axios.defaults.httpsAgent.proxy).toMatchObject(expectedProxyAgent);
-        expect(agent.axios.defaults.httpAgent.proxy).toMatchObject(expectedProxyAgent);
+        expect(agent.axios.defaults.httpsAgent.proxy).toMatchSnapshot();
+        expect(agent.axios.defaults.httpAgent.proxy).toMatchSnapshot();
       });
 
       it('creates a proxy agent having a random port among the given mapping', () => {
         const agent: Shifter = shifter.setIp();
 
-        expect(getMappingPorts(mapping)).toEqual(expect.arrayContaining([agent.axios.defaults.httpsAgent.proxy.port]));
-        expect(getMappingPorts(mapping)).toEqual(expect.arrayContaining([agent.axios.defaults.httpAgent.proxy.port]));
+        expect(getMappingPorts(mapping).includes(Number(agent.axios.defaults.httpsAgent.proxy.port))).toBeTruthy();
+        expect(getMappingPorts(mapping).includes(Number(agent.axios.defaults.httpAgent.proxy.port))).toBeTruthy();
       });
     });
 
@@ -84,22 +78,16 @@ describe('Shifter', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        const expectedProxyAgent = {
-          host: proxy.host,
-          port: expect.any(Number),
-          rejectUnauthorized: false,
-        };
-
-        expect(agent.axios.defaults.httpsAgent.proxy).toMatchObject(expectedProxyAgent);
-        expect(agent.axios.defaults.httpAgent.proxy).toMatchObject(expectedProxyAgent);
+        expect(agent.axios.defaults.httpsAgent.proxy).toMatchSnapshot();
+        expect(agent.axios.defaults.httpAgent.proxy).toMatchSnapshot();
       });
 
       it('create a proxy agent having a port matching one of the options in the mapping', () => {
         const country: EShifterCountry = EShifterCountry.FRANCE;
         const agent: Shifter = shifter.setIp({ countries: [country] });
 
-        expect(mapping[country]).toEqual(expect.arrayContaining([agent.axios.defaults.httpsAgent.proxy.port]));
-        expect(mapping[country]).toEqual(expect.arrayContaining([agent.axios.defaults.httpAgent.proxy.port]));
+        expect(mapping[country].includes(Number(agent.axios.defaults.httpsAgent.proxy.port))).toBeTruthy();
+        expect(mapping[country].includes(Number(agent.axios.defaults.httpAgent.proxy.port))).toBeTruthy();
       });
 
       it('create a proxy agent having a port matching several of the options in the mapping', () => {
@@ -107,8 +95,8 @@ describe('Shifter', () => {
         const mappedPorts: number[] = countries.map((c) => mapping[c]).reduce((acc, c) => [...acc, ...c], []);
         const agent: Shifter = shifter.setIp({ countries: countries });
 
-        expect(mappedPorts).toEqual(expect.arrayContaining([agent.axios.defaults.httpsAgent.proxy.port]));
-        expect(mappedPorts).toEqual(expect.arrayContaining([agent.axios.defaults.httpAgent.proxy.port]));
+        expect(mappedPorts.includes(Number(agent.axios.defaults.httpsAgent.proxy.port))).toBeTruthy();
+        expect(mappedPorts.includes(Number(agent.axios.defaults.httpAgent.proxy.port))).toBeTruthy();
       });
     });
   });
