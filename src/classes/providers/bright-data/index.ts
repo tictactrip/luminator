@@ -171,7 +171,7 @@ export class BrightData extends Base {
 
     return {
       httpsAgent: new HttpsProxyAgent(`https://${proxy.auth}@${proxy.host}:${proxy.port}`, {
-        rejectUnauthorized: true,
+        rejectUnauthorized: false,
       }),
       httpAgent: new HttpProxyAgent(`http://${proxy.auth}@${proxy.host}:${proxy.port}`),
     };

@@ -128,7 +128,7 @@ export class Shifter extends Base {
 
     return {
       httpsAgent: new HttpsProxyAgent(`https://${proxy.host}:${proxy.port}`, {
-        rejectUnauthorized: true,
+        rejectUnauthorized: false,
       }),
       httpAgent: new HttpProxyAgent(`http://${proxy.host}:${proxy.port}`),
     };
