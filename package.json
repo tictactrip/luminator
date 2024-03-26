@@ -1,6 +1,6 @@
 {
   "name": "@tictactrip/luminator",
-  "version": "4.0.0",
+  "version": "5.0.2-0",
   "description": "Axios proxy provider agent.",
   "author": "Tictactrip <dev@tictactrip.eu>",
   "main": "dist/index.js",
@@ -8,14 +8,14 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@rimiti/stimmy": "1.11.0",
-    "axios": "1.6.7",
-    "http-proxy-agent": "4.0.1",
-    "https-proxy-agent": "2.2.4"
+    "axios": "1.6.8",
+    "http-proxy-agent": "7.0.2",
+    "https-proxy-agent": "7.0.4"
   },
   "devDependencies": {
     "@types/jest": "29.5.12",
-    "@typescript-eslint/eslint-plugin": "7.2.0",
-    "@typescript-eslint/parser": "7.2.0",
+    "@typescript-eslint/eslint-plugin": "7.3.1",
+    "@typescript-eslint/parser": "7.3.1",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.1.3",
@@ -23,7 +23,7 @@
     "nock": "13.5.4",
     "prettier": "3.2.5",
     "ts-jest": "29.1.2",
-    "typescript": "5.4.2"
+    "typescript": "5.4.3"
   },
   "scripts": {
     "clean": "rm -rf dist coverage",

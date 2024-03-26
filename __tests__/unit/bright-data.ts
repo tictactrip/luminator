@@ -93,11 +93,12 @@ describe('BrightData', () => {
       expect(agent).toBeInstanceOf(BrightData);
       expect(typeof agent.sessionId).toEqual('number');
       expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
-      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${proxy.username}-session-([0-9])*-country-(${regexPatternAllCountries}):${proxy.password}`),
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io:22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe('22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.href).toMatch(
+        new RegExp(
+          `https://${proxy.username}-session-([0-9])*-country-(${regexPatternAllCountries}):${proxy.password}@zproxy.lum-superproxy.io:22225/`,
+        ),
       );
     });
 
@@ -107,11 +108,12 @@ describe('BrightData', () => {
       expect(agent).toBeInstanceOf(BrightData);
       expect(typeof agent.sessionId).toEqual('number');
       expect(agent.country).toMatch(/fr/);
-      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${proxy.username}-session-([0-9])*-country-fr:${proxy.password}`),
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io:22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe('22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.href).toMatch(
+        new RegExp(
+          `https://${proxy.username}-session-([0-9])*-country-fr:${proxy.password}@zproxy.lum-superproxy.io:22225/`,
+        ),
       );
     });
 
@@ -123,11 +125,12 @@ describe('BrightData', () => {
       expect(agent).toBeInstanceOf(BrightData);
       expect(agent.sessionId).toEqual(123456789);
       expect(agent.country).toMatch(/fr/);
-      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${proxy.username}-session-${sessionId}-country-fr:${proxy.password}`),
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io:22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe('22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.href).toMatch(
+        new RegExp(
+          `https://${proxy.username}-session-${sessionId}-country-fr:${proxy.password}@zproxy.lum-superproxy.io:22225/`,
+        ),
       );
     });
 
@@ -139,11 +142,12 @@ describe('BrightData', () => {
       expect(agent).toBeInstanceOf(BrightData);
       expect(agent.sessionId).toEqual(123456789);
       expect(agent.country).toMatch(new RegExp(regexPatternAllCountries));
-      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io');
-      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe(22225);
-      expect(agent.axios.defaults.httpsAgent.proxy.rejectUnauthorized).toBe(false);
-      expect(agent.axios.defaults.httpsAgent.proxy.auth).toMatch(
-        new RegExp(`${proxy.username}-session-${sessionId}-country-(${regexPatternAllCountries}):${proxy.password}`),
+      expect(agent.axios.defaults.httpsAgent.proxy.host).toBe('zproxy.lum-superproxy.io:22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.port).toBe('22225');
+      expect(agent.axios.defaults.httpsAgent.proxy.href).toMatch(
+        new RegExp(
+          `https://${proxy.username}-session-${sessionId}-country-(${regexPatternAllCountries}):${proxy.password}@zproxy.lum-superproxy.io:22225/`,
+        ),
       );
     });
 

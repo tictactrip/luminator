@@ -1,5 +1,5 @@
 import { AxiosPromise, AxiosRequestConfig } from 'axios';
-import * as HttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
 import { EStrategyMode, ICreateProxyConfig } from '../base/types';
 import { replacer } from '../../../utils/replacer';
@@ -81,8 +81,10 @@ export class Proxyrack extends Base {
     };
 
     return {
-      httpsAgent: new HttpsProxyAgent({ ...proxy, rejectUnauthorized: false }),
-      httpAgent: new HttpProxyAgent({ ...proxy, rejectUnauthorized: false }),
+      httpsAgent: new HttpsProxyAgent(`https://${proxy.auth}@${proxy.host}:${proxy.port}`, {
+        rejectUnauthorized: false,
+      }),
+      httpAgent: new HttpProxyAgent(`http://${proxy.auth}@${proxy.host}:${proxy.port}`),
     };
   }
 }
