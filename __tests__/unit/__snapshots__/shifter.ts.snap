@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Shifter #setIp when given one or more specific countries to target creates a properly formed proxy agent 1`] = `"https://50.14.52.12:12356/"`;
+
+exports[`Shifter #setIp when given one or more specific countries to target creates a properly formed proxy agent 2`] = `"http://50.14.52.12:12356/"`;
+
+exports[`Shifter #setIp when not given any specific country to target creates a properly formed proxy agent 1`] = `"https://50.14.52.12:12356/"`;
+
+exports[`Shifter #setIp when not given any specific country to target creates a properly formed proxy agent 2`] = `"http://50.14.52.12:12356/"`;
