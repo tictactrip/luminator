@@ -62,7 +62,7 @@ describe('Shifter', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        expect(agent.axios.defaults.httpsAgent.proxy.toString()).toMatch(new RegExp(`https://${proxy.host}:[0-9]+`));
+        expect(agent.axios.defaults.httpsAgent.proxy.toString()).toMatch(new RegExp(`http://${proxy.host}:[0-9]+`));
         expect(agent.axios.defaults.httpAgent.proxy.toString()).toMatch(new RegExp(`http://${proxy.host}:[0-9]+`));
       });
 
@@ -78,7 +78,7 @@ describe('Shifter', () => {
       it('creates a properly formed proxy agent', () => {
         const agent: Shifter = shifter.setIp();
 
-        expect(agent.axios.defaults.httpsAgent.proxy.toString()).toMatch(new RegExp(`https://${proxy.host}:[0-9]+`));
+        expect(agent.axios.defaults.httpsAgent.proxy.toString()).toMatch(new RegExp(`http://${proxy.host}:[0-9]+`));
         expect(agent.axios.defaults.httpAgent.proxy.toString()).toMatch(new RegExp(`http://${proxy.host}:[0-9]+`));
       });
 

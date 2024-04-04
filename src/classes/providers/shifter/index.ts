@@ -93,7 +93,7 @@ export class Shifter extends Base {
 
   /**
    * @description Checks weither or not the mapping contains a single entry.
-   * @param {IShifterCountryPortmapping} mapping country to port mapping.
+   * @param {TShifterCountryPortMapping} mapping country to port mapping.
    * @throws {Error} Will throw if mapping has no entries.
    */
   private isCountryPortMappingEmpty(mapping: TShifterCountryPortMapping): void {
@@ -127,9 +127,7 @@ export class Shifter extends Base {
     };
 
     return {
-      httpsAgent: new HttpsProxyAgent(`https://${proxy.host}:${proxy.port}`, {
-        rejectUnauthorized: false,
-      }),
+      httpsAgent: new HttpsProxyAgent(`http://${proxy.host}:${proxy.port}`),
       httpAgent: new HttpProxyAgent(`http://${proxy.host}:${proxy.port}`),
     };
   }
