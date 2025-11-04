@@ -19,6 +19,7 @@ export class StormProxies extends Base {
     this.strategy = config.strategy;
 
     this.isHostIpPortMappingProvided(this.strategy.mapping);
+    this.setIp();
   }
 
   /**
