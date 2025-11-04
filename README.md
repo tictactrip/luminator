@@ -17,9 +17,10 @@ yarn add @tictactrip/luminator
 
 ## Available proxy providers
 
-- [BrightData](https://brightdata.com)
+- [BrightData](https://get.brightdata.com/myob1aqbwr9f)
 - [Proxyrack](https://www.proxyrack.com)
-- [Shifter](https://www.shifter.io)
+- [Shifter](https://shifter.io/r/0j72/product/basic-backconnect-proxies/Qzzr)
+- [StormProxies](https://stormproxies.com/)
 
 ## How to use it?
 

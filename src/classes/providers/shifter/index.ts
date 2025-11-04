@@ -12,12 +12,11 @@ import {
 } from './types';
 
 /**
- * @description Schifter proxy provider.
+ * @description Shifter proxy provider.
  * @extends {Base}
  */
 export class Shifter extends Base {
   public axios: AxiosInstance;
-  public country: EShifterCountry;
 
   private readonly config: IShifterConfig;
   private readonly strategy: TShifterStrategy;
