@@ -1,10 +1,9 @@
 import { AxiosRequestConfig } from 'axios';
-import { IProviderConfig, EStrategyMode } from '../base/types';
+import { EStrategyMode } from '../base/types';
 
 interface IStormProxiesConfig {
-  proxy: IProviderConfig;
   axiosConfig?: AxiosRequestConfig;
-  strategy?: TStormProxiesStrategy;
+  strategy: TStormProxiesStrategy;
 }
 
 type ProxyMappingIpPort = {
