@@ -20,7 +20,7 @@ yarn add @tictactrip/luminator
 - [BrightData](https://get.brightdata.com/myob1aqbwr9f)
 - [Proxyrack](https://www.proxyrack.com)
 - [Shifter](https://shifter.io/r/0j72/product/basic-backconnect-proxies/Qzzr)
-- [StormProxies](https://stormproxies.com/)
+- [StormProxies](https://stormproxies.com/clients/aff/go/dimitri_dobairro)
 
 ## How to use it?
 
