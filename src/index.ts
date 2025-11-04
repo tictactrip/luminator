@@ -7,3 +7,5 @@ export * from './classes/providers/proxyrack';
 export * from './classes/providers/proxyrack/types';
 export * from './classes/providers/shifter';
 export * from './classes/providers/shifter/types';
+export * from './classes/providers/stormproxies';
+export * from './classes/providers/stormproxies/types';
