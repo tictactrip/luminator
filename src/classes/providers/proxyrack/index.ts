@@ -7,7 +7,7 @@ import { Base } from '../base';
 import { TProxyrackConfig } from './types';
 
 /**
- * @description Proxyrack proxy provider.
+ * @description Proxyrack provider.
  */
 export class Proxyrack extends Base {
   private readonly config: TProxyrackConfig;
