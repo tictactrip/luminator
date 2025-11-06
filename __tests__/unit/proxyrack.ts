@@ -13,7 +13,7 @@ describe('Proxyrack', () => {
         proxy: {
           ...proxy,
           host: 'megaproxy.rotating.proxyrack.net',
-          port: 222,
+          ports: [222],
         },
         strategy: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
       });

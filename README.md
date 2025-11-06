@@ -331,7 +331,7 @@ const proxyrack: Proxyrack = new Proxyrack({
         username: "tictactrip",
         password: "secret",
         host: 'megaproxy.rotating.proxyrack.net',
-        port: 222,
+        ports: [222],
     },
     strategy: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
 });
