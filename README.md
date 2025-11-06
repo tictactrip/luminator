@@ -1,6 +1,5 @@
 # luminator
 
-[![Dependencies][dependencies-badge]][dependencies]
 [![Build][build-badge]][build]
 [![License][license-badge]][license]
 [![PRs Welcome][prs-badge]][prs]
@@ -331,7 +330,7 @@ const proxyrack: Proxyrack = new Proxyrack({
         username: "tictactrip",
         password: "secret",
         host: 'megaproxy.rotating.proxyrack.net',
-        port: 222,
+        ports: [222],
     },
     strategy: EStrategyMode.CHANGE_IP_EVERY_REQUESTS,
 });
@@ -409,8 +408,6 @@ Run using yarn run `<script>` command.
 
 GPL-3.0 © [Tictactrip](https://www.tictactrip.eu)
 
-[dependencies-badge]: https://img.shields.io/david/tictactrip/luminator
-[dependencies]: https://img.shields.io/david/tictactrip/luminator
 [build-badge]: https://github.com/tictactrip/luminator/workflows/Test/badge.svg
 [build]: https://github.com/tictactrip/luminator/actions?query=workflow%3ATest+branch%3Amaster
 [license-badge]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
