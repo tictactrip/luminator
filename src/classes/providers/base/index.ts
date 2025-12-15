@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
+import axiosRetry from 'axios-retry';
 import { IBaseConfig } from './types';
 
 export class Base {
@@ -14,6 +15,18 @@ export class Base {
     } else {
       this.axios = axios.create({ proxy: false });
     }
+
+    // Configure axios-retry with sensible defaults and allow overrides from config.retryConfig
+    const defaultRetryOptions = {
+      retries: 3,
+      retryDelay: axiosRetry.exponentialDelay,
+      shouldResetTimeout: true,
+      retryCondition: axiosRetry.isNetworkOrIdempotentRequestError,
+    };
+
+    const retryOptions = config.retryConfig ? { ...defaultRetryOptions, ...config.retryConfig } : defaultRetryOptions;
+
+    axiosRetry(this.axios, retryOptions);
   }
 
   /**
